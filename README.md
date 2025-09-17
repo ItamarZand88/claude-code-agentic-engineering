@@ -8,16 +8,20 @@
 ## 🚀 Quick Start
 
 ```bash
-# One-line installation (Linux/Mac)
-curl -sSL https://raw.githubusercontent.com/ItamarZand88/claude-code-agentic-engineering/main/install.sh | bash
+# Initialize new project
+uvx --from git+https://github.com/ItamarZand88/claude-code-agentic-engineering.git agentic init my-project
 
-# One-line installation (Windows PowerShell)
-iwr -useb https://raw.githubusercontent.com/ItamarZand88/claude-code-agentic-engineering/main/install.ps1 | iex
+# Install in existing project
+uvx --from git+https://github.com/ItamarZand88/claude-code-agentic-engineering.git agentic install
 
-# Or clone the repository
-git clone https://github.com/ItamarZand88/claude-code-agentic-engineering.git
-cd claude-code-agentic-engineering
-chmod +x setup.sh && ./setup.sh
+# Templates only
+uvx --from git+https://github.com/ItamarZand88/claude-code-agentic-engineering.git agentic init --templates-only
+
+# Commands only
+uvx --from git+https://github.com/ItamarZand88/claude-code-agentic-engineering.git agentic init --commands-only
+
+# Check installation status
+uvx --from git+https://github.com/ItamarZand88/claude-code-agentic-engineering.git agentic status
 
 # Start Claude Code and verify installation
 claude

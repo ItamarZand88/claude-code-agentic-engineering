@@ -1,0 +1,65 @@
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[project]
+name = "claude-agentic"
+version = "1.0.0"
+description = "Agentic engineering commands and templates for Claude Code"
+readme = "README.md"
+license = "MIT"
+requires-python = ">=3.8"
+authors = [
+    {name = "Claude Code Community"},
+]
+keywords = ["claude", "ai", "engineering", "templates", "automation"]
+classifiers = [
+    "Development Status :: 5 - Production/Stable",
+    "Intended Audience :: Developers",
+    "License :: OSI Approved :: MIT License",
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3.8",
+    "Programming Language :: Python :: 3.9",
+    "Programming Language :: Python :: 3.10",
+    "Programming Language :: Python :: 3.11",
+    "Programming Language :: Python :: 3.12",
+    "Topic :: Software Development :: Code Generators",
+    "Topic :: Software Development :: Libraries :: Application Frameworks",
+]
+dependencies = [
+    "click>=8.0.0",
+    "rich>=10.0.0",
+    "requests>=2.25.0",
+]
+
+[project.optional-dependencies]
+dev = [
+    "pytest>=6.0.0",
+    "pytest-cov>=2.10.0",
+    "black>=21.0.0",
+    "flake8>=3.8.0",
+    "mypy>=0.910",
+]
+
+[project.urls]
+Homepage = "https://github.com/ItamarZand88/claude-code-agentic-engineering"
+Repository = "https://github.com/ItamarZand88/claude-code-agentic-engineering"
+Issues = "https://github.com/ItamarZand88/claude-code-agentic-engineering/issues"
+
+[project.scripts]
+agentic = "claude_agentic.cli:main"
+
+[tool.hatch.build.targets.wheel]
+packages = ["src/claude_agentic"]
+
+[tool.hatch.build.targets.sdist]
+include = [
+    "/src",
+    "/commands",
+    "/agents",
+    "/templates",
+    "/docs",
+    "/examples",
+    "README.md",
+    "LICENSE",
+]
