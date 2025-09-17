@@ -12,7 +12,8 @@ Analyze user requirements, understand codebase context, identify relevant files 
 ## Variables
 - **user_prompt**: $ARGUMENTS - The initial task description from the user
 - **task_output_directory**: `./tasks/` - Directory where task files will be stored
-- **requirements_template**: `task-requirements-template.md` - Standard template for task documentation
+- **requirements_template**: `./templates/task-requirements-template.md` - Standard template for task documentation
+- **coding_standards**: `./templates/coding-standards-template.md` - Team coding standards reference
 
 ## Workflow
 1. **Analyze User Input**

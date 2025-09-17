@@ -72,7 +72,8 @@ Transform your development workflow with **5 powerful slash commands** and **5 s
 ```
 claude-code-agentic-engineering/
 ├── 📋 README.md                           # This file
-├── 🚀 setup.sh                            # One-click installation script
+├── 🚀 setup.sh                            # One-click installation script (Linux/Mac)
+├── 🚀 setup.ps1                           # One-click installation script (Windows)
 ├── 📜 LICENSE                             # MIT License
 ├── commands/                              # Slash Commands
 │   ├── task-from-scratch.md
@@ -86,6 +87,13 @@ claude-code-agentic-engineering/
 │   ├── dependency-scanner-agent.md
 │   ├── pattern-recognition-agent.md
 │   └── documentation-extractor-agent.md
+├── templates/                             # Professional Templates
+│   ├── task-requirements-template.md
+│   ├── implementation-plan-template.md
+│   ├── code-review-template.md
+│   ├── coding-standards-template.md
+│   ├── security-checklist-template.md
+│   └── README.md
 ├── docs/                                  # Documentation
 │   ├── WORKFLOW_GUIDE.md
 │   ├── CUSTOMIZATION.md

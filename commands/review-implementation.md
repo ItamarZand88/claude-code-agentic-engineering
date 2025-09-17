@@ -13,6 +13,10 @@ Analyze implemented code against original requirements, validate code quality st
 - **plan_file_path**: $1 - Path to the implementation plan that was executed
 - **task_file_path**: $2 - Path to original task requirements (if --task-file= provided)
 - **severity_filter**: $3 - Minimum severity level for reported issues (if --severity= provided)
+- **review_output_directory**: `./reviews/` - Directory for review reports
+- **coding_standards**: `./templates/coding-standards-template.md` - Project coding standards reference
+- **security_checklist**: `./templates/security-checklist-template.md` - Security validation checklist
+- **review_template**: `./templates/code-review-template.md` - Code review report template
 
 ## Workflow
 1. **Requirements Validation**

@@ -13,6 +13,8 @@ Read task requirements document, analyze current codebase state, and generate a 
 - **task_file_path**: $ARGUMENTS - Path to the task requirements file
 - **plan_output_directory**: `./plans/` - Directory where implementation plans are stored
 - **backup_strategy**: `git_branch` - Method for creating safe implementation environment
+- **plan_template**: `./templates/implementation-plan-template.md` - Standard template for implementation plans
+- **coding_standards**: `./templates/coding-standards-template.md` - Team coding standards reference
 
 ## Workflow
 1. **Load Task Requirements**
