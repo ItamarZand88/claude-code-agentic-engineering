@@ -1,0 +1,228 @@
+# Claude Code Agentic Engineering
+
+> Advanced slash commands and subagents for Claude Code that create a complete task-to-implementation pipeline with intelligent delegation and context management.
+
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
+[![Claude Code](https://img.shields.io/badge/Claude%20Code-Compatible-blue)](https://claude.ai/code)
+
+## 🚀 Quick Start
+
+```bash
+# Clone the repository
+git clone https://github.com/your-username/claude-code-agentic-engineering.git
+cd claude-code-agentic-engineering
+
+# Run the setup script
+chmod +x setup.sh
+./setup.sh
+
+# Start Claude Code and verify installation
+claude
+/help    # Should show your new commands
+/agents  # Should show your new subagents
+```
+
+## 🎯 What This Gives You
+
+Transform your development workflow with **5 powerful slash commands** and **5 specialized AI subagents** that work together to create a self-improving engineering system.
+
+### ⚡ The Complete Workflow
+
+```bash
+# 1. 🔍 Context-aware requirements gathering
+/context-map --query="authentication patterns"
+/task-from-scratch "Add OAuth integration with Google"
+
+# 2. 📋 Intelligent planning with historical context  
+/plan-from-task "./tasks/oauth-task.md"
+
+# 3. 🛠️ Safe implementation with progress tracking
+/implement-plan "./plans/oauth-plan.md" --dry-run
+/implement-plan "./plans/oauth-plan.md"
+
+# 4. ✅ Comprehensive quality review
+/review-implementation "./plans/oauth-plan.md" --severity=medium
+
+# 5. 🧠 Knowledge capture for future benefit
+/context-map --update --depth=5
+```
+
+## 🔧 Slash Commands
+
+| Command | Purpose | Key Features |
+|---------|---------|-------------|
+| `/task-from-scratch` | Requirements analysis | Context discovery, clarification questions, comprehensive specs |
+| `/plan-from-task` | Implementation planning | Risk assessment, testing strategy, rollback planning |
+| `/implement-plan` | Safe execution | Git branching, dry-run mode, progress tracking |
+| `/review-implementation` | Quality assurance | Security scan, performance analysis, technical debt assessment |
+| `/context-map` | Knowledge management | Project intelligence, decision history, pattern library |
+
+## 🤖 Specialized Subagents
+
+| Agent | Expertise | Auto-Invoked For |
+|-------|-----------|------------------|
+| **File Analysis Agent** | Code structure & patterns | Individual file analysis, dependency mapping |
+| **Git History Agent** | Decision context extraction | Historical analysis, evolution tracking |
+| **Dependency Scanner** | Security & package analysis | Vulnerability scanning, integration mapping |
+| **Pattern Recognition** | Architecture & design patterns | Pattern detection, anti-pattern identification |
+| **Documentation Extractor** | Knowledge synthesis | Documentation analysis, gap identification |
+
+## 📁 Repository Structure
+
+```
+claude-code-agentic-engineering/
+├── 📋 README.md                           # This file
+├── 🚀 setup.sh                            # One-click installation script
+├── 📜 LICENSE                             # MIT License
+├── commands/                              # Slash Commands
+│   ├── task-from-scratch.md
+│   ├── plan-from-task.md
+│   ├── implement-plan.md
+│   ├── review-implementation.md
+│   └── context-map.md
+├── agents/                                # Subagents
+│   ├── file-analysis-agent.md
+│   ├── git-history-agent.md
+│   ├── dependency-scanner-agent.md
+│   ├── pattern-recognition-agent.md
+│   └── documentation-extractor-agent.md
+├── docs/                                  # Documentation
+│   ├── WORKFLOW_GUIDE.md
+│   ├── CUSTOMIZATION.md
+│   └── TROUBLESHOOTING.md
+└── examples/                              # Usage Examples
+    ├── basic-workflow.md
+    ├── advanced-patterns.md
+    └── team-collaboration.md
+```
+
+## 🎨 Key Features
+
+### 🧠 **Intelligence Compound Effect**
+Each command makes the next one smarter by building institutional memory through the context map system.
+
+### 🛡️ **Safety First**
+- Git branching for all implementations
+- Dry-run modes for testing
+- Comprehensive rollback procedures
+- Progress tracking and error recovery
+
+### 🔄 **Self-Improving System**
+- Context accumulates with each task
+- Decision rationale is preserved
+- Patterns are learned and reused
+- Team knowledge is captured automatically
+
+### 🎯 **Stakeholder Trifecta Optimization**
+Designed for three audiences:
+- **You**: Get better results faster with accumulated knowledge
+- **Your Team**: Share context automatically through knowledge graphs
+- **Your Agents**: Operate with full project context instead of starting from scratch
+
+## 🚀 Installation
+
+### Option 1: Automatic Setup (Recommended)
+```bash
+git clone https://github.com/your-username/claude-code-agentic-engineering.git
+cd claude-code-agentic-engineering
+chmod +x setup.sh
+./setup.sh
+```
+
+### Option 2: Manual Installation
+```bash
+# Create directories
+mkdir -p .claude/commands .claude/agents
+
+# Copy command files
+cp commands/*.md .claude/commands/
+cp agents/*.md .claude/agents/
+
+# Verify installation
+claude
+/help
+/agents
+```
+
+## 💡 Usage Examples
+
+### Basic Feature Development
+```bash
+/task-from-scratch "Add dark mode toggle to the header"
+/plan-from-task "./tasks/dark-mode-task.md"
+/implement-plan "./plans/dark-mode-plan.md"
+/review-implementation "./plans/dark-mode-plan.md"
+```
+
+### Complex System Integration
+```bash
+/context-map --query="payment systems"
+/task-from-scratch "Integrate Stripe payments with subscription management"
+/plan-from-task "./tasks/stripe-integration-task.md"
+/implement-plan "./plans/stripe-plan.md" --dry-run
+/implement-plan "./plans/stripe-plan.md"
+/context-map --update
+```
+
+### Quality & Security Review
+```bash
+/review-implementation "./plans/auth-system-plan.md" --severity=high
+/context-map --query="security patterns" 
+```
+
+## 🔧 Customization
+
+All commands and agents are fully customizable:
+
+1. **Modify command behavior** by editing files in `commands/`
+2. **Customize agent expertise** by updating files in `agents/`
+3. **Add new commands** by creating new `.md` files
+4. **Create specialized agents** for your domain-specific needs
+
+See [CUSTOMIZATION.md](docs/CUSTOMIZATION.md) for detailed guidance.
+
+## 🤝 Contributing
+
+We welcome contributions! Please see our [Contributing Guidelines](CONTRIBUTING.md).
+
+### Ways to Contribute:
+- 🐛 Report bugs and issues
+- 💡 Suggest new commands or agents
+- 📖 Improve documentation
+- 🔧 Submit pull requests
+- ⭐ Star the repository if you find it useful!
+
+## 📚 Documentation
+
+- [Workflow Guide](docs/WORKFLOW_GUIDE.md) - Complete workflow examples
+- [Customization Guide](docs/CUSTOMIZATION.md) - How to customize commands and agents  
+- [Troubleshooting](docs/TROUBLESHOOTING.md) - Common issues and solutions
+- [Advanced Patterns](examples/advanced-patterns.md) - Complex usage patterns
+
+## 🔄 Changelog
+
+### v1.0.0 (2025-01-XX)
+- 🚀 Initial release with 5 slash commands and 5 subagents
+- 🛡️ Complete safety features (git branching, dry-run, rollback)
+- 🧠 Context map system for knowledge accumulation
+- 📖 Comprehensive documentation and examples
+
+## 📄 License
+
+This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
+
+## 🙏 Acknowledgments
+
+- Built for [Claude Code](https://claude.ai/code) by Anthropic
+- Inspired by agentic prompt engineering principles
+- Follows the "prompt as fundamental unit of engineering" philosophy
+
+## ⭐ Star This Repository
+
+If this project helps you build better software faster, please consider giving it a star! It helps others discover this work.
+
+---
+
+**Built with ❤️ for the Claude Code community**
+
+> "The prompt is the fundamental unit of engineering. And with agents, every prompt you create becomes a force multiplier." - The future of software development is here.
