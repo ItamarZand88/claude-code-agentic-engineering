@@ -14,8 +14,33 @@ from rich.console import Console
 from rich.progress import Progress, SpinnerColumn, TextColumn
 from rich.panel import Panel
 from rich.table import Table
+from rich.text import Text
 
 console = Console()
+
+# ASCII Art Banner
+BANNER = """
+   ██████╗██╗      █████╗ ██╗   ██╗██████╗ ███████╗     ██████╗ ██████╗ ██████╗ ███████╗
+  ██╔════╝██║     ██╔══██╗██║   ██║██╔══██╗██╔════╝    ██╔════╝██╔═══██╗██╔══██╗██╔════╝
+  ██║     ██║     ███████║██║   ██║██║  ██║█████╗      ██║     ██║   ██║██║  ██║█████╗
+  ██║     ██║     ██╔══██║██║   ██║██║  ██║██╔══╝      ██║     ██║   ██║██║  ██║██╔══╝
+  ╚██████╗███████╗██║  ██║╚██████╔╝██████╔╝███████╗    ╚██████╗╚██████╔╝██████╔╝███████╗
+   ╚═════╝╚══════╝╚═╝  ╚═╝ ╚═════╝ ╚═════╝ ╚══════╝     ╚═════╝ ╚═════╝ ╚═════╝ ╚══════╝
+
+ ██████╗  ██████╗ ███████╗███╗   ██╗████████╗██╗ ██████╗
+██╔══██╗██╔════╝ ██╔════╝████╗  ██║╚══██╔══╝██║██╔════╝
+███████║██║  ███╗█████╗  ██╔██╗ ██║   ██║   ██║██║
+██╔══██║██║   ██║██╔══╝  ██║╚██╗██║   ██║   ██║██║
+██║  ██║╚██████╔╝███████╗██║ ╚████║   ██║   ██║╚██████╗
+╚═╝  ╚═╝ ╚═════╝ ╚══════╝╚═╝  ╚═══╝   ╚═╝   ╚═╝ ╚═════╝
+
+███████╗███╗   ██╗ ██████╗ ██╗███╗   ██╗███████╗███████╗██████╗ ██╗███╗   ██╗ ██████╗
+██╔════╝████╗  ██║██╔════╝ ██║████╗  ██║██╔════╝██╔════╝██╔══██╗██║████╗  ██║██╔════╝
+█████╗  ██╔██╗ ██║██║  ███╗██║██╔██╗ ██║█████╗  █████╗  ██████╔╝██║██╔██╗ ██║██║  ███╗
+██╔══╝  ██║╚██╗██║██║   ██║██║██║╚██╗██║██╔══╝  ██╔══╝  ██╔══██╗██║██║╚██╗██║██║   ██║
+███████╗██║ ╚████║╚██████╔╝██║██║ ╚████║███████╗███████╗██║  ██║██║██║ ╚████║╚██████╔╝
+╚══════╝╚═╝  ╚═══╝ ╚═════╝ ╚═╝╚═╝  ╚═══╝╚══════╝╚══════╝╚═╝  ╚═╝╚═╝╚═╝  ╚═══╝ ╚═════╝
+"""
 
 # Repository configuration
 REPO_URL = "https://github.com/ItamarZand88/claude-code-agentic-engineering"
@@ -47,6 +72,21 @@ TEMPLATES = [
     "security-checklist-template.md",
     "task-requirements-template.md"
 ]
+
+def show_banner():
+    """Display the Claude Code Agentic Engineering banner."""
+    # Use simple ASCII that works everywhere
+    banner = """
+    ===============================================================================
+    |                                                                             |
+    |                      CLAUDE CODE AGENTIC ENGINEERING                       |
+    |                                                                             |
+    |                    Advanced Development Workflow System                     |
+    |                                                                             |
+    ===============================================================================
+    """
+    console.print(banner, style="bold cyan")
+    console.print()
 
 @click.group()
 @click.version_option(version="1.0.0")
@@ -81,6 +121,9 @@ def init(project_name: Optional[str], templates_only: bool, commands_only: bool,
     # Change to target directory
     os.chdir(target_dir)
 
+    # Show banner
+    show_banner()
+
     with Progress(
         SpinnerColumn(),
         TextColumn("[progress.description]{task.description}"),
@@ -104,6 +147,9 @@ def init(project_name: Optional[str], templates_only: bool, commands_only: bool,
 @click.option('--force', is_flag=True, help='Force overwrite existing files')
 def install(force: bool):
     """Install or update agentic engineering components in current directory."""
+    # Show banner
+    show_banner()
+
     with Progress(
         SpinnerColumn(),
         TextColumn("[progress.description]{task.description}"),
