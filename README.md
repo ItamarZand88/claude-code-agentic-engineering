@@ -8,13 +8,16 @@
 ## 🚀 Quick Start
 
 ```bash
-# Clone the repository
-git clone https://github.com/your-username/claude-code-agentic-engineering.git
-cd claude-code-agentic-engineering
+# One-line installation (Linux/Mac)
+curl -sSL https://raw.githubusercontent.com/ItamarZand88/claude-code-agentic-engineering/main/install.sh | bash
 
-# Run the setup script
-chmod +x setup.sh
-./setup.sh
+# One-line installation (Windows PowerShell)
+iwr -useb https://raw.githubusercontent.com/ItamarZand88/claude-code-agentic-engineering/main/install.ps1 | iex
+
+# Or clone the repository
+git clone https://github.com/ItamarZand88/claude-code-agentic-engineering.git
+cd claude-code-agentic-engineering
+chmod +x setup.sh && ./setup.sh
 
 # Start Claude Code and verify installation
 claude
@@ -56,6 +59,7 @@ Transform your development workflow with **5 powerful slash commands** and **5 s
 | `/implement-plan` | Safe execution | Git branching, dry-run mode, progress tracking |
 | `/review-implementation` | Quality assurance | Security scan, performance analysis, technical debt assessment |
 | `/context-map` | Knowledge management | Project intelligence, decision history, pattern library |
+| `/download-templates` | Template installer | Downloads latest templates and configurations |
 
 ## 🤖 Specialized Subagents
 
@@ -129,15 +133,34 @@ Designed for three audiences:
 
 ## 🚀 Installation
 
-### Option 1: Automatic Setup (Recommended)
+### Option 1: One-Line Install (Recommended)
 ```bash
-git clone https://github.com/your-username/claude-code-agentic-engineering.git
-cd claude-code-agentic-engineering
-chmod +x setup.sh
-./setup.sh
+# Linux/Mac
+curl -sSL https://raw.githubusercontent.com/ItamarZand88/claude-code-agentic-engineering/main/install.sh | bash
+
+# Windows PowerShell  
+iwr -useb https://raw.githubusercontent.com/ItamarZand88/claude-code-agentic-engineering/main/install.ps1 | iex
+
+# Custom directory
+curl -sSL https://raw.githubusercontent.com/ItamarZand88/claude-code-agentic-engineering/main/install.sh | bash -s my-project
+
+# Templates only
+curl -sSL https://raw.githubusercontent.com/ItamarZand88/claude-code-agentic-engineering/main/install.sh | bash -s -- --templates-only
 ```
 
-### Option 2: Manual Installation
+### Option 2: Clone Repository
+```bash
+git clone https://github.com/ItamarZand88/claude-code-agentic-engineering.git
+cd claude-code-agentic-engineering
+chmod +x setup.sh && ./setup.sh
+```
+
+### Option 3: Manual Download
+Use the `/download-templates` command within Claude Code:
+```bash
+claude
+/download-templates --target-dir=./my-project
+```
 ```bash
 # Create directories
 mkdir -p .claude/commands .claude/agents
