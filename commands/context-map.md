@@ -10,54 +10,69 @@ argument-hint: [--update] [--query=search_term] [--export=format] [--depth=N]
 Build and maintain a comprehensive knowledge graph of the entire project including relationships, dependencies, decision rationale, and historical context to enhance future agent interactions and team knowledge transfer.
 
 ## Variables
+- **context_output_directory**: `./context/` - Directory where context maps and knowledge graphs are stored
+- **context_database**: `./context/project-knowledge.json` - Main knowledge graph database file
+- **context_report**: `./context/context-report.md` - Human-readable context analysis report
 - **update_mode**: $1 - If --update provided, refresh the entire context map
 - **query_term**: $2 - If --query= provided, search term for context retrieval
 - **export_format**: $3 - If --export= provided, export format (json, markdown, mermaid, graphviz)
 - **analysis_depth**: $4 - If --depth= provided, depth of analysis (1=surface, 5=deep, default=3)
 
 ## Workflow
-1. **Project Discovery and Mapping**
+1. **Initialize Context System**
+   - Create context output directory: `./context/` if it doesn't exist
+   - Load existing knowledge graph from `./context/project-knowledge.json` if available
+   - Initialize incremental update tracking for changed files
+   - Set up backup of previous context state before modifications
+
+2. **Project Discovery and Mapping**
    - Scan entire project structure and identify all file types
    - Map directory hierarchies and organizational patterns
    - Identify configuration files, documentation, and metadata
    - Catalog all entry points, main modules, and key components
 
-2. **Code Relationship Analysis**
+3. **Code Relationship Analysis**
    - **For each source file:**
      - Parse imports, exports, and dependencies
      - Identify function calls and class relationships
      - Map data flow and control flow patterns
      - Extract API endpoints and route definitions
 
-3. **Architecture Pattern Recognition**
+4. **Architecture Pattern Recognition**
    - Identify architectural patterns (MVC, microservices, monolith, etc.)
    - Map design patterns used throughout the codebase
    - Document framework and library usage patterns
    - Analyze separation of concerns and layer boundaries
 
-4. **Historical Context Extraction**
+5. **Historical Context Extraction**
    - Analyze git commit history for decision context
    - Extract meaningful commit messages and PR descriptions
    - Identify major refactoring events and their rationale
    - Map feature development timelines and iterations
 
-5. **Decision and Rationale Mining**
+6. **Decision and Rationale Mining**
    - Extract architectural decisions from code comments
    - Identify TODO/FIXME items and their context
    - Document technology choices and alternatives considered
    - Map performance optimizations and their trade-offs
 
-6. **Knowledge Graph Construction**
+7. **Knowledge Graph Construction**
    - Build nodes for: files, functions, classes, modules, decisions, features
    - Create edges for: dependencies, calls, inheritance, composition, influences
    - Weight relationships by importance and frequency
    - Add temporal dimensions for evolution tracking
 
-7. **Context Optimization for Agents**
+8. **Context Optimization for Agents**
    - Create agent-friendly summaries for different contexts
    - Generate reusable context snippets for common scenarios
    - Build prompt templates with embedded project knowledge
    - Create decision trees for common development questions
+
+9. **Generate and Save Reports**
+   - Save knowledge graph database to `./context/project-knowledge.json`
+   - Generate human-readable report at `./context/context-report.md`
+   - Create visualization files if export format specified
+   - Update incremental change tracking for future runs
 
 ## Instructions
 - Prioritize accuracy over speed - incorrect context is worse than no context
