@@ -2,7 +2,7 @@
 description: Downloads and sets up all templates and configuration files for your project
 model: claude-sonnet-4
 allowed-tools: read, write, bash
-argument-hint: [--target-dir=path] [--templates-only] [--config-only]
+argument-hint: [target_directory]
 ---
 
 # Download Templates and Setup
@@ -11,21 +11,18 @@ Download all professional templates, configuration files, and setup scripts from
 
 ## Variables
 - **target_directory**: $1 - Target directory for downloads (default: current directory)
-- **download_mode**: $2 - Download mode: all, templates-only, config-only (default: all)
 - **source_repo**: `https://github.com/ItamarZand88/claude-code-agentic-engineering` - Source repository
 - **templates_url**: `https://raw.githubusercontent.com/ItamarZand88/claude-code-agentic-engineering/main` - Raw files URL
 
 ## Workflow
 
-1. **Parse Arguments and Setup**
-   - Parse command line arguments for target directory and download mode
-   - If $1 contains "--target-dir=", extract the target directory path
-   - If $2 contains "--templates-only", set mode to templates only
-   - If $3 contains "--config-only", set mode to configuration only
+1. **Setup and Preparation**
+   - Set target directory (use argument if provided, otherwise current directory)
    - Create target directory if it doesn't exist
    - Verify internet connectivity to GitHub
+   - Check for existing files and handle conflicts
 
-2. **Download Templates** (unless --config-only specified)
+2. **Download Templates**
    - Create `templates/` directory in target location
    - Download all template files:
      - `task-requirements-template.md`
@@ -37,7 +34,7 @@ Download all professional templates, configuration files, and setup scripts from
    - Verify all template files downloaded successfully
    - Set appropriate file permissions
 
-3. **Download Slash Commands** (unless --templates-only or --config-only)
+3. **Download Slash Commands**
    - Create `.claude/commands/` directory structure
    - Download all command files:
      - `task-from-scratch.md`
@@ -48,7 +45,7 @@ Download all professional templates, configuration files, and setup scripts from
    - Update variable paths in commands to point to local templates
    - Verify command files are valid Claude Code format
 
-4. **Download Subagents** (unless --templates-only or --config-only)
+4. **Download Subagents**
    - Create `.claude/agents/` directory structure
    - Download all agent files:
      - `file-analysis-agent.md`
@@ -59,14 +56,14 @@ Download all professional templates, configuration files, and setup scripts from
    - Verify agent files are valid Claude Code format
    - Test that agents load correctly
 
-5. **Download Setup Scripts** (unless --templates-only)
+5. **Download Setup Scripts**
    - Download setup scripts:
      - `setup.sh` (Linux/Mac setup script)
      - `setup.ps1` (Windows PowerShell setup script)
    - Set executable permissions on setup scripts
    - Customize scripts for local environment if needed
 
-6. **Download Documentation** (unless --templates-only or --config-only)
+6. **Download Documentation**
    - Create `docs/` directory
    - Download documentation files:
      - `WORKFLOW_GUIDE.md`
@@ -78,7 +75,7 @@ Download all professional templates, configuration files, and setup scripts from
      - `CONTRIBUTING.md`
      - `LICENSE`
 
-7. **Download GitHub Integration Files** (if --config-only or full download)
+7. **Download GitHub Integration Files**
    - Create `.github/ISSUE_TEMPLATE/` directory
    - Download GitHub templates:
      - `bug_report.md`
@@ -94,10 +91,8 @@ Download all professional templates, configuration files, and setup scripts from
 
 ## Instructions
 
-### Download Modes
-- **Full Download** (default): Downloads everything - templates, commands, agents, docs, examples
-- **Templates Only** (`--templates-only`): Downloads only the professional templates
-- **Config Only** (`--config-only`): Downloads only GitHub configs, gitignore, and setup files
+### Download Mode
+- **Complete Setup**: Downloads everything - templates, commands, agents, docs, setup files, and GitHub configuration
 
 ### File Organization
 - Maintain the same directory structure as the source repository

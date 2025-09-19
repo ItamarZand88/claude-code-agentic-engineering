@@ -2,7 +2,7 @@
 description: Automated code review and quality assessment against original requirements
 model: claude-sonnet-4
 allowed-tools: read, write, bash, search
-argument-hint: <plan_file_path> [--task-file=path] [--severity=low|medium|high]
+argument-hint: <plan_file_path> [task_file_path]
 ---
 
 # Implementation Quality Reviewer
@@ -11,8 +11,7 @@ Analyze implemented code against original requirements, validate code quality st
 
 ## Variables
 - **plan_file_path**: $1 - Path to the implementation plan that was executed
-- **task_file_path**: $2 - Path to original task requirements (if --task-file= provided)
-- **severity_filter**: $3 - Minimum severity level for reported issues (if --severity= provided)
+- **task_file_path**: $2 - Path to original task requirements (optional)
 - **review_output_directory**: `./reviews/` - Directory for review reports
 - **coding_standards**: `./templates/coding-standards-template.md` - Project coding standards reference
 - **security_checklist**: `./templates/security-checklist-template.md` - Security validation checklist
@@ -21,7 +20,7 @@ Analyze implemented code against original requirements, validate code quality st
 ## Workflow
 1. **Requirements Validation**
    - Load original task requirements and implementation plan: $1
-   - If $2 provided, also load task file for additional context
+   - If task file provided, load for additional context
    - Map implemented features against original acceptance criteria
    - Identify any missing functionality or scope deviations
 
@@ -71,9 +70,9 @@ Analyze implemented code against original requirements, validate code quality st
 - **If** original task or plan files are missing:
   - Perform review based on git diff and commit messages
   - Note limited context in review report
-- **If** $3 contains severity filter:
-  - Only report issues at or above the specified severity level
-  - Include summary of filtered issues for awareness
+- **Standard review**:
+  - Analyze all identified issues regardless of severity
+  - Provide comprehensive feedback and recommendations
 
 ## Report
 Generate a comprehensive review report with:

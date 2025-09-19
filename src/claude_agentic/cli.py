@@ -253,6 +253,16 @@ def install_templates(force: bool = False):
         templates_dir.mkdir(parents=True, exist_ok=True)
         console.print("Created .claude/templates directory", style="green")
 
+    # Create workflow directories
+    workflow_dirs = ["context", "tasks", "plans"]
+    for dir_name in workflow_dirs:
+        workflow_dir = Path(dir_name)
+        if not workflow_dir.exists():
+            workflow_dir.mkdir(exist_ok=True)
+            console.print(f"Created {dir_name}/ directory", style="green")
+        else:
+            console.print(f"Found existing {dir_name}/ directory", style="blue")
+
     success_count = 0
     for template in TEMPLATES:
         url = f"{RAW_URL}/templates/{template}"

@@ -19,6 +19,9 @@ Write-Host "Creating directory structure..." -ForegroundColor Yellow
 Create-Directory ".claude/commands"
 Create-Directory ".claude/agents"
 Create-Directory ".claude/templates"
+Create-Directory "context"
+Create-Directory "tasks"
+Create-Directory "plans"
 
 Write-Host "Installing slash commands..." -ForegroundColor Yellow
 
@@ -43,6 +46,7 @@ Write-Host "Summary:" -ForegroundColor Blue
 Write-Host "  6 slash commands installed in .claude/commands/" -ForegroundColor Green
 Write-Host "  5 subagents installed in .claude/agents/" -ForegroundColor Green
 Write-Host "  6 templates installed in .claude/templates/" -ForegroundColor Green
+Write-Host "  3 workflow directories created (context/, tasks/, plans/)" -ForegroundColor Green
 Write-Host "Next steps:" -ForegroundColor Yellow
 Write-Host "  1. Run claude to start Claude Code"
 Write-Host "  2. Type /help to see your new commands" -ForegroundColor Blue

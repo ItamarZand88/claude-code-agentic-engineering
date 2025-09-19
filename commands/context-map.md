@@ -2,10 +2,17 @@
 description: Project knowledge graph and context management system for enhanced agent intelligence
 model: claude-sonnet-4
 allowed-tools: read, write, bash, search
-argument-hint: [--update] [--query=search_term] [--export=format] [--depth=N]
+argument-hint: [search_term]
 ---
 
 # Project Context Intelligence System
+
+⚠️ **DEPRECATED**: This command will be replaced by `/get-context` (read) and `/update-context` (write).
+For better performance and clarity, consider using:
+- `/get-context` - Fast context retrieval
+- `/update-context` - Update context with new discoveries
+
+**Legacy Mode**: This command now internally uses both get-context and update-context for backward compatibility.
 
 Build and maintain a comprehensive knowledge graph of the entire project including relationships, dependencies, decision rationale, and historical context to enhance future agent interactions and team knowledge transfer.
 
@@ -13,19 +20,23 @@ Build and maintain a comprehensive knowledge graph of the entire project includi
 - **context_output_directory**: `./context/` - Directory where context maps and knowledge graphs are stored
 - **context_database**: `./context/project-knowledge.json` - Main knowledge graph database file
 - **context_report**: `./context/context-report.md` - Human-readable context analysis report
-- **update_mode**: $1 - If --update provided, refresh the entire context map
-- **query_term**: $2 - If --query= provided, search term for context retrieval
-- **export_format**: $3 - If --export= provided, export format (json, markdown, mermaid, graphviz)
-- **analysis_depth**: $4 - If --depth= provided, depth of analysis (1=surface, 5=deep, default=3)
 
 ## Workflow
-1. **Initialize Context System**
-   - Create context output directory: `./context/` if it doesn't exist
-   - Load existing knowledge graph from `./context/project-knowledge.json` if available
-   - Initialize incremental update tracking for changed files
-   - Set up backup of previous context state before modifications
+**Legacy Implementation**: This command now delegates to the new context commands:
 
-2. **Project Discovery and Mapping**
+1. **Context Reading Phase** (using `/get-context`)
+   - If --query= provided: Use `/get-context --query=term` and return results
+   - If --export= provided: Use `/get-context --json` then format for export
+   - Otherwise: Load existing context for update preparation
+
+2. **Context Update Phase** (using `/update-context`)
+   - If --update provided: Use `/update-context --incremental`
+   - If no existing context: Use `/update-context --full`
+   - Otherwise: Perform standard incremental update
+
+**Note**: For detailed implementation steps, refer to `/get-context` and `/update-context` commands.
+
+## Legacy Workflow (for reference)
    - Scan entire project structure and identify all file types
    - Map directory hierarchies and organizational patterns
    - Identify configuration files, documentation, and metadata
@@ -81,17 +92,12 @@ Build and maintain a comprehensive knowledge graph of the entire project includi
 - Maintain version history of context changes for rollback capability
 
 ## Control Flow
-- **If** $2 contains "--query=":
-  - Extract search term and search the knowledge graph for relevant context
-  - Include relationship chains and connected concepts
-  - Provide confidence scores for search results
-- **If** $1 equals "--update":
-  - Incrementally update only changed files since last run
-  - Preserve manually added context and annotations
-  - Merge new discoveries with existing knowledge
-- **If** $3 contains "--export=":
-  - Extract format and generate visualization in requested format
-  - Include interactive elements for exploration
+- **If** search term provided:
+  - Search the knowledge graph for relevant context
+  - Return focused results with relationship chains
+- **Default behavior**:
+  - Load existing context and provide comprehensive overview
+  - Generate human-readable context report
 
 ## Delegation Prompts
 - **File Analysis Agent**: Analyze individual files for patterns and relationships
@@ -107,3 +113,8 @@ Generate comprehensive project context dashboard with:
 - **Key Insights**: Architectural hotspots, technical debt clusters, decision rationale
 - **Searchable Knowledge Base**: Quick access and relationship explorer
 - **Agent Enhancement Data**: Context snippets and prompt templates for future use
+
+When --for-agents flag is used, additionally generate:
+- **context-summary.json**: Agent-consumable context data with structured insights
+- **agent-context-snippets.json**: Pre-formatted context blocks for each agent type
+- **prompt-enhancements.json**: Context-aware prompt improvements for better agent performance

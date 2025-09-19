@@ -7,31 +7,41 @@ argument-hint: <task_file_path>
 
 # Implementation Plan Generator
 
+<instruction>
 Read task requirements document, analyze current codebase state, and generate a comprehensive step-by-step implementation plan with detailed technical specifications.
+</instruction>
 
 ## Variables
 - **task_file_path**: $ARGUMENTS - Path to the task requirements file
 - **plan_output_directory**: `./plans/` - Directory where implementation plans are stored
+- **context_database**: `./context/project-knowledge.json` - Project context knowledge graph
+- **context_summary**: `./context/context-summary.json` - Agent-optimized context data
 - **backup_strategy**: `git_branch` - Method for creating safe implementation environment
 - **plan_template**: `./templates/implementation-plan-template.md` - Standard template for implementation plans
 - **coding_standards**: `./templates/coding-standards-template.md` - Team coding standards reference
 
-## Workflow
-1. **Load Task Requirements**
+<workflow>
+1. **Load Task Requirements & Context**
+   <thinking>
    - Read the specified task requirements document: $ARGUMENTS
    - Parse all sections: overview, technical requirements, affected files, dependencies
+   - **Load Project Context**: Use `/get-context --summary` for fast context loading
+   - **Extract Source Task Path**: Store task file path for linking and traceability
    - Validate that all necessary information is present
    - If task file is incomplete, request user to run task-from-scratch first
+   </thinking>
 
 2. **Current State Analysis**
    - Read all files identified in the task requirements
    - Understand current implementation state
+   - **Context-Aware Analysis**: Cross-reference with project context for architectural patterns
    - Identify any changes since task requirements were created
    - Check git status and recent commits for context
 
 3. **Implementation Strategy Design**
    - Break down the task into logical, sequential steps
    - Determine optimal order of implementation to minimize conflicts
+   - **Context-Informed Strategy**: Use project patterns and conventions from context map
    - Identify testing checkpoints throughout the process
    - Plan for rollback strategies if needed
 
@@ -60,17 +70,21 @@ Read task requirements document, analyze current codebase state, and generate a 
    - Plan for edge case validation
 
 8. **Implementation Plan Generation**
+   <thinking>
    - Create detailed step-by-step implementation plan
    - Include code snippets and examples where helpful
    - Specify exact file modifications needed
    - Provide verification steps for each phase
+   </thinking>
+</workflow>
 
-## Instructions
+<instructions>
 - Ensure the plan is detailed enough that each step can be executed independently
 - Include specific file paths, function names, and code structure details
 - Plan for incremental implementation with testing at each stage
 - Consider backwards compatibility and migration strategies
 - Include rollback procedures for each major step
+</instructions>
 
 ## Control Flow
 - **If** task requirements file is missing or incomplete:
@@ -78,12 +92,19 @@ Read task requirements document, analyze current codebase state, and generate a 
 - **If** affected files have been modified since task creation:
   - Alert user and ask whether to proceed or regenerate task requirements
 
-## Report
+<output>
 Create an implementation plan document containing:
+- **Plan Metadata**:
+  - Source task file: `$ARGUMENTS`
+  - Context version used (if available)
+  - Plan generation timestamp
 - **Executive Summary**: High-level implementation approach and timeline
+- **Context Insights**: Relevant architectural patterns and project conventions
 - **Prerequisites**: Environment setup and dependency installation steps
 - **Implementation Steps**: Detailed numbered steps with code examples
-- **File Modifications**: Exact changes needed for each file
+- **File Modifications**: Exact changes needed for each file (with context-aware suggestions)
 - **Testing Checkpoints**: Validation steps throughout implementation
 - **Risk Mitigation**: Identified risks and mitigation strategies
 - **Rollback Plan**: Steps to safely revert changes if needed
+- **Post-Implementation**: Recommendation to run `/update-context --after-task=$ARGUMENTS` after completion
+</output>

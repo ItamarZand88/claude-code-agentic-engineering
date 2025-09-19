@@ -2,7 +2,7 @@
 description: Executes implementation plan with safety checks and progress tracking
 model: claude-sonnet-4
 allowed-tools: read, write, bash, search
-argument-hint: <plan_file_path> [--dry-run] [--step=N]
+argument-hint: <plan_file_path>
 ---
 
 # Plan Implementation Executor
@@ -11,8 +11,6 @@ Execute the implementation plan step-by-step with safety checks, progress tracki
 
 ## Variables
 - **plan_file_path**: $1 - Path to the implementation plan file
-- **dry_run_mode**: $2 - If --dry-run, show what would be done without making changes  
-- **target_step**: $3 - If --step=N specified, execute only that step number
 - **backup_branch**: `implementation-$(date +%Y%m%d-%H%M%S)` - Git branch for safe implementation
 - **progress_log**: `./logs/implementation-progress.md` - Implementation progress tracking
 
@@ -32,7 +30,6 @@ Execute the implementation plan step-by-step with safety checks, progress tracki
 3. **Implementation Execution Loop**
    - **For each step in the implementation plan:**
      - Display current step details and objectives
-     - If $2 equals "--dry-run", show planned changes without executing
      - Execute file modifications as specified
      - Run any specified commands or scripts
      - Validate step completion criteria
@@ -73,16 +70,13 @@ Execute the implementation plan step-by-step with safety checks, progress tracki
 - Maintain detailed logs of all actions taken
 
 ## Control Flow
-- **If** $2 equals "--dry-run":
-  - Show all planned actions without executing them
-  - Allow user to review before actual implementation
-- **If** $3 contains "--step=":
-  - Extract step number and execute only that specific step
-  - Show dependencies and prerequisites for the step
 - **If** git working directory is not clean:
   - Stop and ask user to commit or stash changes first
 - **If** any test fails during implementation:
   - Pause execution and ask user how to proceed
+- **Standard execution**:
+  - Execute all steps sequentially with validation
+  - Create backups and track progress throughout
 
 ## Report
 Provide real-time progress updates including:
