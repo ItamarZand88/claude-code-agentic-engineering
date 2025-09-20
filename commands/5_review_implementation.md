@@ -12,8 +12,8 @@ Analyze implemented code against original requirements, validate code quality st
 ## Variables
 - **plan_file_path**: $1 - Path to the implementation plan that was executed
 - **task_file_path**: $2 - Path to original task requirements (optional)
-- **review_output_directory**: `./reviews/` - Directory for review reports
-- **coding_standards**: `./templates/coding-standards-template.md` - Project coding standards reference
+- **OUTPUT_DIRECTORY**: `./reviews/` - Directory for review reports
+- **coding_standards**: `./context/CODING_STANDARDS.md` - Project coding standards reference
 - **security_checklist**: `./templates/security-checklist-template.md` - Security validation checklist
 - **review_template**: `./templates/code-review-template.md` - Code review report template
 

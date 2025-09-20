@@ -1,5 +1,5 @@
 ---
-description: Generates detailed implementation plan from task requirements document
+description: Generates detailed implementation plan from task requirements with inherited context chain
 model: claude-sonnet-4
 allowed-tools: read, write, bash
 argument-hint: <task_file_path>
@@ -8,40 +8,35 @@ argument-hint: <task_file_path>
 # Implementation Plan Generator
 
 <instruction>
-Read task requirements document, analyze current codebase state, and generate a comprehensive step-by-step implementation plan with detailed technical specifications.
+Generate detailed implementation plans from task requirements. Uses the information in the task file to create step-by-step implementation guidance.
 </instruction>
 
 ## Variables
 - **task_file_path**: $ARGUMENTS - Path to the task requirements file
-- **plan_output_directory**: `./plans/` - Directory where implementation plans are stored
-- **context_database**: `./context/project-knowledge.json` - Project context knowledge graph
-- **context_summary**: `./context/context-summary.json` - Agent-optimized context data
-- **backup_strategy**: `git_branch` - Method for creating safe implementation environment
-- **plan_template**: `./templates/implementation-plan-template.md` - Standard template for implementation plans
-- **coding_standards**: `./templates/coding-standards-template.md` - Team coding standards reference
+- **OUTPUT_DIRECTORY**: `./plans/` - Directory where implementation plans are stored
+- **plan_filename**: `./plans/plan-{task-summary}-{YYYYMMDD}.md` - Generated plan file
 
 <workflow>
-1. **Load Task Requirements & Context**
+1. **Load Task Requirements**
    <thinking>
    - Read the specified task requirements document: $ARGUMENTS
-   - Parse all sections: overview, technical requirements, affected files, dependencies
-   - **Load Project Context**: Use `/get-context --summary` for fast context loading
-   - **Extract Source Task Path**: Store task file path for linking and traceability
-   - Validate that all necessary information is present
-   - If task file is incomplete, request user to run task-from-scratch first
+   - Parse task sections: overview, technical requirements, affected files, dependencies
+   - Extract any context file references used during task creation
+   - Understand the full scope of what needs to be implemented
    </thinking>
 
 2. **Current State Analysis**
-   - Read all files identified in the task requirements
-   - Understand current implementation state
-   - **Context-Aware Analysis**: Cross-reference with project context for architectural patterns
-   - Identify any changes since task requirements were created
-   - Check git status and recent commits for context
+   <thinking>
+   - Read all files identified in task requirements
+   - Understand current architecture and patterns
+   - Check git status for any recent changes
+   - Verify all dependencies and prerequisites
+   </thinking>
 
 3. **Implementation Strategy Design**
    - Break down the task into logical, sequential steps
    - Determine optimal order of implementation to minimize conflicts
-   - **Context-Informed Strategy**: Use project patterns and conventions from context map
+   - Use existing project patterns and conventions
    - Identify testing checkpoints throughout the process
    - Plan for rollback strategies if needed
 
@@ -76,6 +71,14 @@ Read task requirements document, analyze current codebase state, and generate a 
    - Specify exact file modifications needed
    - Provide verification steps for each phase
    </thinking>
+
+9. **Plan File Generation**
+   <thinking>
+   - Create comprehensive implementation plan file
+   - Include reference to source task file
+   - Structure plan for easy execution by `/implement_plan`
+   - Include all technical details and step-by-step guidance
+   </thinking>
 </workflow>
 
 <instructions>
@@ -107,4 +110,13 @@ Create an implementation plan document containing:
 - **Risk Mitigation**: Identified risks and mitigation strategies
 - **Rollback Plan**: Steps to safely revert changes if needed
 - **Post-Implementation**: Recommendation to run `/update-context --after-task=$ARGUMENTS` after completion
+
+**Plan File Output:**
+- **Source Task**: Reference to the task file used
+- **Implementation Strategy**: Clear step-by-step approach
+- **Technical Details**: All necessary implementation information
+
+**Next Step:**
+- Plan file ready for `/implement_plan {plan_file_path}`
+- All requirements and strategy documented for implementation
 </output>

@@ -1,5 +1,5 @@
 ---
-description: Executes implementation plan with safety checks and progress tracking
+description: Executes implementation plan step-by-step with comprehensive tracking and testing
 model: claude-sonnet-4
 allowed-tools: read, write, bash, search
 argument-hint: <plan_file_path>
@@ -7,19 +7,19 @@ argument-hint: <plan_file_path>
 
 # Plan Implementation Executor
 
-Execute the implementation plan step-by-step with safety checks, progress tracking, testing validation, and rollback capabilities.
+Execute implementation plans step-by-step with comprehensive tracking, testing, and error handling.
 
 ## Variables
 - **plan_file_path**: $1 - Path to the implementation plan file
-- **backup_branch**: `implementation-$(date +%Y%m%d-%H%M%S)` - Git branch for safe implementation
 - **progress_log**: `./logs/implementation-progress.md` - Implementation progress tracking
 
 ## Workflow
-1. **Pre-Implementation Safety**
+1. **Plan Loading & Pre-Implementation Setup**
+   <thinking>
+   - Load implementation plan file: $1
+   - Parse implementation steps and requirements
    - Verify git working directory is clean
-   - Create backup branch: `git checkout -b implementation-$(date +%Y%m%d-%H%M%S)`
-   - Load and validate the implementation plan file: $1
-   - If plan file missing, stop and request user to run `/plan-from-task`
+   </thinking>
 
 2. **Environment Preparation**
    - Verify all prerequisites from the plan are met
@@ -44,11 +44,8 @@ Execute the implementation plan step-by-step with safety checks, progress tracki
 5. **Error Handling and Recovery**
    - **If** any step fails:
      - Log the error with full context
-     - Offer options: retry, skip, rollback, or debug
+     - Offer options: retry, skip, or debug
      - Provide specific guidance based on error type
-   - **If** user chooses rollback:
-     - Return to backup branch: `git checkout main && git branch -D {backup_branch}`
-     - Restore original state completely
 
 6. **Testing Integration**
    - Run unit tests after code modifications
@@ -62,8 +59,15 @@ Execute the implementation plan step-by-step with safety checks, progress tracki
    - Create clean commit with descriptive message
    - Merge implementation branch or prepare PR
 
+8. **Implementation Summary**
+   <thinking>
+   - Document what was implemented
+   - Note any deviations from the plan
+   - Record any issues encountered and resolved
+   - Prepare summary for review
+   </thinking>
+
 ## Instructions
-- Always prioritize safety - make backups before any destructive operations
 - Validate each step before proceeding to the next
 - Provide clear feedback on progress and any issues encountered
 - Give user control over how to handle errors and failures
@@ -76,7 +80,7 @@ Execute the implementation plan step-by-step with safety checks, progress tracki
   - Pause execution and ask user how to proceed
 - **Standard execution**:
   - Execute all steps sequentially with validation
-  - Create backups and track progress throughout
+  - Track progress throughout
 
 ## Report
 Provide real-time progress updates including:

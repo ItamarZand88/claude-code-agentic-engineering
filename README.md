@@ -9,19 +9,19 @@
 
 ```bash
 # Initialize new project
-uvx --from git+https://github.com/ItamarZand88/claude-code-agentic-engineering.git agentic init my-project
+./install.sh my-project
 
 # Install in existing project
-uvx --from git+https://github.com/ItamarZand88/claude-code-agentic-engineering.git agentic install
+./install.sh
 
 # Templates only
-uvx --from git+https://github.com/ItamarZand88/claude-code-agentic-engineering.git agentic init --templates-only
+./install.sh --templates-only
 
 # Commands only
-uvx --from git+https://github.com/ItamarZand88/claude-code-agentic-engineering.git agentic init --commands-only
+./install.sh --commands-only
 
 # Check installation status
-uvx --from git+https://github.com/ItamarZand88/claude-code-agentic-engineering.git agentic status
+# Check installation status
 
 # Start Claude Code and verify installation
 claude
@@ -37,7 +37,7 @@ Transform your development workflow with **5 powerful slash commands** and **5 s
 
 ```bash
 # 1. 🔍 Context-aware requirements gathering
-/context-map --query="authentication patterns"
+/get_context "authentication patterns"
 /task-from-scratch "Add OAuth integration with Google"
 
 # 2. 📋 Intelligent planning with historical context  
@@ -51,7 +51,7 @@ Transform your development workflow with **5 powerful slash commands** and **5 s
 /review-implementation "./plans/oauth-plan.md" --severity=medium
 
 # 5. 🧠 Knowledge capture for future benefit
-/context-map --update --depth=5
+/update_context ./context/oauth-20240120.md
 ```
 
 ## 🔧 Slash Commands
@@ -62,7 +62,7 @@ Transform your development workflow with **5 powerful slash commands** and **5 s
 | `/plan-from-task` | Implementation planning | Risk assessment, testing strategy, rollback planning |
 | `/implement-plan` | Safe execution | Git branching, dry-run mode, progress tracking |
 | `/review-implementation` | Quality assurance | Security scan, performance analysis, technical debt assessment |
-| `/context-map` | Knowledge management | Project intelligence, decision history, pattern library |
+| `/get_context` | Context discovery | Project patterns, architecture insights, code examples |
 | `/download-templates` | Template installer | Downloads latest templates and configurations |
 
 ## 🤖 Specialized Subagents
@@ -88,7 +88,7 @@ claude-code-agentic-engineering/
 │   ├── plan-from-task.md
 │   ├── implement-plan.md
 │   ├── review-implementation.md
-│   └── context-map.md
+│   └── get-context.md
 ├── agents/                                # Subagents
 │   ├── file-analysis-agent.md
 │   ├── git-history-agent.md
@@ -132,7 +132,7 @@ Each command makes the next one smarter by building institutional memory through
 ### 🎯 **Stakeholder Trifecta Optimization**
 Designed for three audiences:
 - **You**: Get better results faster with accumulated knowledge
-- **Your Team**: Share context automatically through knowledge graphs
+- **Your Team**: Share context through simple markdown files
 - **Your Agents**: Operate with full project context instead of starting from scratch
 
 ## 🚀 Installation
@@ -191,18 +191,18 @@ claude
 
 ### Complex System Integration
 ```bash
-/context-map --query="payment systems"
+/get_context "payment systems"
 /task-from-scratch "Integrate Stripe payments with subscription management"
 /plan-from-task "./tasks/stripe-integration-task.md"
 /implement-plan "./plans/stripe-plan.md" --dry-run
 /implement-plan "./plans/stripe-plan.md"
-/context-map --update
+/update_context ./context/context-file.md
 ```
 
 ### Quality & Security Review
 ```bash
 /review-implementation "./plans/auth-system-plan.md" --severity=high
-/context-map --query="security patterns" 
+/get_context "security patterns" 
 ```
 
 ## 🔧 Customization

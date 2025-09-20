@@ -32,7 +32,7 @@ This document provides simple examples of using the Claude Code Agentic Engineer
 /review-implementation "./plans/contact-form-plan.md"
 
 # Step 5: Update context for future use
-/context-map --update
+/update_context ./context/context-file.md
 ```
 
 ## Example 2: Fixing a Bug
@@ -41,7 +41,7 @@ This document provides simple examples of using the Claude Code Agentic Engineer
 
 ```bash
 # Step 1: Gather context about authentication
-/context-map --query="authentication session login logout"
+/get_context "authentication session login logout"
 
 # Step 2: Analyze the bug
 /task-from-scratch "Fix random logout issue - users report getting logged out after 5-10 minutes of activity"
@@ -62,7 +62,7 @@ This document provides simple examples of using the Claude Code Agentic Engineer
 /review-implementation "./plans/logout-bug-fix-plan.md" --severity=high
 
 # Step 6: Update knowledge
-/context-map --update
+/update_context ./context/context-file.md
 ```
 
 ## Example 3: Code Quality Improvement
@@ -71,7 +71,7 @@ This document provides simple examples of using the Claude Code Agentic Engineer
 
 ```bash
 # Step 1: Analyze current testing patterns
-/context-map --query="testing unit tests coverage"
+/get_context "testing unit tests coverage"
 
 # Step 2: Define testing requirements  
 /task-from-scratch "Improve test coverage for the user authentication module to achieve 90% coverage"
@@ -86,22 +86,22 @@ This document provides simple examples of using the Claude Code Agentic Engineer
 /review-implementation "./plans/auth-testing-plan.md"
 
 # Step 6: Document testing patterns
-/context-map --update
+/update_context ./context/context-file.md
 ```
 
 ## Tips for Success
 
-1. **Start with context**: Use `/context-map --query` to understand existing patterns
+1. **Start with context**: Use `/get_context` to understand existing patterns
 2. **Be specific**: The more specific your requirements, the better the results
 3. **Use dry-run**: Always test with `--dry-run` first for complex changes
 4. **Review thoroughly**: Use `/review-implementation` before deploying
-5. **Build context**: End sessions with `/context-map --update`
+5. **Build context**: End sessions with `/update_context ./context/context-file.md`
 
 ## Common Command Patterns
 
 ```bash
 # Research and requirements
-/context-map --query="relevant topic"
+/get_context "relevant topic"
 /task-from-scratch "detailed requirements"
 
 # Planning and implementation
@@ -111,7 +111,7 @@ This document provides simple examples of using the Claude Code Agentic Engineer
 
 # Quality assurance
 /review-implementation "./plans/plan-file.md" --severity=medium
-/context-map --update
+/update_context ./context/context-file.md
 ```
 
 These examples show the basic patterns. For more complex scenarios, see [WORKFLOW_GUIDE.md](../docs/WORKFLOW_GUIDE.md).

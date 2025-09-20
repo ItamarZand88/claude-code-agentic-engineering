@@ -13,7 +13,7 @@ The system follows the **"Input → Workflow → Output"** pattern with intellig
 
 ```bash
 # 1. Start with context exploration (optional but recommended)
-/context-map --query="theme dark mode"
+/get_context "theme dark mode"
 
 # 2. Generate comprehensive requirements
 /task-from-scratch "Add a dark mode toggle button to the header that persists user preference"
@@ -31,7 +31,7 @@ The system follows the **"Input → Workflow → Output"** pattern with intellig
 /review-implementation "./plans/dark-mode-toggle-plan.md"
 
 # 6. Update project context for future tasks
-/context-map --update
+/update_context ./context/context-file.md
 ```
 
 ### Bug Fix Workflow
@@ -39,7 +39,7 @@ The system follows the **"Input → Workflow → Output"** pattern with intellig
 
 ```bash
 # 1. Gather context about the problematic area
-/context-map --query="image upload memory performance"
+/get_context "image upload memory performance"
 
 # 2. Analyze the issue with comprehensive requirements
 /task-from-scratch "Fix memory leak in ImageUploader component - browser tab crashes after uploading multiple large images"
@@ -55,7 +55,7 @@ The system follows the **"Input → Workflow → Output"** pattern with intellig
 /review-implementation "./plans/image-uploader-fix-plan.md" --severity=high
 
 # 6. Capture lessons learned
-/context-map --update --depth=4
+/update_context ./context/context-file.md --depth=4
 ```
 
 ## 🔧 Advanced Workflows
@@ -65,8 +65,8 @@ The system follows the **"Input → Workflow → Output"** pattern with intellig
 
 ```bash
 # 1. Research existing payment patterns in codebase
-/context-map --query="payment billing subscription"
-/context-map --export=mermaid > ./docs/current-payment-architecture.md
+/get_context "payment billing subscription"
+# Context available in ./context/payment-20240120.md
 
 # 2. Comprehensive requirements with business logic
 /task-from-scratch "Integrate Stripe payments with subscription management - support monthly/annual plans, trial periods, and payment method updates"
@@ -85,15 +85,15 @@ The system follows the **"Input → Workflow → Output"** pattern with intellig
 /review-implementation "./plans/stripe-subscription-plan.md" --severity=high
 
 # 6. Update architectural knowledge
-/context-map --update --depth=5
+/update_context ./context/context-file.md --depth=5
 ```
 
 ## 🎯 Best Practices
 
 ### Context Management
-- **Start sessions** with `/context-map --query` to gather relevant background
-- **End sessions** with `/context-map --update` to capture new knowledge
-- **Export context** regularly for team sharing: `/context-map --export=mermaid`
+- **Start sessions** with `/get_context` to gather relevant background
+- **End sessions** with `/update_context ./context/context-file.md` to capture new knowledge
+- **Share context** through simple markdown files in ./context/
 
 ### Safety and Quality
 - **Always use dry-run** first: `--dry-run` flag for implementation

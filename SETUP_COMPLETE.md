@@ -18,7 +18,7 @@ claude-code-agentic-engineering/
 │   ├── plan-from-task.md                 # Implementation planning
 │   ├── implement-plan.md                 # Safe execution
 │   ├── review-implementation.md          # Quality review
-│   └── context-map.md                    # Knowledge management
+│   └── get-context.md                   # Context discovery
 ├── agents/                               # 5 Specialized Subagents
 │   ├── file-analysis-agent.md           # Code structure analysis
 │   ├── git-history-agent.md             # Historical context extraction
@@ -93,7 +93,7 @@ Add these GitHub repository settings:
 - `/plan-from-task` - Detailed implementation planning with risk assessment
 - `/implement-plan` - Safe execution with git branching and rollback
 - `/review-implementation` - Comprehensive quality and security review
-- `/context-map` - Project knowledge graph for enhanced AI intelligence
+- `/get_context` - Context discovery for enhanced AI intelligence
 
 ### 🤖 5 Specialized Subagents
 - **File Analysis Agent** - Deep code structure and pattern analysis
