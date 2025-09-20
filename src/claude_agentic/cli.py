@@ -14,8 +14,36 @@ from rich.console import Console
 from rich.progress import Progress, SpinnerColumn, TextColumn
 from rich.panel import Panel
 from rich.table import Table
+from rich.text import Text
+from rich.align import Align
 
 console = Console()
+
+# ASCII Art Banner
+BANNER = """
+   ██████╗██╗      █████╗ ██╗   ██╗██████╗ ███████╗     ██████╗ ██████╗ ██████╗ ███████╗
+  ██╔════╝██║     ██╔══██╗██║   ██║██╔══██╗██╔════╝    ██╔════╝██╔═══██╗██╔══██╗██╔════╝
+  ██║     ██║     ███████║██║   ██║██║  ██║█████╗      ██║     ██║   ██║██║  ██║█████╗
+  ██║     ██║     ██╔══██║██║   ██║██║  ██║██╔══╝      ██║     ██║   ██║██║  ██║██╔══╝
+  ╚██████╗███████╗██║  ██║╚██████╔╝██████╔╝███████╗    ╚██████╗╚██████╔╝██████╔╝███████╗
+   ╚═════╝╚══════╝╚═╝  ╚═╝ ╚═════╝ ╚═════╝ ╚══════╝     ╚═════╝ ╚═════╝ ╚═════╝ ╚══════╝
+
+ ██████╗  ██████╗ ███████╗███╗   ██╗████████╗██╗ ██████╗
+██╔══██╗██╔════╝ ██╔════╝████╗  ██║╚══██╔══╝██║██╔════╝
+███████║██║  ███╗█████╗  ██╔██╗ ██║   ██║   ██║██║
+██╔══██║██║   ██║██╔══╝  ██║╚██╗██║   ██║   ██║██║
+██║  ██║╚██████╔╝███████╗██║ ╚████║   ██║   ██║╚██████╗
+╚═╝  ╚═╝ ╚═════╝ ╚══════╝╚═╝  ╚═══╝   ╚═╝   ╚═╝ ╚═════╝
+
+███████╗███╗   ██╗ ██████╗ ██╗███╗   ██╗███████╗███████╗██████╗ ██╗███╗   ██╗ ██████╗
+██╔════╝████╗  ██║██╔════╝ ██║████╗  ██║██╔════╝██╔════╝██╔══██╗██║████╗  ██║██╔════╝
+█████╗  ██╔██╗ ██║██║  ███╗██║██╔██╗ ██║█████╗  █████╗  ██████╔╝██║██╔██╗ ██║██║  ███╗
+██╔══╝  ██║╚██╗██║██║   ██║██║██║╚██╗██║██╔══╝  ██╔══╝  ██╔══██╗██║██║╚██╗██║██║   ██║
+███████╗██║ ╚████║╚██████╔╝██║██║ ╚████║███████╗███████╗██║  ██║██║██║ ╚████║╚██████╔╝
+╚══════╝╚═╝  ╚═══╝ ╚═════╝ ╚═╝╚═╝  ╚═══╝╚══════╝╚══════╝╚═╝  ╚═╝╚═╝╚═╝  ╚═══╝ ╚═════╝
+"""
+
+TAGLINE = "Advanced Development Workflow System"
 
 # Repository configuration
 REPO_URL = "https://github.com/ItamarZand88/claude-code-agentic-engineering"
@@ -44,6 +72,49 @@ TEMPLATES = [
     "README.md",
     "security-checklist-template.md"
 ]
+
+def show_banner():
+    """Display the ASCII art banner."""
+    import os
+    import sys
+
+    # Configure console for Windows Unicode support like GitHub Spec Kit
+    if os.name == 'nt':
+        try:
+            # Enable Unicode support on Windows
+            import codecs
+            sys.stdout.reconfigure(encoding='utf-8')
+            # Or use Windows-specific setup
+            import locale
+            locale.setlocale(locale.LC_ALL, '')
+        except:
+            pass
+
+    try:
+        # Create gradient effect with different colors like GitHub Spec Kit
+        banner_lines = BANNER.strip().split('\n')
+        colors = ["bright_blue", "blue", "cyan", "bright_cyan", "white", "bright_white"]
+
+        styled_banner = Text()
+        for i, line in enumerate(banner_lines):
+            color = colors[i % len(colors)]
+            styled_banner.append(line + "\n", style=color)
+
+        console.print(Align.center(styled_banner))
+        console.print(Align.center(Text(TAGLINE, style="italic bright_yellow")))
+    except (UnicodeEncodeError, UnicodeError, Exception):
+        # Fallback for terminals that really can't handle Unicode
+        try:
+            # Try without Rich styling
+            for line in BANNER.strip().split('\n'):
+                print(line)
+            print()
+            print(TAGLINE)
+        except:
+            # Final ASCII fallback
+            print("CLAUDE CODE AGENTIC ENGINEERING")
+            print("Advanced Development Workflow System")
+    console.print()
 
 @click.group()
 @click.version_option(version="1.0.0")
@@ -78,6 +149,9 @@ def init(project_name: Optional[str], templates_only: bool, commands_only: bool,
     # Change to target directory
     os.chdir(target_dir)
 
+    # Show banner
+    show_banner()
+
     with Progress(
         SpinnerColumn(),
         TextColumn("[progress.description]{task.description}"),
@@ -101,6 +175,9 @@ def init(project_name: Optional[str], templates_only: bool, commands_only: bool,
 @click.option('--force', is_flag=True, help='Force overwrite existing files')
 def install(force: bool):
     """Install or update agentic engineering components in current directory."""
+    # Show banner
+    show_banner()
+
     with Progress(
         SpinnerColumn(),
         TextColumn("[progress.description]{task.description}"),
