@@ -58,6 +58,7 @@ include = [
     "/commands",
     "/agents",
     "/templates",
+    "/context",
     "/docs",
     "/examples",
     "README.md",
