@@ -9,19 +9,19 @@
 
 ```bash
 # Initialize new project
-./install.sh my-project
+uvx --from git+https://github.com/ItamarZand88/claude-code-agentic-engineering.git agentic init my-project
 
 # Install in existing project
-./install.sh
+uvx --from git+https://github.com/ItamarZand88/claude-code-agentic-engineering.git agentic install
 
 # Templates only
-./install.sh --templates-only
+uvx --from git+https://github.com/ItamarZand88/claude-code-agentic-engineering.git agentic init --templates-only
 
 # Commands only
-./install.sh --commands-only
+uvx --from git+https://github.com/ItamarZand88/claude-code-agentic-engineering.git agentic init --commands-only
 
 # Check installation status
-# Check installation status
+uvx --from git+https://github.com/ItamarZand88/claude-code-agentic-engineering.git agentic status
 
 # Start Claude Code and verify installation
 claude
@@ -137,7 +137,15 @@ Designed for three audiences:
 
 ## 🚀 Installation
 
-### Option 1: One-Line Install (Recommended)
+### Option 1: CLI Tool (Recommended)
+Use the `agentic` CLI tool for the best experience:
+
+```bash
+# The examples above using uvx
+uvx --from git+https://github.com/ItamarZand88/claude-code-agentic-engineering.git agentic init my-project
+```
+
+### Option 2: Direct Install Scripts
 ```bash
 # Linux/Mac
 curl -sSL https://raw.githubusercontent.com/ItamarZand88/claude-code-agentic-engineering/main/install.sh | bash
