@@ -10,13 +10,16 @@ argument-hint: <plan_file_path>
 Execute implementation plans step-by-step with comprehensive tracking, testing, and error handling.
 
 ## Variables
-- **plan_file_path**: $1 - Path to the implementation plan file
-- **progress_log**: `./logs/implementation-progress.md` - Implementation progress tracking
+- **task_folder_path**: $ARGUMENTS - Path to the task folder (e.g., `Circle/oauth-authentication`)
+- **plan_file**: `{task_folder_path}/plan.md` - Implementation plan to execute
+- **ticket_file**: `{task_folder_path}/ticket.md` - Original task requirements for reference
 
 ## Workflow
 1. **Plan Loading & Pre-Implementation Setup**
    <thinking>
-   - Load implementation plan file: $1
+   - Load task folder path from $ARGUMENTS
+   - Read plan file: `{task_folder_path}/plan.md`
+   - Reference ticket file: `{task_folder_path}/ticket.md` for acceptance criteria
    - Parse implementation steps and requirements
    - Verify git working directory is clean
    </thinking>
@@ -55,7 +58,6 @@ Execute implementation plans step-by-step with comprehensive tracking, testing, 
 
 7. **Completion and Integration**
    - Run final comprehensive test suite
-   - Generate implementation summary report
    - Create clean commit with descriptive message
    - Merge implementation branch or prepare PR
 
@@ -64,7 +66,7 @@ Execute implementation plans step-by-step with comprehensive tracking, testing, 
    - Document what was implemented
    - Note any deviations from the plan
    - Record any issues encountered and resolved
-   - Prepare summary for review
+   - Inform user that task is ready for `/4_review_implementation`
    </thinking>
 
 ## Instructions
@@ -92,4 +94,13 @@ Provide real-time progress updates including:
   - Files modified
   - Tests run and results
   - Any issues encountered and resolutions
-  - Next steps or recommendations
+  - Next steps: Run `/4_review_implementation {task_folder_path}` for code review
+
+## Task Folder Structure After Implementation
+
+```
+Circle/{task-name}/
+├── ticket.md (task requirements)
+├── plan.md (implementation plan)
+└── review.md (to be created by command 4)
+```
