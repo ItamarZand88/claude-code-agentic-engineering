@@ -33,36 +33,36 @@ This is an agentic engineering framework designed to leverage Claude Code's capa
 
 ### Command Workflow (Streamlined with Organized Storage)
 
-The framework uses a **2-step workflow** for starting new work, with all artifacts organized in the `Circle/` directory:
+The framework uses a **4-step workflow** with all artifacts organized in the `Circle/` directory:
 
-1. **`/1_task_from_scratch <user_prompt>`** - Lightweight task ticket creation
-   - Quick reconnaissance of codebase (no deep analysis)
+1. **`/1_ticket <user_prompt>`** - Comprehensive task ticket creation
+   - Deep parallel codebase analysis with specialized agents
    - Clarification questions for unclear requirements
    - **Creates task folder**: `Circle/{task-name}/`
    - **Saves ticket**: `Circle/{task-name}/ticket.md`
-   - **Fast execution**: < 2 minutes
-   - **Focus**: WHAT needs to be done, not HOW
+   - **Focus**: WHAT needs to be done with full context
 
-2. **`/2_plan_from_task Circle/{task-name}`** - Research-driven comprehensive planning
+2. **`/2_plan Circle/{task-name}`** - Research-driven comprehensive planning
    - Reads `Circle/{task-name}/ticket.md`
    - Web research for best practices
-   - **Proactive codebase-analyst agent** launch for pattern discovery
-   - Multi-agent coordination (parallel when possible)
+   - **Parallel agent coordination** for pattern discovery
    - Architecture and design decisions with rationale
    - Detailed phase-based implementation breakdown
    - **Saves plan**: `Circle/{task-name}/plan.md`
    - **Focus**: HOW to implement with research-backed decisions
 
-3. **`/3_implement_plan Circle/{task-name}`** - Execute the implementation plan
+3. **`/3_implement Circle/{task-name}`** - Execute the implementation plan
    - Reads `Circle/{task-name}/plan.md`
    - Step-by-step execution with validation
+   - Git status checks and branch management
    - Testing at each phase
    - Reports progress in real-time
 
-4. **`/4_review_implementation Circle/{task-name}`** - Quality assurance
+4. **`/4_review Circle/{task-name}`** - Quality assurance
    - Reads artifacts (ticket, plan) + git diff
    - Automated code review against requirements
    - Security and performance analysis
+   - **Parallel QA and compliance checks**
    - **Saves review**: `Circle/{task-name}/review.md`
 
 ### Task Folder Structure
@@ -76,17 +76,30 @@ Circle/{task-name}/
 ```
 
 ### Before Starting Any Major Task
-1. Start with `/1_task_from_scratch "your requirement"` to create a task folder
-2. Then run `/2_plan_from_task Circle/{task-name}` for comprehensive planning
-3. The planning phase will automatically launch specialized agents for analysis
-4. All artifacts are organized in `Circle/{task-name}/` for easy tracking
+1. Start with `/1_ticket "your requirement"` to create a comprehensive task ticket
+2. Then run `/2_plan Circle/{task-name}` for comprehensive planning
+3. Execute with `/3_implement Circle/{task-name}`
+4. Validate with `/4_review Circle/{task-name}`
+5. All artifacts are organized in `Circle/{task-name}/` for easy tracking
 
-### Agent Coordination (Used During Planning)
-- **codebase-analyst**: Primary agent for pattern discovery, conventions, architecture (launched proactively in `/2_plan_from_task`)
-- **file-analysis-agent**: Deep file analysis, dependencies, relationships
-- **git-history-agent**: Historical context, decision rationale, evolution patterns
-- **documentation-extractor-agent**: Documentation parsing and knowledge synthesis
-- **dependency-scanner-agent**: External dependencies, security analysis, package management
+### Agent Coordination (Specialized Agents)
+
+**Exploration & Analysis Agents** (used in `/1_ticket`):
+- **architecture-explorer**: Project structure discovery, tech stack mapping, directory organization
+- **feature-finder**: Similar implementation discovery, pattern extraction, integration points
+- **dependency-mapper**: Internal/external dependency mapping, API integration points
+
+**Planning & Design Agents** (used in `/2_plan`):
+- **codebase-analyst**: Pattern discovery, conventions, architecture understanding
+- **implementation-strategist**: Architectural decision-making, trade-off analysis, ultrathink mode
+
+**Implementation Agents** (used in `/3_implement`):
+- **code-implementer**: Incremental code implementation, pattern following, quality assurance
+
+**Review & Quality Agents** (used in `/4_review`):
+- **code-reviewer**: Code quality analysis, maintainability assessment, recommendations
+- **quality-assurance-agent**: Automated linting, type checking, formatting validation
+- **standards-compliance-agent**: Coding standards validation, architecture adherence
 
 ### Quality Standards
 - Always use XML tags in prompts: `<instruction>`, `<context>`, `<thinking>`, `<output>`
@@ -129,14 +142,16 @@ Expected output format
 ## Key Features
 
 ### Streamlined Workflow
-- **2-step start**: Task creation → Planning (instead of 3-step with context)
-- **Fast task tickets**: Quick requirement capture without heavy analysis
-- **Research-driven planning**: Web search + agent coordination for comprehensive plans
+- **4-step workflow**: Ticket → Plan → Implement → Review
+- **Comprehensive tickets**: Deep codebase analysis with parallel agent coordination
+- **Research-driven planning**: Web search + multi-agent coordination for comprehensive plans
+- **Automated quality**: Parallel QA and compliance checks during review
 
 ### Agent Orchestration
-- **Proactive agents**: codebase-analyst automatically launched during planning
-- **Parallel execution**: Multiple agents run concurrently for speed
-- **Specialized expertise**: Each agent focuses on specific analysis domains
+- **Parallel execution**: Multiple agents run concurrently at each phase for maximum speed
+- **Phase-specific agents**: Different specialized agents for each workflow phase
+- **Specialized expertise**: Each agent focuses on specific analysis or implementation domains
+- **Smart delegation**: code-implementer for implementation, code-reviewer for reviews
 
 ### Best Practices Integration
 - **XML-structured prompts**: Clear separation of instructions and data
@@ -150,11 +165,11 @@ Expected output format
 - **Team Collaboration**: Commands and agents can be shared across team members
 
 ## Performance Guidelines
-- **Fast task creation**: `/1_task_from_scratch` completes in < 2 minutes
-- **Parallel agents**: Launch multiple agents concurrently during planning
+- **Parallel agents**: Launch multiple agents concurrently using single message with multiple Task tool calls
+- **Phase-optimized**: Each command phase uses specialized agents designed for that stage
 - **Batch tool calls**: Use multiple tool invocations in single message
 - **Selective research**: Only research what's needed for the specific task
-- **Context on demand**: Optional `/5_update_context` after implementation
+- **Automated quality**: Parallel QA and compliance checks during review phase
 
 ## Security Considerations
 - Never commit sensitive information to context files

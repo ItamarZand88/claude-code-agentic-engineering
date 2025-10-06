@@ -47,18 +47,18 @@ Circle/{task-name}/
 
 ## Core Workflow Now
 
-1. **`/1_task_from_scratch "task"`** → Creates `Circle/{name}/ticket.md`
-2. **`/2_plan_from_task Circle/{name}`** → Creates `Circle/{name}/plan.md`
-3. **`/3_implement_plan Circle/{name}`** → Shows progress in terminal (uses git for tracking)
-4. **`/4_review_implementation Circle/{name}`** → Creates `Circle/{name}/review.md`
+1. **`/1_ticket "task"`** → Creates `Circle/{name}/ticket.md`
+2. **`/2_plan Circle/{name}`** → Creates `Circle/{name}/plan.md`
+3. **`/3_implement Circle/{name}`** → Shows progress in terminal (uses git for tracking)
+4. **`/4_review Circle/{name}`** → Creates `Circle/{name}/review.md`
 
 ## Files Updated
 
 ### Commands
-- ✅ `commands/1_task_from_scratch.md` - Removed implementation-log reference
-- ✅ `commands/2_plan_from_task.md` - Removed implementation-log reference
-- ✅ `commands/3_implement_plan.md` - Removed implementation-log creation
-- ✅ `commands/4_review_implementation.md` - Uses git diff instead of log file
+- ✅ `commands/1_ticket.md` - Removed implementation-log reference
+- ✅ `commands/2_plan.md` - Removed implementation-log reference
+- ✅ `commands/3_implement.md` - Removed implementation-log creation
+- ✅ `commands/4_review.md` - Uses git diff instead of log file
 - ✅ `commands/5_update_context.md` - **DELETED**
 
 ### Documentation
@@ -125,10 +125,10 @@ If you have old tasks with `implementation-log.md` files:
 
 Simply follow the new 4-command workflow:
 ```bash
-/1_task_from_scratch "your task"
-/2_plan_from_task Circle/{task-name}
-/3_implement_plan Circle/{task-name}
-/4_review_implementation Circle/{task-name}
+/1_ticket "your task"
+/2_plan Circle/{task-name}
+/3_implement Circle/{task-name}
+/4_review Circle/{task-name}
 ```
 
 ## Quick Comparison

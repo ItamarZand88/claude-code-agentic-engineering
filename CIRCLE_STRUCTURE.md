@@ -47,7 +47,7 @@ Circle/
 
 ## File Contents
 
-### 1. `ticket.md` (Created by `/1_task_from_scratch`)
+### 1. `ticket.md` (Created by `/1_ticket`)
 **Purpose**: Captures task requirements and acceptance criteria
 
 **Contains**:
@@ -58,7 +58,7 @@ Circle/
 - Acceptance criteria
 - Open questions
 
-### 2. `plan.md` (Created by `/2_plan_from_task`)
+### 2. `plan.md` (Created by `/2_plan`)
 **Purpose**: Comprehensive implementation plan with research
 
 **Contains**:
@@ -70,7 +70,7 @@ Circle/
 - Risk assessment
 - Validation commands
 
-### 3. `review.md` (Created by `/4_review_implementation`)
+### 3. `review.md` (Created by `/4_review`)
 **Purpose**: Comprehensive code review and quality assessment
 
 **Contains**:
@@ -85,19 +85,19 @@ Circle/
 
 ```bash
 # Step 1: Create task folder and ticket
-$ /1_task_from_scratch "Add OAuth2 authentication"
+$ /1_ticket "Add OAuth2 authentication"
 ✅ Created: Circle/oauth-authentication/ticket.md
 
 # Step 2: Generate implementation plan
-$ /2_plan_from_task Circle/oauth-authentication
+$ /2_plan Circle/oauth-authentication
 ✅ Created: Circle/oauth-authentication/plan.md
 
 # Step 3: Execute implementation (reports progress in real-time)
-$ /3_implement_plan Circle/oauth-authentication
+$ /3_implement Circle/oauth-authentication
 ✅ Implementation completed (progress shown in terminal)
 
 # Step 4: Code review
-$ /4_review_implementation Circle/oauth-authentication
+$ /4_review Circle/oauth-authentication
 ✅ Created: Circle/oauth-authentication/review.md
 ```
 
@@ -185,11 +185,11 @@ Circle/oauth-authentication/
 
 | Command | Input | Output File |
 |---------|-------|-------------|
-| `/1_task_from_scratch` | User prompt | `Circle/{name}/ticket.md` |
-| `/2_plan_from_task` | `Circle/{name}` | `Circle/{name}/plan.md` |
-| `/3_implement_plan` | `Circle/{name}` | (progress in terminal) |
-| `/4_review_implementation` | `Circle/{name}` | `Circle/{name}/review.md` |
+| `/1_ticket` | User prompt | `Circle/{name}/ticket.md` |
+| `/2_plan` | `Circle/{name}` | `Circle/{name}/plan.md` |
+| `/3_implement` | `Circle/{name}` | (progress in terminal) |
+| `/4_review` | `Circle/{name}` | `Circle/{name}/review.md` |
 
 ---
 
-**Next Steps**: Start your first task with `/1_task_from_scratch "your task here"`
+**Next Steps**: Start your first task with `/1_ticket "your task here"`

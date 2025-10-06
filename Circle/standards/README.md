@@ -41,7 +41,7 @@ Standards files are used by the **standards-compliance-agent** during code revie
 ## How It Works
 
 1. **Create standards files** in this directory
-2. **Run code review**: `/4_review_implementation Circle/{task-name}`
+2. **Run code review**: `/4_review Circle/{task-name}`
 3. **Automatic compliance check**: Standards-compliance-agent reads these files
 4. **Get detailed report**: Violations and recommendations in `standards-compliance.yml`
 
@@ -131,7 +131,7 @@ Standards-compliance-agent looks for these patterns:
 
 ```bash
 # After implementing a feature
-/4_review_implementation Circle/oauth-authentication
+/4_review Circle/oauth-authentication
 
 # Agent automatically:
 # 1. Loads standards from Circle/standards/

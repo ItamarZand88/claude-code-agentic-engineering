@@ -1,8 +1,7 @@
 ---
 description: Automated code review and quality assessment against original requirements
-model: claude-sonnet-4
-allowed-tools: read, write, bash, search
 argument-hint: <plan_file_path> [task_file_path]
+model: inherit
 ---
 
 # Implementation Quality Reviewer
@@ -20,126 +19,114 @@ Analyze implemented code against original requirements, validate code quality st
 ## Workflow
 1. **Load Task Context**
    - Load task folder path from $ARGUMENTS
-   - Read `{task_folder_path}/ticket.md` for original requirements
-   - Read `{task_folder_path}/plan.md` for implementation strategy
+   - Read `{task_folder_path}/ticket.md` and `{task_folder_path}/plan.md`
    - Use git diff to see what was implemented
 
 2. **Requirements Validation**
-   - Map implemented features against original acceptance criteria from ticket
-   - Check if all requirements from ticket are met
-   - Identify any missing functionality or scope deviations
+   - Map implemented features against acceptance criteria from ticket
+   - Identify missing functionality or scope deviations
    - Verify alignment with plan specifications
 
-3. **Code Quality Analysis**
-   - **For each modified file:**
-     - Analyze code structure, naming conventions, and organization
-     - Check adherence to project coding standards (if CODING_STANDARDS.md exists)
-     - Identify code complexity and maintainability issues
-     - Validate error handling and edge case coverage
+3. **Code Quality Review with code-reviewer Agent**
 
-4. **Security Assessment**
-   - Scan for common security vulnerabilities (OWASP top 10)
-   - Check input validation and sanitization
-   - Validate authentication and authorization implementations
-   - Review data handling and privacy compliance
+<code_review_delegation>
+**YOU MUST** use the code-reviewer agent for comprehensive code analysis:
 
-5. **Performance Analysis**
-   - Identify performance bottlenecks and inefficient algorithms
-   - Check database query optimization opportunities
-   - Analyze memory usage and potential leaks
-   - Review caching strategies and implementation
+```
+Task (subagent_type: general-purpose):
+"Use code-reviewer agent to review implementation for: {task_folder_path}
 
-6. **Test Coverage Validation**
-   - Analyze test coverage for new and modified code
-   - Identify untested code paths and edge cases
-   - Review test quality and assertion effectiveness
-   - Validate integration test coverage
+The agent will:
+- Validate against requirements from ticket.md
+- Identify code quality issues by severity
+- Find maintainability concerns
+- Assess complexity implications
+- Provide actionable recommendations with file:line references
 
-7. **Documentation Review**
-   - Verify code comments and inline documentation
-   - Check API documentation completeness and accuracy
-   - Validate README and setup instructions
-   - Review architectural decision documentation
+Wait for comprehensive code review report."
+```
+</code_review_delegation>
 
-8. **Technical Debt Assessment**
-   - Identify areas of technical debt introduced
-   - Highlight code duplication and refactoring opportunities
-   - Flag deprecated patterns or outdated practices
-   - Suggest architectural improvements
+9. **Parallel Automated Quality & Compliance Checks**
 
-9. **Automated Quality Checks (via quality-assurance-agent)**
-   <instruction>
-   **IMPORTANT**: Launch quality-assurance-agent using the Task tool:
+<parallel_review_agents>
+**CRITICAL**: Launch BOTH review agents in PARALLEL using a single message with multiple Task tool calls.
 
-   <agent_invocation>
-   Task: Launch quality-assurance-agent for automated checks
+<agent_coordination>
+**YOU MUST** run these agents simultaneously for maximum speed:
 
-   Prompt:
-   "Run comprehensive quality checks on the implemented code for task: {task_folder_path}
+**Agent 1: Quality Assurance**
+```
+Task (subagent_type: general-purpose):
+"Run comprehensive automated quality checks for: {task_folder_path}
 
-   Perform:
-   1. Linting (detect and run project linter)
-   2. Type checking (TypeScript, mypy, etc.)
-   3. Code formatting checks (prettier, black, gofmt)
-   4. Test execution and coverage
-   5. Security audit (npm audit, pip-audit, etc.)
+**IMPORTANT**: Think step by step through each check.
 
-   Generate detailed QA report and save to:
-   {task_folder_path}/qa-report.yml
+**YOU MUST** perform:
+1. Detect and run project linter (eslint, pylint, etc.)
+2. Run type checking (tsc, mypy, etc.)
+3. Check code formatting (prettier, black, etc.)
 
-   Provide summary in terminal with overall status and quick fix commands."
-   </agent_invocation>
+**Output Requirements**:
+- Save detailed report to: {task_folder_path}/qa-report.yml
+- Provide terminal summary with:
+  - Overall pass/fail status
+  - Error/warning counts
+  - Quick fix commands
+  - File references with line numbers"
+```
 
-   **Run this agent AUTOMATICALLY** - it should always execute during code review.
-   </instruction>
+**Agent 2: Standards Compliance**
+```
+Task (subagent_type: general-purpose):
+"Validate implementation against project standards for: {task_folder_path}
 
-10. **Standards Compliance Check (via standards-compliance-agent)**
-   <instruction>
-   **IMPORTANT**: Launch standards-compliance-agent using the Task tool:
+**IMPORTANT**: Load ALL standards from Circle/standards/ directory.
 
-   <agent_invocation>
-   Task: Launch standards-compliance-agent for best practices validation
+**YOU MUST** check:
+1. Coding standards compliance
+2. Architecture patterns adherence
+3. API design principles
+4. Documentation standards
+5. Error handling patterns
 
-   Prompt:
-   "Validate implementation against project standards for task: {task_folder_path}
+**Output Requirements**:
+- Save detailed report to: {task_folder_path}/standards-compliance.yml
+- Provide terminal summary with:
+  - Overall compliance score
+  - Violations by severity (critical, high, medium, low)
+  - Specific file:line references
+  - Actionable fix recommendations"
+```
 
-   Check compliance with standards defined in Circle/standards/:
-   1. Load all standards files
-   2. Analyze code against coding standards
-   3. Check architecture patterns compliance
-   4. Validate testing standards
-   5. Review API design, security, and other category-specific standards
+**Wait for BOTH agents to complete** before generating final review report.
+</agent_coordination>
+</parallel_review_agents>
 
-   Generate detailed compliance report and save to:
-   {task_folder_path}/standards-compliance.yml
+<agent_synthesis>
+After parallel agents complete:
+1. Collect QA report results
+2. Collect compliance report results
+3. Consolidate findings
+4. Identify overlapping issues
+5. Prioritize by severity and impact
+</agent_synthesis>
 
-   Provide summary with compliance score, violations by severity, and actionable fixes."
-   </agent_invocation>
-
-   **Run this agent AUTOMATICALLY** - it should always execute during code review.
-   </instruction>
-
-11. **Generate Review Report**
+10. **Generate Comprehensive Review Report**
    - Compile all findings into comprehensive report
-   - Include results from quality-assurance-agent
-   - Include results from standards-compliance-agent
+   - Include results from quality-assurance-agent and standards-compliance-agent
    - Save as `{task_folder_path}/review.md`
    - Include actionable recommendations with priority levels
 
 ## Instructions
 - Focus on actionable feedback with specific line numbers and examples
 - Prioritize issues by business impact and security risk
-- Provide both immediate fixes and long-term improvement suggestions
+- Provide immediate fixes and long-term improvement suggestions
 - Include positive feedback for well-implemented sections
 
 ## Control Flow
-- **If** task folder doesn't exist:
-  - Stop and inform user to create task with `/1_task_from_scratch`
-- **Standard review**:
-  - Load task artifacts (ticket, plan)
-  - Use git diff to analyze implemented changes
-  - Analyze all identified issues regardless of severity
-  - Save comprehensive review to `{task_folder_path}/review.md`
+- **If task folder doesn't exist**: Stop and inform user to create task with `/1_ticket`
+- **Standard review**: Load task artifacts, use git diff to analyze changes, analyze all issues, save review to `{task_folder_path}/review.md`
 
 ## Report
 Generate a comprehensive review report (`{task_folder_path}/review.md`) with:

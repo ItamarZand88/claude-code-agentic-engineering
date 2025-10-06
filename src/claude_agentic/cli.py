@@ -28,31 +28,6 @@ from rich.status import Status
 
 console = Console()
 
-# ASCII Art Banner (using raw string to avoid escape sequence warnings)
-BANNER = r"""
-          _____                    _____                    _____                    _____                    _____            _____          
-         /\    \                  /\    \                  /\    \                  /\    \                  /\    \          /\    \         
-        /::\    \                /::\    \                /::\    \                /::\    \                /::\____\        /::\    \        
-       /::::\    \               \:::\    \              /::::\    \              /::::\    \              /:::/    /       /::::\    \       
-      /::::::\    \               \:::\    \            /::::::\    \            /::::::\    \            /:::/    /       /::::::\    \      
-     /:::/\:::\    \               \:::\    \          /:::/\:::\    \          /:::/\:::\    \          /:::/    /       /:::/\:::\    \     
-    /:::/  \:::\    \               \:::\    \        /:::/__\:::\    \        /:::/  \:::\    \        /:::/    /       /:::/__\:::\    \    
-   /:::/    \:::\    \              /::::\    \      /::::\   \:::\    \      /:::/    \:::\    \      /:::/    /       /::::\   \:::\    \   
-  /:::/    / \:::\    \    ____    /::::::\    \    /::::::\   \:::\    \    /:::/    / \:::\    \    /:::/    /       /::::::\   \:::\    \  
- /:::/    /   \:::\    \  /\   \  /:::/\:::\    \  /:::/\:::\   \:::\____\  /:::/    /   \:::\    \  /:::/    /       /:::/\:::\   \:::\    \ 
-/:::/____/     \:::\____\/::\   \/:::/  \:::\____\/:::/  \:::\   \:::|    |/:::/____/     \:::\____\/:::/____/       /:::/__\:::\   \:::\____\
-\:::\    \      \::/    /\:::\  /:::/    \::/    /\::/   |::::\  /:::|____|\:::\    \      \::/    /\:::\    \       \:::\   \:::\   \::/    /
- \:::\    \      \/____/  \:::\/:::/    / \/____/  \/____|:::::\/:::/    /  \:::\    \      \/____/  \:::\    \       \:::\   \:::\   \/____/ 
-  \:::\    \               \::::::/    /                 |:::::::::/    /    \:::\    \               \:::\    \       \:::\   \:::\    \     
-   \:::\    \               \::::/____/                  |::|\::::/    /      \:::\    \               \:::\    \       \:::\   \:::\____\    
-    \:::\    \               \:::\    \                  |::| \::/____/        \:::\    \               \:::\    \       \:::\   \::/    /    
-     \:::\    \               \:::\    \                 |::|  ~|               \:::\    \               \:::\    \       \:::\   \/____/     
-      \:::\    \               \:::\    \                |::|   |                \:::\    \               \:::\    \       \:::\    \         
-       \:::\____\               \:::\____\               \::|   |                 \:::\____\               \:::\____\       \:::\____\        
-        \::/    /                \::/    /                \:|   |                  \::/    /                \::/    /        \::/    /        
-         \/____/                  \/____/                  \|___|                   \/____/                  \/____/          \/____/         
-"""
-
 TAGLINE = "Advanced Development Workflow System"
 
 # Repository configuration
@@ -61,12 +36,10 @@ RAW_URL = "https://raw.githubusercontent.com/ItamarZand88/claude-code-agentic-en
 
 # File lists for installation - Updated to match new simplified structure
 COMMANDS = [
-    "1_get_context.md",
-    "2_task_from_scratch.md",
-    "3_plan_from_task.md",
-    "4_implement_plan.md",
-    "5_review_implementation.md",
-    "6_update_context.md"
+    "1_ticket.md",
+    "2_plan.md",
+    "3_implement.md",
+    "4_review.md"
 ]
 
 ONBOARDING_COMMANDS = [
@@ -74,11 +47,15 @@ ONBOARDING_COMMANDS = [
 ]
 
 AGENTS = [
-    "dependency-scanner-agent.md",
-    "documentation-extractor-agent.md",
-    "file-analysis-agent.md",
-    "git-history-agent.md",
-    "pattern-recognition-agent.md"
+    "architecture-explorer.md",
+    "codebase-analyst.md",
+    "code-implementer.md",
+    "code-reviewer.md",
+    "dependency-mapper.md",
+    "feature-finder.md",
+    "implementation-strategist.md",
+    "quality-assurance-agent.md",
+    "standards-compliance-agent.md"
 ]
 
 TEMPLATES = [
@@ -88,58 +65,13 @@ TEMPLATES = [
 ]
 
 def show_banner():
-    """Display the ASCII art banner with enhanced styling."""
-    import os
-    import sys
-
-    # Configure console for Windows Unicode support
-    if os.name == 'nt':
-        try:
-            import codecs
-            sys.stdout.reconfigure(encoding='utf-8')
-            import locale
-            locale.setlocale(locale.LC_ALL, '')
-        except:
-            pass
-
-    try:
-        # Enhanced gradient effect with more sophisticated styling
-        banner_lines = BANNER.strip().split('\n')
-        colors = ["bright_blue", "blue", "cyan", "bright_cyan", "white", "bright_white"]
-
-        # Create banner with gradient effect
-        styled_banner = Text()
-        for i, line in enumerate(banner_lines):
-            color = colors[i % len(colors)]
-            styled_banner.append(line + "\n", style=f"bold {color}")
-
-        # Create a beautiful panel for the banner
-        banner_panel = Panel(
-            Align.center(styled_banner),
-            box=box.DOUBLE,
-            border_style="bright_blue",
-            padding=(1, 2)
-        )
-
-        console.print(banner_panel)
-
-        # Enhanced tagline with decorative elements
-        console.print(Align.center(Rule(style="bright_cyan")))
-        console.print(Align.center(Text(TAGLINE, style="italic bright_yellow bold")))
-        console.print(Align.center(Rule(style="bright_cyan")))
-
-    except (UnicodeEncodeError, UnicodeError, Exception):
-        # Enhanced fallback with basic Rich styling
-        try:
-            fallback_text = Text("CLAUDE CODE AGENTIC ENGINEERING", style="bold bright_blue")
-            tagline_text = Text("Advanced Development Workflow System", style="italic yellow")
-            console.print(Align.center(fallback_text))
-            console.print(Align.center(tagline_text))
-        except:
-            # Final ASCII fallback
-            print("CLAUDE CODE AGENTIC ENGINEERING")
-            print("Advanced Development Workflow System")
-
+    """Display a simple banner with enhanced styling."""
+    # Simple header with title and tagline
+    console.print()
+    console.print(Align.center(Text("CLAUDE CODE AGENTIC ENGINEERING", style="bold bright_blue")))
+    console.print(Align.center(Rule(style="bright_cyan")))
+    console.print(Align.center(Text(TAGLINE, style="italic bright_cyan")))
+    console.print(Align.center(Rule(style="bright_cyan")))
     console.print()
 
 @click.group()
@@ -251,7 +183,7 @@ def status():
         if exists and count > 0:
             return "[green]Installed[/green]"
         elif exists:
-            return "[yellow]Empty[/yellow]"
+            return "[cyan]Empty[/cyan]"
         else:
             return "[red]Missing[/red]"
 
@@ -286,16 +218,16 @@ def status():
         # Create a beautiful next steps panel
         next_steps = """[green]Ready to use![/green]
 
-[bold yellow]Quick Start:[/bold yellow]
+[bold bright_cyan]Quick Start:[/bold bright_cyan]
   [bright_blue]claude[/bright_blue]                     Launch Claude Code
   [bright_blue]/help[/bright_blue]                     Show available commands
   [bright_blue]/agents[/bright_blue]                   List specialized agents
 
-[bold yellow]Common Workflows:[/bold yellow]
-  [bright_cyan]/get_context[/bright_cyan]              Load project context
-  [bright_cyan]/task_from_scratch[/bright_cyan]        Create new task
-  [bright_cyan]/plan_from_task[/bright_cyan]           Generate implementation plan
-  [bright_cyan]/implement_plan[/bright_cyan]           Execute the plan"""
+[bold bright_cyan]4-Step Workflow:[/bold bright_cyan]
+  [bright_green]/1_ticket[/bright_green]                Create comprehensive task ticket
+  [bright_green]/2_plan[/bright_green]                  Generate implementation plan with research
+  [bright_green]/3_implement[/bright_green]             Execute the implementation plan
+  [bright_green]/4_review[/bright_green]                Quality assurance and code review"""
 
         console.print(Panel(
             next_steps,
@@ -306,16 +238,16 @@ def status():
         ))
     else:
         console.print(Panel(
-            "[yellow]No components installed yet.[/yellow]\n\nRun [bold blue]agentic init[/bold blue] to get started!",
+            "[cyan]No components installed yet.[/cyan]\n\nRun [bold blue]agentic init[/bold blue] to get started!",
             title="Setup Required",
-            border_style="yellow",
+            border_style="cyan",
             box=box.ROUNDED
         ))
 
 def download_file(url: str, dest: Path, force: bool = False) -> bool:
     """Download a file from URL to destination with enhanced status display."""
     if dest.exists() and not force:
-        console.print(f"[yellow]Skipped existing:[/yellow] [dim]{dest.name}[/dim]")
+        console.print(f"[cyan]Skipped existing:[/cyan] [dim]{dest.name}[/dim]")
         return True
 
     try:
@@ -369,10 +301,9 @@ def install_templates(force: bool = False):
 def create_project_directories():
     """Create project directories for workflow organization with enhanced styling."""
     directories = [
-        ("./context", "Project knowledge storage"),
-        ("./tasks", "Task requirements documentation"),
-        ("./plans", "Implementation plans"),
-        ("./implementations", "Code implementations")
+        ("./Circle", "Task workspace (organized by task folder)"),
+        ("./Circle/standards", "Project coding standards"),
+        ("./context", "Optional project knowledge storage")
     ]
 
     console.print(Rule("[bold cyan]Project Structure Setup[/bold cyan]"))
@@ -475,16 +406,16 @@ def show_success_panel(target: str):
     install_summary.add_row("Templates", str(len(TEMPLATES)), ".claude/templates/")
 
     # Create workflow example
-    workflow_steps = """[bold yellow]Example Workflow:[/bold yellow]
-[bright_blue]/get_context[/bright_blue] "authentication"
-[bright_blue]/task_from_scratch[/bright_blue] "Add user auth" ./context/auth.md
-[bright_blue]/plan_from_task[/bright_blue] "./tasks/user-auth-task.md"
-[bright_blue]/implement_plan[/bright_blue] "./plans/user-auth-plan.md"
+    workflow_steps = """[bold bright_cyan]4-Step Workflow:[/bold bright_cyan]
+[bright_green]/1_ticket[/bright_green] "Add OAuth authentication"
+[bright_green]/2_plan[/bright_green] Circle/oauth-authentication
+[bright_green]/3_implement[/bright_green] Circle/oauth-authentication
+[bright_green]/4_review[/bright_green] Circle/oauth-authentication
 
-[bold yellow]Quick Start:[/bold yellow]
-[bright_cyan]claude[/bright_cyan]                Launch Claude Code
-[bright_cyan]/help[/bright_cyan]                 Show available commands
-[bright_cyan]/agents[/bright_cyan]               List specialized agents"""
+[bold bright_cyan]Quick Start:[/bold bright_cyan]
+[bright_blue]claude[/bright_blue]                Launch Claude Code
+[bright_blue]/help[/bright_blue]                 Show available commands
+[bright_blue]/agents[/bright_blue]               List specialized agents"""
 
     # Main success panel
     success_content = f"""[bold green]Installation Complete![/bold green]
@@ -493,7 +424,7 @@ def show_success_panel(target: str):
 
 {install_summary}
 
-Project directories: [cyan]context/[/cyan], [cyan]tasks/[/cyan], [cyan]plans/[/cyan], [cyan]implementations/[/cyan]
+Project directories: [cyan]Circle/[/cyan], [cyan]Circle/standards/[/cyan], [cyan]context/[/cyan]
 
 {workflow_steps}
 
