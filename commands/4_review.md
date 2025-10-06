@@ -1,204 +1,132 @@
 ---
 description: Automated code review and quality assessment against original requirements
-argument-hint: <plan_file_path> [task_file_path]
+argument-hint: <task_folder_path>
 model: inherit
+allowed-tools: [Read, Write, Glob, Grep, Bash, Task]
 ---
 
 # Implementation Quality Reviewer
 
-Analyze implemented code against original requirements, validate code quality standards, assess security and performance implications, and generate comprehensive improvement recommendations with actionable feedback.
+## Instructions
+
+<instructions>
+**Purpose**: Conduct comprehensive code review and quality assessment against requirements.
+
+**Core Principles**:
+- Validate implementation against acceptance criteria
+- Use parallel agents for quality and compliance checks
+- Provide actionable feedback with specific file:line references
+- Assess code quality, security, and performance
+- Generate comprehensive review report
+
+**Key Expectations**:
+- Requirements validation against ticket
+- Automated quality checks (linting, type-check, formatting)
+- Standards compliance verification
+- Actionable recommendations
+- Clear pass/fail status
+</instructions>
 
 ## Variables
-- **task_folder_path**: $ARGUMENTS - Path to the task folder (e.g., `Circle/oauth-authentication`)
-- **ticket_file**: `{task_folder_path}/ticket.md` - Original task requirements
-- **plan_file**: `{task_folder_path}/plan.md` - Implementation plan that was executed
-- **review_file**: `{task_folder_path}/review.md` - Code review report (output)
-- **coding_standards**: `./context/CODING_STANDARDS.md` - Project coding standards reference (if exists)
-- **security_checklist**: `./templates/security-checklist-template.md` - Security validation checklist (if exists)
+
+### Dynamic Variables (User Input)
+- **task_folder_path**: `$ARGUMENTS` - Path to task folder (e.g., `Circle/oauth-authentication`)
+
+### Static Variables
+- **REVIEW_FILENAME**: `review.md` - Single comprehensive review file
+
+### Derived Variables
+- **ticket_path**: `{task_folder_path}/ticket.md`
+- **plan_path**: `{task_folder_path}/plan.md`
+- **review_path**: `{task_folder_path}/review.md`
 
 ## Workflow
-1. **Load Task Context**
-   - Load task folder path from $ARGUMENTS
-   - Read `{task_folder_path}/ticket.md` and `{task_folder_path}/plan.md`
-   - Use git diff to see what was implemented
 
-2. **Requirements Validation**
-   - Map implemented features against acceptance criteria from ticket
-   - Identify missing functionality or scope deviations
-   - Verify alignment with plan specifications
+### Step 1: Load Context & Validate Requirements
 
-3. **Code Quality Review with code-reviewer Agent**
+<step>
+**Process**:
+1. Load ticket.md, plan.md, run git diff
+2. Extract acceptance criteria from ticket
+3. Map implementation to criteria
+4. Identify gaps/deviations
 
-<code_review_delegation>
-**YOU MUST** use the code-reviewer agent for comprehensive code analysis:
+**Early Return**: If ticket/plan missing → STOP
+</step>
 
+### Step 2: Comprehensive Review with code-reviewer Agent
+
+<step>
+**Process**: Launch code-reviewer agent with consolidated review scope
+
+**Agent Task**:
 ```
-Task (subagent_type: general-purpose):
-"Use code-reviewer agent to review implementation for: {task_folder_path}
+Use code-reviewer agent for comprehensive review of: {task_folder_path}
 
-The agent will:
-- Validate against requirements from ticket.md
-- Identify code quality issues by severity
-- Find maintainability concerns
-- Assess complexity implications
-- Provide actionable recommendations with file:line references
+YOU MUST cover ALL aspects in a SINGLE review:
 
-Wait for comprehensive code review report."
+1. Requirements Validation:
+   - Check all acceptance criteria from ticket.md
+   - Note missing features or deviations
+
+2. Code Quality Analysis:
+   - Identify issues by severity (Critical/High/Medium/Low)
+   - Check naming, organization, complexity
+   - Review error handling patterns
+
+3. Automated Checks (run these tools):
+   - Linter: [detect and run project linter]
+   - Type checker: [detect and run type checker]
+   - Formatter: [check formatting]
+
+4. Standards Compliance:
+   - Check Circle/standards/ (if exists)
+   - Verify architecture patterns
+   - Validate coding conventions
+
+5. Security & Performance:
+   - Identify vulnerabilities
+   - Find bottlenecks/optimization opportunities
+
+Provide actionable recommendations with file:line references.
 ```
-</code_review_delegation>
+</step>
 
-9. **Parallel Automated Quality & Compliance Checks**
+### Step 3: Generate Review Report
 
-<parallel_review_agents>
-**CRITICAL**: Launch BOTH review agents in PARALLEL using a single message with multiple Task tool calls.
-
-<agent_coordination>
-**YOU MUST** run these agents simultaneously for maximum speed:
-
-**Agent 1: Quality Assurance**
-```
-Task (subagent_type: general-purpose):
-"Run comprehensive automated quality checks for: {task_folder_path}
-
-**IMPORTANT**: Think step by step through each check.
-
-**YOU MUST** perform:
-1. Detect and run project linter (eslint, pylint, etc.)
-2. Run type checking (tsc, mypy, etc.)
-3. Check code formatting (prettier, black, etc.)
-
-**Output Requirements**:
-- Save detailed report to: {task_folder_path}/qa-report.yml
-- Provide terminal summary with:
-  - Overall pass/fail status
-  - Error/warning counts
-  - Quick fix commands
-  - File references with line numbers"
-```
-
-**Agent 2: Standards Compliance**
-```
-Task (subagent_type: general-purpose):
-"Validate implementation against project standards for: {task_folder_path}
-
-**IMPORTANT**: Load ALL standards from Circle/standards/ directory.
-
-**YOU MUST** check:
-1. Coding standards compliance
-2. Architecture patterns adherence
-3. API design principles
-4. Documentation standards
-5. Error handling patterns
-
-**Output Requirements**:
-- Save detailed report to: {task_folder_path}/standards-compliance.yml
-- Provide terminal summary with:
-  - Overall compliance score
-  - Violations by severity (critical, high, medium, low)
-  - Specific file:line references
-  - Actionable fix recommendations"
-```
-
-**Wait for BOTH agents to complete** before generating final review report.
-</agent_coordination>
-</parallel_review_agents>
-
-<agent_synthesis>
-After parallel agents complete:
-1. Collect QA report results
-2. Collect compliance report results
-3. Consolidate findings
-4. Identify overlapping issues
-5. Prioritize by severity and impact
-</agent_synthesis>
-
-10. **Generate Comprehensive Review Report**
-   - Compile all findings into comprehensive report
-   - Include results from quality-assurance-agent and standards-compliance-agent
-   - Save as `{task_folder_path}/review.md`
-   - Include actionable recommendations with priority levels
-
-## Instructions
-- Focus on actionable feedback with specific line numbers and examples
-- Prioritize issues by business impact and security risk
-- Provide immediate fixes and long-term improvement suggestions
-- Include positive feedback for well-implemented sections
+<step>
+**Process**:
+1. Consolidate all agent findings
+2. Prioritize issues by severity
+3. Save comprehensive review.md with sections:
+   - Executive Summary
+   - Requirements Compliance
+   - Code Quality Issues (by severity)
+   - Security & Performance
+   - Action Items
+</step>
 
 ## Control Flow
-- **If task folder doesn't exist**: Stop and inform user to create task with `/1_ticket`
-- **Standard review**: Load task artifacts, use git diff to analyze changes, analyze all issues, save review to `{task_folder_path}/review.md`
+
+<control_flow>
+1. Load context → IF missing files → STOP
+2. Launch code-reviewer agent (consolidated review)
+3. Generate review.md → Display summary
+</control_flow>
 
 ## Report
-Generate a comprehensive review report (`{task_folder_path}/review.md`) with:
-- **Executive Summary**: Overall quality score and key findings
-- **Requirements Compliance**: Met/partially met/missing requirements (from ticket.md)
-- **Plan Adherence**: How well implementation followed the plan
-- **Code Quality Assessment**: Issues categorized by severity
-- **Security Analysis**: Vulnerabilities and recommendations
-- **Performance Insights**: Bottlenecks and optimization opportunities
-- **Technical Debt Summary**: Debt introduced and refactoring opportunities
-- **Action Items**: Immediate, short-term, and long-term recommendations
 
-## Task Folder Structure After Review
-
+<report>
 ```
-Circle/{task-name}/
-├── ticket.md (task requirements)
-├── plan.md (implementation plan)
-├── qa-report.yml (quality checks results) ✅
-├── standards-compliance.yml (standards compliance) ✅
-└── review.md (comprehensive code review) ✅
+✅ Review completed: Circle/{task-name}/review.md
+
+Quality: {score}/10 | Requirements: {X}/{Y} met | Issues: {critical} critical, {high} high
+
+Key Issues:
+- {Top issue 1 with file:line}
+- {Top issue 2 with file:line}
+- {Top issue 3 with file:line}
+
+Next: Address issues in review.md
 ```
-
-## Example Output
-
-<example>
-✅ Code review completed: `Circle/oauth-authentication/`
-
-═══════════════════════════════════════════════════════════
-           COMPREHENSIVE REVIEW SUMMARY
-═══════════════════════════════════════════════════════════
-
-📊 QUALITY ASSURANCE (automated checks):
-   Overall: ✅ PASS
-   • Linting: ✅ 0 errors, 3 warnings
-   • Type Check: ✅ No errors
-   • Formatting: ❌ 5 files need formatting
-   • Tests: ✅ 142/142 passed (87% coverage)
-   • Security: ⚠️  2 medium vulnerabilities
-
-📏 STANDARDS COMPLIANCE:
-   Overall: 76% ⚠️  PARTIAL COMPLIANCE
-   • Coding Standards: ✅ 92%
-   • Architecture: ⚠️  65%
-   • Testing: ❌ 45%
-   • Security: ✅ 95%
-
-🔍 CODE REVIEW:
-   Overall Quality: 8.5/10
-   • Requirements: ✅ All met
-   • Security: ✅ No critical issues
-   • Performance: ⚠️  2 optimization opportunities
-
-═══════════════════════════════════════════════════════════
-
-🔴 CRITICAL (must fix immediately):
-   • Missing input validation (standards-compliance)
-
-⚠️  HIGH PRIORITY (fix before merge):
-   • Business logic in controller (standards-compliance)
-   • Low test coverage in payment service (qa-report)
-
-💡 IMPROVEMENTS (recommended):
-   • Run `npm run format` to fix formatting (qa-report)
-   • Add integration tests for OAuth flow (code review)
-
-📄 Detailed Reports:
-   • Circle/oauth-authentication/qa-report.yml
-   • Circle/oauth-authentication/standards-compliance.yml
-   • Circle/oauth-authentication/review.md
-
-**Next Steps**:
-- Address all critical and high-priority issues
-- Review detailed reports for complete findings
-</example>
+</report>

@@ -49,9 +49,7 @@ AGENTS = [
     "code-reviewer.md",
     "dependency-mapper.md",
     "feature-finder.md",
-    "implementation-strategist.md",
-    "quality-assurance-agent.md",
-    "standards-compliance-agent.md"
+    "implementation-strategist.md"
 ]
 
 def show_banner():

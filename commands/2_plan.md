@@ -2,462 +2,321 @@
 description: Creates comprehensive implementation plan from task file through research and codebase analysis
 argument-hint: <task_folder_path>
 model: inherit
+allowed-tools: [Read, Write, Glob, Grep, Bash, Task, WebSearch, WebFetch, SlashCommand]
 ---
 
 # Implementation Plan Generator with Research & Agent Coordination
 
-<instruction>
-**IMPORTANT**: Create a comprehensive, research-backed implementation plan from a task file.
+## Instructions
 
-**YOU MUST** orchestrate multiple specialized agents IN PARALLEL and conduct thorough research to produce an actionable, detailed plan.
+<instructions>
+**Purpose**: Create a comprehensive, research-backed implementation plan that answers "HOW to implement" the task.
 
-Think step by step and use "ultrathink" mode for complex architectural decisions.
-</instruction>
+**Core Principles**:
+- Focus on HOW, not WHAT (requirements are in ticket)
+- Conduct parallel research (web + codebase + documentation)
+- Use ultrathink mode for complex architectural decisions
+- Break down into actionable, testable phases
+- Document all design decisions with rationale
+
+**Key Expectations**:
+- Research-driven best practices
+- Detailed task breakdown with validation steps
+- Clear architecture and integration strategy
+- Specific file paths and code examples
+</instructions>
 
 ## Variables
-- **task_folder_path**: $ARGUMENTS - Path to the task folder from `/1_ticket` (e.g., `Circle/oauth-authentication`)
-- **ticket_file**: `{task_folder_path}/ticket.md` - Task ticket created by `/1_ticket`
-- **plan_file**: `{task_folder_path}/plan.md` - Implementation plan (output of this command)
+
+### Dynamic Variables (User Input)
+- **task_folder_path**: `$ARGUMENTS` - Path to task folder (e.g., `Circle/oauth-authentication`)
+
+### Static Variables (Configuration)
+- **TICKET_FILENAME**: `ticket.md` - Standard ticket filename
+- **PLAN_FILENAME**: `plan.md` - Standard plan filename
+
+### Derived Variables (Computed During Execution)
+- **ticket_path**: `{task_folder_path}/ticket.md` - Full path to ticket
+- **plan_path**: `{task_folder_path}/plan.md` - Full path to plan output
 
 ## Workflow
 
 ### Step 1: Load Task Requirements
 
-<instruction>
-Load task from folder structure:
-1. Parse $ARGUMENTS to get task folder path
-2. Read `{task_folder_path}/ticket.md`
-3. Extract title, description, requirements, affected files, dependencies, constraints, acceptance criteria, and open questions
-</instruction>
+<step>
+**Objective**: Load and understand task requirements from ticket
+
+**Process**:
+1. Parse `$ARGUMENTS` to get task folder path
+2. Verify ticket exists: `{task_folder_path}/ticket.md`
+3. Read ticket file
+4. Extract key elements:
+   - Task title and description
+   - Requirements (functional, non-functional, integration)
+   - Affected files and areas
+   - Dependencies and constraints
+   - Acceptance criteria
+   - Key findings from ticket analysis
+
+**Validation**:
+- ✅ Task folder path is valid
+- ✅ Ticket file exists and is readable
+- ✅ All key requirements extracted
+- ✅ Dependencies and constraints documented
+
+**Early Return**: If ticket file missing → STOP and inform user to run `/1_ticket` first
+</step>
 
 ### Step 2: Parallel Research & Analysis Phase
 
-<parallel_research>
-**CRITICAL**: Launch ALL research activities in PARALLEL using a single message with multiple tool calls.
+<step>
+**Objective**: Gather comprehensive research to inform implementation strategy
 
-<agent_coordination>
-**YOU MUST** run these tasks simultaneously for maximum speed:
+**Process** - Launch ALL tracks in PARALLEL (single message with multiple tool calls):
 
-**Research Track 1: Web Research** (if applicable)
-```
-For tasks involving new technologies, complex patterns, or best practices:
-- Launch WebSearch for: "{technology} best practices 2025"
-- Launch WebSearch for: "{pattern} implementation guide"
-- Launch WebSearch for: "{technology} integration guide"
-- Use WebFetch for specific documentation URLs
+**Track 1: Web Research** (conditional - if new technologies/patterns)
+- WebSearch: `{technology} best practices 2025`
+- WebSearch: `{pattern} implementation guide`
+- WebFetch: Specific documentation URLs if known
 
-Run all web searches in PARALLEL
-```
+**Track 2: Codebase Analysis Agents** (always run in parallel)
+- Launch feature-finder: Find similar implementations
+- Launch dependency-mapper: Map all dependencies
+- Launch codebase-analyst: Extract project patterns
 
-**Research Track 2: Codebase Analysis Agents (Parallel)**
-```
-Launch THREE specialized agents IN PARALLEL:
+**Track 3: Library Documentation** (conditional - if new dependencies)
+- Use mcp__context7__resolve-library-id for each library
+- Use mcp__context7__get-library-docs for resolved IDs
+- Extract integration patterns
 
-Agent A - feature-finder:
-"Use feature-finder agent to discover similar implementations for: {task_description}"
+**Track 4: Project Documentation** (optional)
+- Task agent to scan: CLAUDE.md, .cursorrules, README.md, docs/
+- Extract: Guidelines, patterns, conventions
 
-Agent B - dependency-mapper:
-"Use dependency-mapper agent to map all dependencies for: {task_description}"
-
-Agent C - codebase-analyst:
-"Use codebase-analyst agent to extract project patterns for: {task_description}"
-
-Wait for ALL three agents to complete before proceeding.
-```
-
-**Research Track 3: Library Documentation** (if new dependencies needed)
-```
-Parallel library research:
-1. Use mcp__context7__resolve-library-id for each library
-2. Use mcp__context7__get-library-docs for each resolved ID
-3. Extract integration patterns and configuration requirements
-
-Run ALL library lookups concurrently
-```
-
-**Research Track 4: Documentation Scanner** (optional)
-```
-Task (subagent_type: general-purpose): "Scan project documentation
-
-Search for and read:
-- CLAUDE.md, .cursorrules, .windsurf rules
-- README.md, CONTRIBUTING.md
-- docs/ directory contents
-- API documentation
-- Inline architecture comments
-
-Extract: Guidelines, patterns, conventions, requirements"
-```
-
-**Wait for ALL research tracks to complete** before proceeding.
-</agent_coordination>
-</parallel_research>
-
-<research_synthesis>
-After parallel research completes:
+**Synthesis After All Tracks Complete**:
 1. Consolidate web research findings
 2. Integrate codebase patterns
 3. Merge library documentation
-4. Reconcile any conflicts
+4. Reconcile conflicts
 5. Build unified implementation strategy
-</research_synthesis>
+
+**Validation**:
+- ✅ All research tracks completed
+- ✅ Best practices identified
+- ✅ Codebase patterns documented
+- ✅ No conflicting recommendations
+
+**Conditional**: If research reveals blockers → Document clearly and ask user for guidance
+</step>
 
 ### Step 3: Architecture Design with implementation-strategist
 
-<architectural_decision_making>
-**IMPORTANT**: For complex architectural decisions, use the implementation-strategist agent:
+<step>
+**Objective**: Design optimal architecture for implementation
 
-```
-Task (subagent_type: general-purpose):
-"Use implementation-strategist agent for architectural design of: {task_description}
+**Condition**: Use implementation-strategist agent for complex architectural decisions
 
-The agent will:
-- Apply ultrathink mode to evaluate multiple approaches
-- Analyze trade-offs across all dimensions (scalability, maintainability, complexity)
-- Consider 2-3 solution alternatives
-- Provide detailed rationale for recommended approach
-- Document implementation considerations
+**Process**:
 
-Wait for comprehensive architectural recommendation."
-```
+**For Complex Tasks** (multiple approaches, significant trade-offs):
+- Launch implementation-strategist agent with task context
+- Agent applies ultrathink mode:
+  - Evaluates 2-3 solution alternatives
+  - Analyzes trade-offs (scalability, maintainability, complexity)
+  - Provides detailed rationale for recommendation
+  - Documents implementation considerations
 
-For simpler tasks, proceed with direct planning based on research findings.
-</architectural_decision_making>
+**For Simpler Tasks** (clear path forward):
+- Design architecture based on research findings
+- Document approach and rationale
+- Identify key components and data flow
+
+**Output**:
+- Chosen architectural approach with justification
+- Component structure
+- Data flow design
+- Integration strategy
+
+**Validation**:
+- ✅ Architecture aligns with requirements
+- ✅ Design follows codebase patterns
+- ✅ Trade-offs documented
+- ✅ Implementation path is clear
+</step>
 
 ### Step 4: Implementation Planning & Task Breakdown
 
-<planning_strategy>
-Break implementation into logical, testable phases based on research findings:
+<step>
+**Objective**: Break implementation into logical, testable phases
 
-**Phase Structure**:
+**Process**:
+
+**Phase Structure** (standard breakdown):
 1. **Foundation** - Setup, configuration, dependencies
 2. **Core Implementation** - Main features and logic
 3. **Integration** - Connect to existing systems
 4. **Validation** - Quality checks and validation
 5. **Documentation** - Code docs and guides
 
-**For each task, specify**:
+**For Each Task, Document**:
 - Clear, actionable description
 - Files to create/modify with specific changes
 - Dependencies on other tasks
 - Validation commands to verify completion
-- Estimated effort
-</planning_strategy>
+- Estimated effort (time/complexity)
+
+**Task Granularity**:
+- Each task should be independently testable
+- Break large tasks into sub-tasks (max 2-3 hours per task)
+- Ensure clear success criteria for each task
+
+**Validation**:
+- ✅ All phases have specific tasks
+- ✅ Each task has validation commands
+- ✅ Dependencies clearly mapped
+- ✅ No task is too large or vague
+</step>
 
 
 ### Step 5: Plan Document Generation
 
-<output>
-Create a comprehensive implementation plan with the following structure:
+<step>
+**Objective**: Generate comprehensive plan document
 
-# Implementation Plan: {Feature Name}
-
-**Created**: {Date}
-**Task Folder**: `{task_folder_path}/`
-**Source Ticket**: `{task_folder_path}/ticket.md`
-**Status**: Ready for Implementation
-
-## Overview
-
-<summary>
-{2-3 paragraph summary of what will be implemented and overall approach}
-</summary>
-
-## Research Findings
-
-### Best Practices
-
-<best_practices>
-- {Best practice 1 with source/reasoning}
-- {Best practice 2 with source/reasoning}
-- {Best practice n with source/reasoning}
-</best_practices>
-
-### Codebase Patterns
-
-<codebase_patterns>
-**From codebase-analyst agent:**
-
-{Agent findings on existing patterns, conventions, similar implementations}
-
-**Key patterns to follow:**
-- {Pattern 1}: {File path and example}
-- {Pattern 2}: {File path and example}
-- {Pattern n}: {File path and example}
-
-**Conventions to maintain:**
-- Naming: {Observed naming conventions}
-- Structure: {File organization patterns}
-</codebase_patterns>
-
-### Reference Implementations
-
-<references>
-- {Similar feature 1}: `path/to/file.ext` - {What to learn from it}
-- {Similar feature 2}: `path/to/file.ext` - {What to learn from it}
-- {External reference}: {URL or documentation link}
-</references>
-
-### Technology Decisions
-
-<tech_decisions>
-- **{Technology/Library 1}**: {Rationale for choice}
-- **{Technology/Library 2}**: {Rationale for choice}
-</tech_decisions>
-
-## Implementation Plan
-
-### Phase 1: Foundation
-
-#### Task 1.1: {Task Name}
-
-<task>
-**Description**: {What needs to be done}
-
-**Files to modify/create**:
-- `path/to/file1.ext` - {What changes}
-- `path/to/file2.ext` - {What changes}
-
-**Dependencies**: {Prerequisites or other tasks}
-
-**Implementation details**:
-```language
-// Code example or pseudocode
-```
+**Process**:
+1. Compile all research findings
+2. Document architectural decisions
+3. Structure task breakdown by phases
+4. Include validation commands for each task
+5. Add risk assessment
+6. Save to `{task_folder_path}/plan.md`
 
 **Validation**:
-```bash
-# Commands to verify this task
-```
+- ✅ All sections complete (overview, research, architecture, tasks, risks)
+- ✅ Plan follows standard template structure
+- ✅ File saved successfully
+- ✅ Plan is actionable and detailed
+</step>
 
-**Estimated effort**: {Time estimate}
-</task>
+## Output Format
 
-#### Task 1.2: {Task Name}
-{Repeat task structure}
+<output>
+Save to `{task_folder_path}/plan.md` with:
 
-### Phase 2: Core Implementation
+**Header**: Title, date, status
+**Overview**: 2-3 paragraph approach summary
+**Research**: Best practices, patterns, references, tech decisions
+**Phases**: Foundation → Core → Integration → Validation → Docs
+  - Each task: description, files, dependencies, validation, effort
+**Architecture**: Components, data flow, API design (if applicable)
+**Files**: To modify/create with specific changes
+**Dependencies**: New libs with install commands
+**Risks**: With impact + mitigation
+**Success Criteria**: From ticket + code review/docs
 
-{Continue with detailed tasks}
-
-### Phase 3: Documentation & Polish
-
-{Documentation and cleanup tasks}
-
-## Technical Architecture
-
-### Component Structure
-
-<architecture>
-```
-{ASCII diagram or description of component organization}
-```
-
-**Key components**:
-- {Component 1}: {Purpose and responsibilities}
-- {Component 2}: {Purpose and responsibilities}
-</architecture>
-
-### Data Flow
-
-<data_flow>
-{Description of how data flows through the system}
-
-1. {Step 1}
-2. {Step 2}
-3. {Step n}
-</data_flow>
-
-### API Design (if applicable)
-
-<api_design>
-**Endpoints**:
-- `POST /api/endpoint` - {Purpose, input, output}
-- `GET /api/endpoint/:id` - {Purpose, input, output}
-
-**Data models**:
-```language
-// Model definitions
-```
-</api_design>
-
-## Integration Points
-
-### Files to Modify
-
-<files_to_modify>
-- `path/to/file1.ext` - {Specific changes needed and why}
-- `path/to/file2.ext` - {Specific changes needed and why}
-</files_to_modify>
-
-### New Files to Create
-
-<new_files>
-- `path/to/newfile1.ext` - {Purpose and content}
-- `path/to/newfile2.ext` - {Purpose and content}
-</new_files>
-
-## Dependencies and Libraries
-
-<dependencies>
-**New dependencies to add**:
-- `library-name` version `x.y.z` - {Purpose and why this version}
-
-**Installation commands**:
-```bash
-# Commands to install dependencies
-```
-
-**Configuration needed**:
-{Any config file changes}
-</dependencies>
-
-## Validation Commands
-
-
-## Risk Assessment
-
-### Potential Risks
-
-<risks>
-1. **{Risk 1}**
-   - Impact: {High/Medium/Low}
-   - Mitigation: {Strategy}
-
-2. **{Risk 2}**
-   - Impact: {High/Medium/Low}
-   - Mitigation: {Strategy}
-</risks>
-
-## Success Criteria
-
-<success_criteria>
-- [ ] {Criterion 1 from task ticket}
-- [ ] {Criterion 2 from task ticket}
-- [ ] {Criterion n from task ticket}
-- [ ] Code review completed
-- [ ] Documentation updated
-</success_criteria>
-
-## Notes and Considerations
-
-<notes>
-- {Important note 1}
-- {Potential challenge 1 and how to address}
-- {Future enhancement possibility}
-</notes>
-
-## Agent Coordination Summary
-
-<agents_used>
-**Agents consulted**:
-- codebase-analyst: {Key findings}
-- {other-agent}: {Key findings}
-
-**Research sources**:
-- Web search: {Topics researched}
-- Documentation: {Docs reviewed}
-- Library docs: {Libraries researched}
-</agents_used>
-
----
-
-**Task Folder**: `{task_folder_path}/`
-
-**Files in this folder**:
-- `ticket.md` - Task requirements (input)
-- `plan.md` (this file) - Implementation plan with research and design
-- `review.md` (after implementation) - Code review results
-
-**Note**: Implementation progress is shown in real-time during `/3_implement`, not saved to a file.
-
-**Next Step**: Execute this plan with `/3_implement {task_folder_path}`
-
-The implementation command will work through this plan step-by-step, creating code, and validating each phase.
+Next step reference: `/3_implement {task_folder_path}`
 </output>
 
 ## Guidelines
 
-### DO:
-- ✅ Launch codebase-analyst agent for pattern discovery
-- ✅ Use parallel agent invocation when possible
-- ✅ Perform web research for best practices
-- ✅ Structure plan with XML tags for clarity
-- ✅ Include specific file paths and line numbers
-- ✅ Provide code examples and patterns
-- ✅ Document validation commands
-- ✅ Break down into manageable phases
-- ✅ Document rationale for decisions
-
-### DON'T:
-- ❌ Skip the research phase
-- ❌ Make assumptions without investigation
-- ❌ Create vague or abstract tasks
-- ❌ Forget to include validation steps
-- ❌ Ignore existing codebase patterns
-- ❌ Omit risk assessment
+**Focus**: HOW to implement (based on research + patterns)
+**DO**: Parallel research, ultrathink decisions, specific tasks with validation
+**DON'T**: Skip research, make assumptions, create vague tasks
 
 
 ## Control Flow
 
-<execution_steps>
-1. **Pre-flight validation** - Verify task folder and ticket.md exist
-2. **Load ticket** - Extract requirements and context
-3. **Launch parallel research** - Start ALL research tracks simultaneously (web + agents + docs)
-4. **Wait for completion** - Collect all research outputs
-5. **Synthesize findings** - Consolidate and reconcile all research
-6. **Architectural design** - Use ultrathink for complex decisions
-7. **Task breakdown** - Create detailed, phased implementation plan
-8. **Generate plan document** - Write comprehensive plan.md
-9. **Save plan** - `{task_folder_path}/plan.md`
-10. **Report completion** - Show research summary and next steps
-</execution_steps>
+<control_flow>
+**Execution Pattern**: Sequential with Parallel Research
 
-<validation_criteria>
-Before generating plan:
-- ✅ Ticket loaded successfully
-- ✅ All parallel research completed
-- ✅ Architecture decisions documented with rationale
-- ✅ Tasks broken into testable phases
-- ✅ Validation commands specified for each task
-- ✅ Dependencies mapped
-</validation_criteria>
+**Flow Logic**:
 
-<error_handling>
-- **If task folder missing**: Stop, inform user to run `/1_ticket`
-- **If research reveals blockers**: Document clearly, suggest alternatives, ask user for guidance
-- **If conflicting patterns found**: Document trade-offs, recommend best option with reasoning
-</error_handling>
+1. **Load task requirements**
+   - Parse `$ARGUMENTS` to get task folder path
+   - IF ticket missing → STOP and inform user to run `/1_ticket`
+   - ELSE → Read ticket and extract requirements
 
-## Example Output Message
+2. **Launch parallel research** (single message with multiple tool calls)
+   - IF task involves new tech → Launch WebSearch queries
+   - ALWAYS launch codebase analysis agents (feature-finder, dependency-mapper, codebase-analyst)
+   - IF new libraries needed → Launch library documentation lookups
+   - IF project has rules → Scan project documentation
+   - Wait for ALL research to complete
 
-<example>
-✅ Implementation plan created: `Circle/oauth-authentication/plan.md`
+3. **Synthesize research findings**
+   - Consolidate all research outputs
+   - IF blockers found → Document and ask user for guidance
+   - ELSE → Build unified strategy
 
-**Research Summary**:
+4. **Design architecture**
+   - IF complex decision → Use implementation-strategist agent
+   - ELSE → Design based on research
+   - Document approach and rationale
+
+5. **Break down into tasks**
+   - Structure into phases (Foundation → Core → Integration → Validation → Docs)
+   - For each task: description, files, dependencies, validation
+   - Ensure tasks are independently testable
+
+6. **Generate and save plan**
+   - Compile plan.md with all sections
+   - Save to `{task_folder_path}/plan.md`
+
+7. **Report completion**
+   - Display research summary
+   - Show plan structure
+   - Ask user if ready to proceed to implementation
+
+**Critical Decision Points**:
+- ✅ Before research: Does ticket exist?
+- ✅ Before synthesis: Did all research complete?
+- ✅ Before architecture: Are there blockers?
+- ✅ Before save: Is plan comprehensive?
+- ✅ After completion: Proceed to /3_implement?
+</control_flow>
+
+## Report
+
+<report>
+**Format**: Structured completion summary
+
+**Required Elements**:
+1. **Plan File Path**: Display created plan path
+2. **Research Summary**:
+   - Web research findings (if applicable)
+   - Codebase analysis results
+   - Agent findings summary
+3. **Plan Contents**: Phases count, tasks count, key sections
+4. **Task Folder Status**: Show folder structure with completed files
+5. **Next Step**: Ask user confirmation
+
+**Example Output**:
+```
+✅ Implementation plan created: Circle/oauth-authentication/plan.md
+
+Research Summary:
 - Web research: OAuth2 best practices, security considerations
-- Codebase analysis: Found similar auth pattern in `auth/session.py`
-- Agent findings:
-  - file-analysis-agent: Mapped dependencies
+- Codebase analysis: Found similar auth pattern in auth/session.py
+- Agent findings: Mapped dependencies and integration points
 
-**Plan includes**:
+Plan Includes:
 - 4 implementation phases with 12 detailed tasks
 - Architecture design with component breakdown
 - Risk assessment and mitigation strategies
 
-**Task Folder Structure**:
-```
+Task Folder Structure:
 Circle/oauth-authentication/
-├── ticket.md (task requirements)
+├── ticket.md (task requirements) ✅
 ├── plan.md (implementation plan) ✅
 └── review.md (will be created after implementation)
+
+Next Step:
+Ready to execute the implementation plan?
 ```
 
-**Next step**:
-Execute the implementation plan:
-```
-/3_implement @Circle/oauth-authentication
-```
+**After displaying the report above:**
 
-The implementation will proceed step-by-step with validation at each phase.
-</example>
+1. Ask user: "Would you like me to proceed with executing the implementation plan?"
+2. IF user confirms (yes/proceed/continue) → Use SlashCommand tool to run: `/3_implement @Circle/{task-folder-name}`
+3. ELSE → Stop and wait for user instructions
+</report>
