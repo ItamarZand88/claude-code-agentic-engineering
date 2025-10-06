@@ -2,7 +2,7 @@
 description: Creates comprehensive task ticket from user prompt with deep codebase analysis
 argument-hint: <task_description>
 model: inherit
-allowed-tools: [Read, Write, Glob, Grep, Bash, Task]
+allowed-tools: Read, Write, Glob, Grep, Bash, Task
 ---
 
 # Task Ticket Generator

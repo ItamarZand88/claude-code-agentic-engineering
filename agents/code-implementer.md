@@ -1,7 +1,7 @@
 ---
 name: "code-implementer"
 description: "USE for focused code implementation of specific features. Writes high-quality code following project patterns, handles errors properly, and validates changes incrementally."
-allowed-tools: [Read, Write, Edit, Glob, Grep, Bash]
+allowed-tools: Read, Write, Edit, Glob, Grep, Bash
 ---
 
 # Code Implementation Agent

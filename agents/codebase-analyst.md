@@ -1,7 +1,7 @@
 ---
 name: "codebase-analyst"
 description: "Use proactively to find codebase patterns, coding style and team standards. Specialized agent for deep codebase pattern analysis and convention discovery"
-allowed-tools: [Read, Glob, Grep, Bash]
+allowed-tools: Read, Glob, Grep, Bash
 ---
 
 # Codebase Analysis Agent

@@ -2,7 +2,7 @@
 description: Executes implementation plan step-by-step with comprehensive tracking
 argument-hint: <task_folder_path>
 model: inherit
-allowed-tools: [Read, Write, Edit, Glob, Grep, Bash, Task, TodoWrite]
+allowed-tools: Read, Write, Edit, Glob, Grep, Bash, Task, TodoWrite
 ---
 
 # Plan Implementation Executor

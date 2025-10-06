@@ -1,7 +1,7 @@
 ---
 name: "implementation-strategist"
 description: "USE PROACTIVELY for complex architectural decisions. Applies ultrathink mode to design scalable, maintainable solutions with thorough trade-off analysis."
-allowed-tools: [Read, Glob, Grep, WebSearch, WebFetch]
+allowed-tools: Read, Glob, Grep, WebSearch, WebFetch
 ---
 
 # Implementation Strategy Agent
@@ -93,44 +93,44 @@ Based on analysis, recommend best approach with clear rationale.
 
 ```yaml
 architectural_decision:
-  problem_statement: [clear description of what needs to be solved]
+  problem_statement: [clear description of what needs to be solved
 
   context:
-    - [relevant context point 1]
-    - [relevant context point 2]
+    - [relevant context point 1
+    - [relevant context point 2
 
   options_considered:
-    - option: [Approach 1 name]
-      description: [how it works]
+    - option: [Approach 1 name
+      description: [how it works
       pros:
-        - [advantage 1]
-        - [advantage 2]
+        - [advantage 1
+        - [advantage 2
       cons:
-        - [disadvantage 1]
-        - [disadvantage 2]
-      scalability: [High/Medium/Low] - [reasoning]
-      maintainability: [High/Medium/Low] - [reasoning]
-      complexity: [High/Medium/Low] - [reasoning]
+        - [disadvantage 1
+        - [disadvantage 2
+      scalability: [High/Medium/Low] - [reasoning
+      maintainability: [High/Medium/Low] - [reasoning
+      complexity: [High/Medium/Low] - [reasoning
       risks:
-        - [risk 1] - [mitigation]
-        - [risk 2] - [mitigation]
+        - [risk 1] - [mitigation
+        - [risk 2] - [mitigation
 
-    - option: [Approach 2 name]
-      [same structure...]
+    - option: [Approach 2 name
+      [same structure...
 
-  recommended_approach: [chosen option]
+  recommended_approach: [chosen option
 
   rationale: |
     [detailed explanation of why this approach was chosen,
-     addressing all key dimensions analyzed above]
+     addressing all key dimensions analyzed above
 
   implementation_considerations:
-    - [key consideration 1]
-    - [key consideration 2]
+    - [key consideration 1
+    - [key consideration 2
 
   success_metrics:
-    - [how to measure if this was the right choice]
-    - [what to monitor in production]
+    - [how to measure if this was the right choice
+    - [what to monitor in production
 ```
 
 ## Example Thinking Process

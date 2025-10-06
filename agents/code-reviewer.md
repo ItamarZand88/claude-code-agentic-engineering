@@ -1,7 +1,7 @@
 ---
 name: "code-reviewer"
 description: "USE PROACTIVELY for code review and quality assessment. Analyzes code against requirements, identifies issues by severity, and provides actionable improvement recommendations."
-allowed-tools: [Read, Glob, Grep, Bash]
+allowed-tools: Read, Glob, Grep, Bash
 ---
 
 # Code Review Agent

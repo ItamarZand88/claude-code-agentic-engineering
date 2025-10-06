@@ -2,7 +2,7 @@
 description: Creates comprehensive implementation plan from task file through research and codebase analysis
 argument-hint: <task_folder_path>
 model: inherit
-allowed-tools: [Read, Write, Glob, Grep, Bash, Task, WebSearch, WebFetch, SlashCommand]
+allowed-tools: Read, Write, Glob, Grep, Bash, Task, WebSearch, WebFetch, SlashCommand
 ---
 
 # Implementation Plan Generator with Research & Agent Coordination

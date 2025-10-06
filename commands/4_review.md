@@ -2,7 +2,7 @@
 description: Automated code review and quality assessment against original requirements
 argument-hint: <task_folder_path>
 model: inherit
-allowed-tools: [Read, Write, Glob, Grep, Bash, Task]
+allowed-tools: Read, Write, Glob, Grep, Bash, Task
 ---
 
 # Implementation Quality Reviewer
