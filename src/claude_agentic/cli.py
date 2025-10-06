@@ -42,10 +42,6 @@ COMMANDS = [
     "4_review.md"
 ]
 
-ONBOARDING_COMMANDS = [
-    "onboarding/generate_coding_standards.md"
-]
-
 AGENTS = [
     "architecture-explorer.md",
     "codebase-analyst.md",
@@ -56,12 +52,6 @@ AGENTS = [
     "implementation-strategist.md",
     "quality-assurance-agent.md",
     "standards-compliance-agent.md"
-]
-
-TEMPLATES = [
-    "code-review-template.md",
-    "README.md",
-    "security-checklist-template.md"
 ]
 
 def show_banner():
@@ -118,16 +108,9 @@ def init(project_name: Optional[str], templates_only: bool, commands_only: bool,
         console=console,
         transient=False
     ) as progress:
-
-        if not commands_only:
-            task = progress.add_task("Installing templates...", total=None)
-            install_templates(force)
-            progress.remove_task(task)
-
-        if not templates_only:
-            task = progress.add_task("Installing commands and agents...", total=None)
-            install_commands_and_agents(force)
-            progress.remove_task(task)
+        task = progress.add_task("Installing commands and agents...", total=None)
+        install_commands_and_agents(force)
+        progress.remove_task(task)
 
     # Show success message
     show_success_panel(project_name or "current directory")
@@ -147,13 +130,9 @@ def install(force: bool):
         console=console,
         transient=False
     ) as progress:
-        task1 = progress.add_task("Installing templates...", total=None)
-        install_templates(force)
-        progress.remove_task(task1)
-
-        task2 = progress.add_task("Installing commands and agents...", total=None)
+        task = progress.add_task("Installing commands and agents...", total=None)
         install_commands_and_agents(force)
-        progress.remove_task(task2)
+        progress.remove_task(task)
 
     show_success_panel("current directory")
 
@@ -176,7 +155,6 @@ def status():
     claude_dir = Path(".claude")
     commands_dir = claude_dir / "commands"
     agents_dir = claude_dir / "agents"
-    templates_dir = claude_dir / "templates"
 
     # Enhanced status indicators
     def get_status_style(exists, count=0):
@@ -189,7 +167,6 @@ def status():
 
     commands_count = len(list(commands_dir.glob("**/*.md"))) if commands_dir.exists() else 0
     agents_count = len(list(agents_dir.glob("*.md"))) if agents_dir.exists() else 0
-    templates_count = len(list(templates_dir.glob("*.md"))) if templates_dir.exists() else 0
 
     table.add_row(
         "Commands",
@@ -205,16 +182,9 @@ def status():
         "Specialized AI agent templates"
     )
 
-    table.add_row(
-        "Templates",
-        get_status_style(templates_dir.exists(), templates_count),
-        str(templates_count),
-        "Professional document templates"
-    )
-
     console.print(table)
 
-    if claude_dir.exists() and any([commands_count, agents_count, templates_count]):
+    if claude_dir.exists() and any([commands_count, agents_count]):
         # Create a beautiful next steps panel
         next_steps = """[green]Ready to use![/green]
 
@@ -264,40 +234,6 @@ def download_file(url: str, dest: Path, force: bool = False) -> bool:
         console.print(f"[red]Failed to download[/red] [bold]{dest.name}[/bold]: [dim]{e}[/dim]")
         return False
 
-def install_templates(force: bool = False):
-    """Install template files with enhanced progress display."""
-    templates_dir = Path(".claude/templates")
-
-    # Check if .claude directory exists and preserve it
-    if templates_dir.exists():
-        console.print("[blue]Found existing[/blue] .claude/templates directory")
-    else:
-        templates_dir.mkdir(parents=True, exist_ok=True)
-        console.print("[green]Created[/green] .claude/templates directory")
-
-    success_count = 0
-    total_templates = len(TEMPLATES)
-
-    with Progress(
-        SpinnerColumn(),
-        TextColumn("[progress.description]{task.description}"),
-        BarColumn(bar_width=30),
-        MofNCompleteColumn(),
-        console=console,
-        transient=True
-    ) as progress:
-        task = progress.add_task("Installing templates", total=total_templates)
-
-        for template in TEMPLATES:
-            progress.update(task, description=f"Installing [cyan]{template}[/cyan]")
-            url = f"{RAW_URL}/templates/{template}"
-            dest = templates_dir / template
-            if download_file(url, dest, force):
-                success_count += 1
-            progress.advance(task)
-
-    console.print(f"[cyan]Templates:[/cyan] [bold green]{success_count}[/bold green]/[bold]{total_templates}[/bold] processed")
-
 def create_project_directories():
     """Create project directories for workflow organization with enhanced styling."""
     directories = [
@@ -334,9 +270,8 @@ def install_commands_and_agents(force: bool = False):
         agents_dir.mkdir(parents=True, exist_ok=True)
         console.print("[green]Created[/green] .claude/agents directory")
 
-    total_items = len(COMMANDS) + len(ONBOARDING_COMMANDS) + len(AGENTS)
+    total_items = len(COMMANDS) + len(AGENTS)
     cmd_success = 0
-    onboarding_success = 0
     agent_success = 0
 
     with Progress(
@@ -358,16 +293,6 @@ def install_commands_and_agents(force: bool = False):
                 cmd_success += 1
             progress.advance(task)
 
-        # Install onboarding commands
-        for command in ONBOARDING_COMMANDS:
-            progress.update(task, description=f"Installing onboarding [cyan]{command}[/cyan]")
-            url = f"{RAW_URL}/commands/{command}"
-            dest = commands_dir / command
-            dest.parent.mkdir(parents=True, exist_ok=True)
-            if download_file(url, dest, force):
-                onboarding_success += 1
-            progress.advance(task)
-
         # Install agents
         for agent in AGENTS:
             progress.update(task, description=f"Installing agent [cyan]{agent}[/cyan]")
@@ -387,7 +312,6 @@ def install_commands_and_agents(force: bool = False):
     summary_table.add_column(style="dim")
 
     summary_table.add_row("Commands", f"{cmd_success}/{len(COMMANDS)}", "processed")
-    summary_table.add_row("Onboarding", f"{onboarding_success}/{len(ONBOARDING_COMMANDS)}", "processed")
     summary_table.add_row("Agents", f"{agent_success}/{len(AGENTS)}", "processed")
 
     console.print(summary_table)
@@ -401,9 +325,7 @@ def show_success_panel(target: str):
     install_summary.add_column("Location", style="dim", width=30)
 
     install_summary.add_row("Commands", str(len(COMMANDS)), ".claude/commands/")
-    install_summary.add_row("Onboarding", str(len(ONBOARDING_COMMANDS)), ".claude/commands/onboarding/")
     install_summary.add_row("Agents", str(len(AGENTS)), ".claude/agents/")
-    install_summary.add_row("Templates", str(len(TEMPLATES)), ".claude/templates/")
 
     # Create workflow example
     workflow_steps = """[bold bright_cyan]4-Step Workflow:[/bold bright_cyan]
