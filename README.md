@@ -8,25 +8,50 @@
 ## 🚀 Quick Start
 
 ```bash
+# Install in existing project
+uvx --from git+https://github.com/ItamarZand88/claude-code-agentic-engineering.git agentic install
+
+# Start Claude Code and verify installation
+claude
+/help    # Should show your new commands
+/agents  # Should show your new subagents
+```
+
+### ⚡ Even Easier with Aliases!
+
+Tired of typing the long command? Set up a short alias:
+
+**PowerShell (Windows):**
+```powershell
+# Run once to set up
+.\setup-aliases.ps1
+
+# Now use the short command
+agi
+```
+
+**Bash/Zsh (Linux/Mac):**
+```bash
+# Run once to set up
+source setup-aliases.sh
+
+# Now use the short command
+agi
+```
+
+See [ALIASES.md](ALIASES.md) for permanent setup instructions.
+
+### 📦 All Installation Options
+
+```bash
 # Initialize new project
 uvx --from git+https://github.com/ItamarZand88/claude-code-agentic-engineering.git agentic init my-project
 
 # Install in existing project
 uvx --from git+https://github.com/ItamarZand88/claude-code-agentic-engineering.git agentic install
 
-# Templates only
-uvx --from git+https://github.com/ItamarZand88/claude-code-agentic-engineering.git agentic init --templates-only
-
-# Commands only
-uvx --from git+https://github.com/ItamarZand88/claude-code-agentic-engineering.git agentic init --commands-only
-
 # Check installation status
 uvx --from git+https://github.com/ItamarZand88/claude-code-agentic-engineering.git agentic status
-
-# Start Claude Code and verify installation
-claude
-/help    # Should show your new commands
-/agents  # Should show your new subagents
 ```
 
 ## 🎯 What This Gives You
