@@ -339,26 +339,36 @@ def show_success_panel(target: str):
 [bright_blue]/help[/bright_blue]                 Show available commands
 [bright_blue]/agents[/bright_blue]               List specialized agents"""
 
-    # Main success panel
-    success_content = f"""[bold green]Installation Complete![/bold green]
-
-[bold blue]Installed in {target}:[/bold blue]
-
-{install_summary}
-
-Project directories: [cyan]Circle/[/cyan], [cyan]Circle/standards/[/cyan], [cyan]context/[/cyan]
-
-{workflow_steps}
-
-[bold green]Your agentic engineering workflow is ready![/bold green]"""
-
+    # Print success message
+    console.print()
     console.print(Panel(
-        success_content,
+        f"[bold green]Installation Complete![/bold green]\n\n[bold blue]Installed in {target}:[/bold blue]",
         title="Claude Code Agentic Engineering",
         border_style="green",
         box=box.ROUNDED,
         padding=(1, 2)
     ))
+
+    # Print installation summary table
+    console.print(install_summary)
+    console.print()
+
+    # Print directories
+    console.print("Project directories: [cyan]Circle/[/cyan], [cyan]Circle/standards/[/cyan], [cyan]context/[/cyan]")
+    console.print()
+
+    # Print workflow steps
+    console.print(Panel(
+        workflow_steps,
+        title="Next Steps",
+        border_style="bright_cyan",
+        box=box.ROUNDED,
+        padding=(1, 2)
+    ))
+
+    console.print()
+    console.print("[bold green]Your agentic engineering workflow is ready![/bold green]")
+    console.print()
 
 if __name__ == "__main__":
     main()
