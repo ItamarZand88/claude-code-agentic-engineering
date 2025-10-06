@@ -66,12 +66,12 @@ TEMPLATES = [
 
 def show_banner():
     """Display a simple banner with enhanced styling."""
-    # Simple header with title and tagline
+    # Simple header with title and tagline (ASCII-only for Windows compatibility)
     console.print()
     console.print(Align.center(Text("CLAUDE CODE AGENTIC ENGINEERING", style="bold bright_blue")))
-    console.print(Align.center(Rule(style="bright_cyan")))
+    console.print(Align.center(Text("=" * 60, style="bright_cyan")))
     console.print(Align.center(Text(TAGLINE, style="italic bright_cyan")))
-    console.print(Align.center(Rule(style="bright_cyan")))
+    console.print(Align.center(Text("=" * 60, style="bright_cyan")))
     console.print()
 
 @click.group()
