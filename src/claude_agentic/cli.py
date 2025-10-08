@@ -235,8 +235,7 @@ def create_project_directories():
     """Create project directories for workflow organization with enhanced styling."""
     directories = [
         ("./Circle", "Task workspace (organized by task folder)"),
-        ("./Circle/standards", "Project coding standards"),
-        ("./context", "Optional project knowledge storage")
+        ("./Circle/standards", "Project coding standards")
     ]
 
     console.print(Rule("[bold cyan]Project Structure Setup[/bold cyan]"))
@@ -351,7 +350,7 @@ def show_success_panel(target: str):
     console.print()
 
     # Print directories
-    console.print("Project directories: [cyan]Circle/[/cyan], [cyan]Circle/standards/[/cyan], [cyan]context/[/cyan]")
+    console.print("Project directories: [cyan]Circle/[/cyan], [cyan]Circle/standards/[/cyan]")
     console.print()
 
     # Print workflow steps
