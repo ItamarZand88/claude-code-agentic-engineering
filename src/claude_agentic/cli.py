@@ -39,7 +39,8 @@ COMMANDS = [
     "1_ticket.md",
     "2_plan.md",
     "3_implement.md",
-    "4_review.md"
+    "4_review.md",
+    "standards.md"
 ]
 
 AGENTS = [
@@ -48,7 +49,8 @@ AGENTS = [
     "code-reviewer.md",
     "dependency-mapper.md",
     "feature-finder.md",
-    "implementation-strategist.md"
+    "implementation-strategist.md",
+    "standards-generator.md"
 ]
 
 def show_banner():
