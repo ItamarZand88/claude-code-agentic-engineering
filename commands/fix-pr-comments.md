@@ -282,51 +282,7 @@ END IF
 - IF critical test failures → Report and ask user how to proceed
   </step>
 
-### Step 5: Commit and Push Changes
-
-<step>
-**Objective**: Commit fixes with clear references to review comments
-
-**Process**:
-
-1. Stage all changes: `git add .`
-2. Generate commit message:
-
-   ```
-   Fix: Address PR review comments
-
-   Implemented changes requested in PR #{pr_number}:
-   - [{file}] {brief_description} (@{reviewer})
-   - [{file}] {brief_description} (@{reviewer})
-
-   Resolves review comments: {comment_ids}
-   {IF task_folder: "Related to task: {task_name}"}
-
-   🤖 Generated with [Claude Code](https://claude.com/claude-code)
-
-   Co-Authored-By: Claude <noreply@anthropic.com>
-   ```
-
-3. Create commit with heredoc format
-4. Push to remote: `git push`
-5. Add comment to PR: `gh pr comment {pr_number} --body "✅ Addressed review comments in commit {sha}"`
-6. IF task_folder provided → Update task review:
-   - Append PR fixes summary to `{task_folder}/review.md`
-   - Include: PR number, commit SHA, comments addressed, files modified
-
-**Validation**:
-
-- [ ] Commit created successfully
-- [ ] Pushed to remote
-- [ ] PR comment added
-- [ ] IF task_folder → review.md updated with PR fixes
-
-**Early Returns**:
-
-- IF push fails → Check if branch protection requires review
-  </step>
-
-### Step 6: Update Task Review (If Task Context Provided)
+### Step 5: Update Task Review (If Task Context Provided)
 
 <step>
 **Objective**: Document PR fixes in original task artifacts
@@ -343,7 +299,6 @@ END IF
 
    **PR**: #{pr_number}
    **Date**: {current_date}
-   **Commit**: {commit_sha}
 
    ### Comments Addressed: {count}/{total}
 
@@ -382,14 +337,14 @@ END IF
 ## Report
 
 <report>
-**After displaying validation results and before committing:**
+**After completing all fixes and validation:**
 
 Show summary:
 
 ```
 ## PR Comment Fixes Complete
 
-**PR**: #{pr_number}
+**PR**: #{pr_number} - {title}
 **Comments Addressed**: {count}/{total}
 **Files Modified**: {count}
 
@@ -400,16 +355,19 @@ Show summary:
 ### Manual Review Needed (if any):
 - {comment_preview} - {reason}
 
-**Next Steps**:
-1. Review the changes in git diff
-2. Commit and push to PR branch
-3. Request re-review from reviewers
+### Validation Results:
+- Linter: {PASS/FAIL}
+- Tests: {PASS/FAIL}
+- Type Check: {PASS/FAIL}
+
+{IF task_folder: "**Task Updated**: Circle/{task_name}/review.md"}
 ```
 
-**Then ask user**: "Would you like me to commit and push these changes to the PR?"
-
-**IF user confirms** → Execute Step 5 (commit and push)
-**ELSE** → End with message: "Changes ready for review. You can commit manually when ready."
+**User is responsible for**:
+1. Review the changes: `git diff`
+2. Commit: `git add . && git commit -m "Fix: Address PR review comments"`
+3. Push: `git push`
+4. Comment on PR (optional): `gh pr comment {pr_number} --body "✅ Addressed review comments"`
 </report>
 
 ## Output
@@ -418,21 +376,22 @@ Show summary:
 Final output after successful execution:
 
 ```
-✅ PR Comment Fixes Applied
+✅ PR Comment Fixes Ready for Review
 
 **PR**: #{pr_number} - {title}
-**Commit**: {commit_sha}
 **Comments Addressed**: {count}/{total}
 
 ### Summary:
 - Modified {file_count} files
 - Fixed {comment_count} review comments
-- All tests passing ✓
+- Validation: {status}
+
+{IF task_folder: "✅ Updated Circle/{task_name}/review.md with PR fixes summary"}
 
 **Next Steps**:
-1. Verify changes in GitHub: {pr_url}
-2. Request re-review from: {reviewer_names}
-3. Monitor PR checks and CI/CD
+1. Review changes: `git diff`
+2. Commit and push your changes
+3. Request re-review from: {reviewer_names}
 
 {manual_review_section if applicable}
 ```
@@ -504,21 +463,14 @@ ELSE IF critical failures:
   REPORT and ASK user
 END IF
 
-ASK user to confirm commit
-
-IF user confirms:
-  COMMIT with references (include task_name if provided)
-  PUSH to remote
-  COMMENT on PR
-
-  IF task_folder provided:
-    APPEND PR fixes to task_folder/review.md
-  END IF
-
-  REPORT success
-ELSE:
-  REPORT "Changes ready for manual commit"
+IF task_folder provided:
+  APPEND PR fixes to task_folder/review.md
 END IF
+
+REPORT summary with next steps for user
+  - All changes applied
+  - Validation results
+  - User must commit and push manually
 
 END
 ```
