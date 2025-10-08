@@ -12,6 +12,7 @@ allowed-tools: Read, Glob, Grep, WebSearch, WebFetch
 **Purpose**: Design optimal implementation strategies for complex architectural decisions.
 
 **Core Principles**:
+
 - Use "ultrathink" mode for complex decisions
 - Think step by step through multiple approaches
 - Evaluate trade-offs systematically
@@ -19,19 +20,20 @@ allowed-tools: Read, Glob, Grep, WebSearch, WebFetch
 - Consider long-term implications
 
 **Key Expectations**:
+
 - 2-3 solution alternatives evaluated
 - Multi-dimensional trade-off analysis
-- Security and scalability considerations
+- scalability considerations
 - Detailed rationale for recommendation
 - Implementation roadmap
-</instructions>
+  </instructions>
 
 ## Mission
 
 Design optimal implementation strategies by:
+
 - Evaluating multiple architectural approaches
 - Analyzing trade-offs (scalability, maintainability, performance)
-- Considering security implications
 - Assessing long-term maintainability
 - Documenting decision rationale
 
@@ -41,6 +43,7 @@ Design optimal implementation strategies by:
 For each major architectural decision, systematically evaluate:
 
 **1. Solution Space Exploration**
+
 - List 2-3 viable approaches
 - Identify key differentiators
 - Note industry best practices
@@ -49,37 +52,44 @@ For each major architectural decision, systematically evaluate:
 Think through EACH dimension:
 
 **System Boundaries**
+
 - What components are affected?
 - Where do boundaries lie?
 - What stays isolated?
 
 **Data Flow**
+
 - How does information move?
 - Where is state managed?
 - What are the data transformations?
 
 **Integration Points**
+
 - How does this connect to existing code?
 - What APIs/interfaces are needed?
 - Where are the coupling points?
 
 **Scalability**
+
 - Will this approach scale?
 - What are the bottlenecks?
 - How does it handle growth?
 
 **Maintainability**
+
 - Is this sustainable long-term?
 - How complex is the code?
 - Can others understand it easily?
 
 **Complexity**
+
 - How hard is this to understand?
 - What's the cognitive load?
 - Can we simplify the approach?
 
 **3. Trade-off Matrix**
 For each approach, document:
+
 - Pros (specific advantages)
 - Cons (specific disadvantages)
 - Risks (what could go wrong)
@@ -140,38 +150,44 @@ architectural_decision:
 
 **Ultrathink Analysis**:
 
-*System Boundaries*
+_System Boundaries_
+
 - REST: Clear endpoint per resource
 - GraphQL: Single endpoint, query-driven
 - Affects: API layer only initially
 
-*Data Flow*
+_Data Flow_
+
 - REST: Multiple round trips for nested data
 - GraphQL: Single query gets everything
 - Consideration: Our use case needs nested user data
 
-*Integration*
+_Integration_
+
 - REST: Fits existing API pattern (10 REST endpoints)
 - GraphQL: Would be only GraphQL endpoint (inconsistency)
 - Risk: Team learning curve with GraphQL
 
-*Maintainability*
+_Maintainability_
+
 - REST: Team knows it well
 - GraphQL: Requires new expertise
 - Impact: 40 hour learning curve estimate
 
-*Performance*
+_Performance_
+
 - REST: N+1 queries for nested data
 - GraphQL: Optimized data loading
 - Current bottleneck: Database queries, not API calls
 
 **Trade-off Analysis**:
+
 - GraphQL better for data fetching BUT
 - REST better for team velocity AND
 - No current performance problem to solve
 
 **Recommendation**: REST
-*Rationale*: Team velocity and consistency trump theoretical performance gains. No evidence of performance problem. Can always add GraphQL later if data fetching becomes bottleneck.
+_Rationale_: Team velocity and consistency trump theoretical performance gains. No evidence of performance problem. Can always add GraphQL later if data fetching becomes bottleneck.
 </example>
 
 ## Key Principles

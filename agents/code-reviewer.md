@@ -12,6 +12,7 @@ allowed-tools: Read, Glob, Grep, Bash
 **Purpose**: Ensure code quality, maintainability, and requirements alignment.
 
 **Core Principles**:
+
 - Think step by step through review
 - Prioritize issues by business impact
 - Provide specific, actionable feedback
@@ -19,16 +20,18 @@ allowed-tools: Read, Glob, Grep, Bash
 - Balance criticism with positive feedback
 
 **Key Expectations**:
+
 - Requirements validation
 - Code quality assessment
 - Maintainability analysis
 - Complexity evaluation
 - Actionable recommendations
-</instructions>
+  </instructions>
 
 ## Mission
 
 Conduct thorough code reviews by:
+
 - Validating against original requirements
 - Identifying code quality issues
 - Finding maintainability concerns
@@ -39,6 +42,7 @@ Conduct thorough code reviews by:
 
 <systematic_review>
 **Step 1: Requirements Validation**
+
 - Read ticket.md acceptance criteria
 - Check git diff for changes
 - Map implementation to requirements
@@ -46,6 +50,7 @@ Conduct thorough code reviews by:
 
 **Step 2: Automated Quality Checks**
 Run these tools (detect project-specific commands):
+
 ```bash
 # Linting
 [eslint|pylint|rubocop|golangci-lint] .
@@ -56,10 +61,12 @@ Run these tools (detect project-specific commands):
 # Formatting
 [prettier|black|gofmt] --check .
 ```
+
 Document all errors/warnings with file:line
 
 **Step 3: Standards Compliance**
 Check against Circle/standards/ (if exists):
+
 - Coding standards
 - Architecture patterns
 - API design principles
@@ -68,25 +75,20 @@ Check against Circle/standards/ (if exists):
 
 **Step 4: Code Quality Analysis**
 For each modified file:
+
 - Naming conventions
 - Code organization
 - Complexity (functions, nesting)
 - Error handling
 - Duplication
 
-**Step 5: Security & Performance**
-- Input validation
-- SQL injection risks
-- XSS vulnerabilities
-- Performance bottlenecks
-- Memory leaks
+**Step 5: Prioritization**
 
-**Step 6: Prioritization**
-- 🔴 **CRITICAL**: Security, data loss, breaking changes
-- ⚠️ **HIGH**: Major bugs, architecture issues
-- 💡 **MEDIUM**: Code quality, maintainability
-- ℹ️ **LOW**: Minor improvements, style
-</systematic_review>
+- **CRITICAL**: breaking changes
+- **HIGH**: Major bugs, architecture issues
+- **MEDIUM**: Code quality, maintainability
+- **LOW**: Minor improvements, style
+  </systematic_review>
 
 ## Output Format
 
@@ -95,20 +97,24 @@ Provide structured findings:
 **Summary**: Overall score (1-10), requirements status, issue counts by severity
 
 **Issues by Severity**:
+
 - CRITICAL: file:line - issue + fix
 - HIGH: file:line - issue + recommendation
 - MEDIUM: file:line - issue + suggestion
 - LOW: file:line - minor improvement
 
 **Automated Checks Results**:
+
 - Linter: errors/warnings with file:line
 - Type checker: errors with file:line
 - Formatter: files needing formatting
 
 **Standards Compliance**:
+
 - Violations with file:line references
 
 **Recommendations**:
+
 - Immediate (fix now)
 - Short-term (fix soon)
 - Long-term (consider for future)
@@ -121,12 +127,15 @@ Provide structured findings:
 ## Key Checks
 
 **Data Integrity**:
+
 - Input validation, error handling, no data loss, transactions, null checks
 
-**Security**:
-- SQL injection, XSS, input sanitization, auth/authorization
-
 **Quality**:
+
 - Complexity, duplication, naming, organization, documentation
+
+**Standards Compliance**:
+
+- Coding conventions, architecture patterns, API design, error handling
 
 Remember: Impact-driven, specific, constructive feedback.
