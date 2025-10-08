@@ -13,29 +13,34 @@ allowed-tools: Read, Write, Glob, Grep, Bash, Task
 **Purpose**: Create a comprehensive task ticket that answers "WHAT needs to be done" through deep codebase analysis.
 
 **Core Principles**:
+
 - Focus on WHAT, not HOW (implementation is for planning phase)
 - Perform thorough parallel codebase exploration
 - Ask clarification questions if requirements are unclear
 - Document everything discovered during analysis
 
 **Key Expectations**:
+
 - Deep understanding of existing codebase patterns
 - Comprehensive dependency mapping
 - Clear, actionable requirements
 - Specific file paths and integration points
-</instructions>
+  </instructions>
 
 ## Variables
 
 ### Dynamic Variables (User Input)
+
 - **user_prompt**: `$ARGUMENTS` - The user's task description
 
 ### Static Variables (Configuration)
+
 - **OUTPUT_DIRECTORY**: `./Circle/{task-name}/` - Base directory for task artifacts
 - **TICKET_FILENAME**: `ticket.md` - Standard ticket filename
 - **TASK_FOLDER_PATTERN**: `{brief-summary-kebab-case}` - Naming convention for task folders
 
 ### Derived Variables (Computed During Execution)
+
 - **task_folder_name**: Generated from user_prompt (e.g., "oauth-authentication")
 - **ticket_path**: `./Circle/{task_folder_name}/ticket.md` - Full path to ticket file
 
@@ -47,6 +52,7 @@ allowed-tools: Read, Write, Glob, Grep, Bash, Task
 **Objective**: Extract core requirements from user input
 
 **Process**:
+
 1. Read `$ARGUMENTS` (user_prompt)
 2. Identify task type: feature | bugfix | refactor | documentation | other
 3. Extract key requirements and constraints
@@ -54,6 +60,7 @@ allowed-tools: Read, Write, Glob, Grep, Bash, Task
 5. Flag ambiguous or incomplete requirements
 
 **Validation**:
+
 - ✅ Task type identified
 - ✅ Core requirements extracted
 - ✅ Constraints noted
@@ -73,7 +80,6 @@ allowed-tools: Read, Write, Glob, Grep, Bash, Task
 
 ```yaml
 Parallel Agent Execution:
-
   Agent 1 - architecture-explorer:
     purpose: Project structure discovery
     prompt: |
@@ -103,12 +109,14 @@ Parallel Agent Execution:
 ```
 
 **Synthesis After Completion**:
+
 1. Consolidate findings from all agents
 2. Identify conflicts or gaps in information
 3. Build comprehensive understanding
 4. Document all discovered context
 
 **Validation**:
+
 - ✅ All 3 agents completed successfully
 - ✅ Key files and patterns identified
 - ✅ Dependencies mapped
@@ -118,7 +126,6 @@ Parallel Agent Execution:
 **Conditional**: If agents reveal blockers or missing dependencies → Document clearly and flag for planning phase
 </step>
 
-
 ### Step 3: Clarification Questions (Conditional)
 
 <step>
@@ -127,6 +134,7 @@ Parallel Agent Execution:
 **Condition**: Execute ONLY if requirements are ambiguous or incomplete
 
 **Process**:
+
 1. Identify specific unclear areas
 2. Formulate precise questions
 3. Present questions to user
@@ -134,11 +142,13 @@ Parallel Agent Execution:
 5. Incorporate answers into understanding
 
 **Example Questions**:
+
 - "Could you clarify the expected behavior when {scenario}?"
 - "Are there any specific constraints I should know about?"
 - "I found existing pattern X - should the new feature follow this pattern?"
 
 **Validation**:
+
 - ✅ All ambiguities resolved
 - ✅ User feedback incorporated
 - ✅ Clear path forward established
@@ -152,12 +162,14 @@ Parallel Agent Execution:
 **Objective**: Set up organized workspace for task artifacts
 
 **Process**:
+
 1. Generate descriptive kebab-case folder name from task
    - Examples: "oauth-authentication", "user-profile-update", "api-rate-limiting"
 2. Create directory: `./Circle/{task-folder-name}/`
 3. Prepare to save ticket: `./Circle/{task-folder-name}/ticket.md`
 
 **Folder Purpose**:
+
 ```
 Circle/{task-folder-name}/
 ├── ticket.md   ← Created NOW (this step)
@@ -166,10 +178,11 @@ Circle/{task-folder-name}/
 ```
 
 **Validation**:
+
 - ✅ Folder name is descriptive and follows kebab-case
 - ✅ Directory created successfully
 - ✅ Path is valid for ticket save
-</step>
+  </step>
 
 ### Step 5: Generate Comprehensive Task Ticket
 
@@ -205,25 +218,30 @@ Next step reference: `/2_plan @Circle/{task-folder-name}`
 **Flow Logic**:
 
 1. **Parse user intent from $ARGUMENTS**
+
    - IF requirements are unclear → Ask clarification questions and STOP
    - ELSE → Continue to exploration
 
 2. **Launch parallel exploration** (single message with 3 Task tool calls)
+
    - Launch architecture-explorer agent
    - Launch feature-finder agent
    - Launch dependency-mapper agent
    - Wait for ALL agents to complete
 
 3. **Synthesize findings**
+
    - Consolidate all agent results
    - IF new ambiguities found → Ask clarification questions and STOP
    - ELSE → Continue to folder creation
 
 4. **Create folder structure**
+
    - Generate kebab-case folder name from task description
    - Create `./Circle/{task-folder-name}/` directory
 
 5. **Generate comprehensive ticket**
+
    - Build ticket from task info + agent findings
    - Save to `./Circle/{task-folder-name}/ticket.md`
 
@@ -233,11 +251,12 @@ Next step reference: `/2_plan @Circle/{task-folder-name}`
    - Ask user if they want to proceed to planning phase
 
 **Critical Decision Points**:
+
 - ✅ Before exploration: Are requirements clear enough?
 - ✅ Before synthesis: Did all agents complete successfully?
 - ✅ Before ticket save: Are there unresolved ambiguities?
 - ✅ After completion: Does user want to proceed to /2_plan?
-</control_flow>
+  </control_flow>
 
 ## Report
 
@@ -245,6 +264,7 @@ Next step reference: `/2_plan @Circle/{task-folder-name}`
 **Format**: Structured completion summary
 
 **Required Elements**:
+
 1. **Task Folder Path**: Display created folder path
 2. **Analysis Metrics**: Files analyzed, files to modify, integration points, dependencies
 3. **Files Created**: List with descriptions
@@ -253,6 +273,7 @@ Next step reference: `/2_plan @Circle/{task-folder-name}`
 6. **Next Step**: Explicit command to run
 
 **Example Output**:
+
 ```
 ✅ Task folder created: `./Circle/oauth-authentication/`
 
@@ -281,7 +302,8 @@ Ready to create implementation plan?
 **After displaying the report above:**
 
 1. Ask user: "Would you like me to proceed with creating the implementation plan?"
-2. IF user confirms (yes/proceed/continue) → Use SlashCommand tool to run: `/2_plan @Circle/{task-folder-name}`
+2. IF user confirms (yes/proceed/continue) → Use SlashCommand tool to run: SlashCommand(`/2_plan @Circle/{task-folder-name}`)
 3. ELSE → Stop and wait for user instructions
 ```
+
 </report>
