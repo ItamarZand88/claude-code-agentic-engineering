@@ -1,6 +1,6 @@
 ---
 description: Fetches PR review comments and implements requested changes
-argument-hint: <pr_number>
+argument-hint: <pr_number> [task_folder]
 model: inherit
 allowed-tools: Read, Write, Edit, Glob, Grep, Bash, Task, TodoWrite
 ---
@@ -10,29 +10,33 @@ allowed-tools: Read, Write, Edit, Glob, Grep, Bash, Task, TodoWrite
 ## Instructions
 
 <instructions>
-**Purpose**: Fetch review comments from a GitHub Pull Request and implement all requested changes.
+**Purpose**: Fetch review comments from a GitHub Pull Request and implement all requested changes, with optional context from the original task.
 
 **Core Principles**:
 
 - Fetch and parse all PR review comments
+- Link to original task context (ticket, plan, review) if provided
 - Organize comments by file and priority
 - Implement changes systematically
 - Validate each fix before moving to next
 - Commit changes with references to review comments
+- Update task review.md with PR fixes summary
 
 **Success Criteria**:
 
 - All actionable review comments addressed
-- Changes follow existing code patterns
+- Changes follow existing code patterns and original plan (if task provided)
 - Tests pass after fixes
 - Clear commit messages referencing comments
+- Task artifacts updated with PR fix summary
   </instructions>
 
 ## Variables
 
 ### Dynamic Variables (User Input)
 
-- **pr_number**: `$ARGUMENTS` - The PR number to fetch comments from
+- **pr_number**: `$ARGUMENTS[0]` - The PR number to fetch comments from
+- **task_folder**: `$ARGUMENTS[1]` (Optional) - Path to Circle task folder (e.g., `Circle/oauth-authentication`)
 
 ### Static Variables (Configuration)
 
@@ -44,8 +48,51 @@ allowed-tools: Read, Write, Edit, Glob, Grep, Bash, Task, TodoWrite
 - **comments_list**: Fetched review comments
 - **files_affected**: List of files with comments
 - **current_branch**: Git branch name
+- **original_ticket**: Content from task_folder/ticket.md (if task_folder provided)
+- **original_plan**: Content from task_folder/plan.md (if task_folder provided)
+- **original_review**: Content from task_folder/review.md (if task_folder provided)
 
 ## Workflow
+
+### Step 0: Load Task Context (Optional)
+
+<step>
+**Objective**: Load original task artifacts if task_folder provided
+
+**Process**:
+
+1. IF task_folder is provided:
+   - Verify folder exists
+   - Read `{task_folder}/ticket.md` → Store as original_ticket
+   - Read `{task_folder}/plan.md` → Store as original_plan
+   - Read `{task_folder}/review.md` → Store as original_review
+   - Display task context summary
+2. ELSE:
+   - Skip task context loading
+   - Proceed without task context
+
+**Output Format** (if task_folder provided):
+
+```
+## Task Context Loaded
+
+**Task**: {task_name}
+**Ticket**: {brief_summary_from_ticket}
+**Plan**: {brief_summary_from_plan}
+**Original Review**: {brief_summary_from_review}
+
+Using this context to inform PR comment fixes.
+```
+
+**Validation**:
+
+- [ ] IF task_folder provided → All artifacts loaded successfully
+- [ ] Task context available for reference during fixes
+
+**Early Returns**:
+
+- IF task_folder provided BUT folder not found → Warning: "Task folder not found, proceeding without context"
+  </step>
 
 ### Step 1: Fetch PR Information
 
@@ -140,9 +187,11 @@ allowed-tools: Read, Write, Edit, Glob, Grep, Bash, Task, TodoWrite
 2. FOR EACH file with comments:
    - Mark todo as in_progress
    - Read current file content
+   - IF task_folder provided → Check original_plan for relevant implementation details
    - FOR EACH comment in file (sorted by line number):
      - Display comment context
      - Locate relevant code section
+     - IF original_plan exists → Reference planned approach for this file
      - Implement requested change using Edit tool
      - IF change affects other files → Note for cross-file fixes
    - Validate changes (syntax check, run linter if available)
@@ -251,22 +300,83 @@ END IF
    - [{file}] {brief_description} (@{reviewer})
 
    Resolves review comments: {comment_ids}
+   {IF task_folder: "Related to task: {task_name}"}
 
+   🤖 Generated with [Claude Code](https://claude.com/claude-code)
+
+   Co-Authored-By: Claude <noreply@anthropic.com>
    ```
 
 3. Create commit with heredoc format
 4. Push to remote: `git push`
 5. Add comment to PR: `gh pr comment {pr_number} --body "✅ Addressed review comments in commit {sha}"`
+6. IF task_folder provided → Update task review:
+   - Append PR fixes summary to `{task_folder}/review.md`
+   - Include: PR number, commit SHA, comments addressed, files modified
 
 **Validation**:
 
 - [ ] Commit created successfully
 - [ ] Pushed to remote
 - [ ] PR comment added
+- [ ] IF task_folder → review.md updated with PR fixes
 
 **Early Returns**:
 
 - IF push fails → Check if branch protection requires review
+  </step>
+
+### Step 6: Update Task Review (If Task Context Provided)
+
+<step>
+**Objective**: Document PR fixes in original task artifacts
+
+**Process**:
+
+1. IF task_folder NOT provided → Skip this step
+2. ELSE:
+   - Read current `{task_folder}/review.md`
+   - Append PR Fixes section:
+
+   ```markdown
+   ## PR Review Fixes
+
+   **PR**: #{pr_number}
+   **Date**: {current_date}
+   **Commit**: {commit_sha}
+
+   ### Comments Addressed: {count}/{total}
+
+   **Files Modified**:
+   - {file_path} - {changes_summary}
+   - {file_path} - {changes_summary}
+
+   ### Review Comments:
+   1. **{file}:{line}** (@{reviewer}) - {comment_preview}
+      - ✅ Fixed: {fix_description}
+
+   2. **{file}:{line}** (@{reviewer}) - {comment_preview}
+      - ✅ Fixed: {fix_description}
+
+   ### Manual Review Needed (if any):
+   - {comment} - {reason}
+
+   ### Validation:
+   - Linter: {PASS/FAIL}
+   - Tests: {PASS/FAIL}
+   - Type Check: {PASS/FAIL}
+   ```
+
+   - Write updated content to `{task_folder}/review.md`
+
+**Validation**:
+
+- [ ] review.md updated successfully
+- [ ] PR fixes documented with all details
+
+**Early Returns**:
+
+- None (this step is optional based on task_folder)
   </step>
 
 ## Report
@@ -334,11 +444,20 @@ Final output after successful execution:
 ```
 START
 
-INPUT pr_number
+INPUT pr_number, task_folder (optional)
 
 IF pr_number is empty:
   ERROR "PR number required"
   EXIT
+END IF
+
+IF task_folder is provided:
+  IF task_folder exists:
+    LOAD ticket.md, plan.md, review.md
+    DISPLAY task context summary
+  ELSE:
+    WARN "Task folder not found, proceeding without context"
+  END IF
 END IF
 
 FETCH pr_info and comments using gh CLI
@@ -362,9 +481,13 @@ FOR each file in files_with_comments:
   MARK todo in_progress
   READ file
 
+  IF task_folder provided:
+    REFERENCE original_plan for implementation guidance
+  END IF
+
   FOR each comment in file.comments:
     IF comment is actionable:
-      IMPLEMENT fix
+      IMPLEMENT fix (using task context if available)
     ELSE:
       ADD to manual_review_list
     END IF
@@ -384,9 +507,14 @@ END IF
 ASK user to confirm commit
 
 IF user confirms:
-  COMMIT with references
+  COMMIT with references (include task_name if provided)
   PUSH to remote
   COMMENT on PR
+
+  IF task_folder provided:
+    APPEND PR fixes to task_folder/review.md
+  END IF
+
   REPORT success
 ELSE:
   REPORT "Changes ready for manual commit"
