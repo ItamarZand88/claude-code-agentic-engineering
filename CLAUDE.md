@@ -13,12 +13,12 @@ This is an agentic engineering framework designed to leverage Claude Code's capa
 ./commands/     - Slash command definitions for common workflows
 ./agents/       - Specialized agent prompt templates
 ./Circle/       - Organized task workspaces (generated)
-  ├── {task-name}/  - Individual task folder
-  │   ├── ticket.md           - Task requirements
-  │   ├── plan.md             - Implementation plan
-  │   └── review.md           - Code review results
-./context/      - Optional project knowledge storage
-./templates/    - Reusable templates for consistency
+  ├── {task-name}/      - Individual task folder
+  │   ├── ticket.md     - Task requirements
+  │   ├── plan.md       - Implementation plan
+  │   └── review.md     - Code review results
+  └── standards/        - Project coding standards
+      └── README.md     - Generated standards document
 ```
 
 ## Core Philosophy
@@ -33,7 +33,9 @@ This is an agentic engineering framework designed to leverage Claude Code's capa
 
 ### Command Workflow (Streamlined with Organized Storage)
 
-The framework uses a **4-step workflow** with all artifacts organized in the `Circle/` directory:
+The framework uses a **5-command workflow** with all artifacts organized in the `Circle/` directory:
+
+**Core Workflow (4 steps)**:
 
 1. **`/1_ticket <user_prompt>`** - Comprehensive task ticket creation
    - Deep parallel codebase analysis with specialized agents
@@ -54,6 +56,7 @@ The framework uses a **4-step workflow** with all artifacts organized in the `Ci
 3. **`/3_implement Circle/{task-name}`** - Execute the implementation plan
    - Reads `Circle/{task-name}/plan.md`
    - Step-by-step execution with validation
+   - Direct implementation (no subagent delegation)
    - Git status checks and branch management
    - Testing at each phase
    - Reports progress in real-time
@@ -62,8 +65,17 @@ The framework uses a **4-step workflow** with all artifacts organized in the `Ci
    - Reads artifacts (ticket, plan) + git diff
    - Automated code review against requirements
    - Security and performance analysis
-   - **Parallel QA and compliance checks**
+   - **Checks Circle/standards/ for compliance**
    - **Saves review**: `Circle/{task-name}/review.md`
+
+**Setup Command**:
+
+5. **`/standards`** - Generate project coding standards
+   - Analyzes existing codebase patterns
+   - Discovers naming conventions, architecture, testing patterns
+   - **Saves standards**: `Circle/standards/README.md`
+   - Used by `/4_review` for compliance checking
+   - Run once per project or when standards evolve
 
 ### Task Folder Structure
 
@@ -76,11 +88,12 @@ Circle/{task-name}/
 ```
 
 ### Before Starting Any Major Task
-1. Start with `/1_ticket "your requirement"` to create a comprehensive task ticket
-2. Then run `/2_plan Circle/{task-name}` for comprehensive planning
-3. Execute with `/3_implement Circle/{task-name}`
-4. Validate with `/4_review Circle/{task-name}`
-5. All artifacts are organized in `Circle/{task-name}/` for easy tracking
+1. **(Optional, once per project)**: Run `/standards` to generate project coding standards
+2. Start with `/1_ticket "your requirement"` to create a comprehensive task ticket
+3. Then run `/2_plan Circle/{task-name}` for comprehensive planning
+4. Execute with `/3_implement Circle/{task-name}`
+5. Validate with `/4_review Circle/{task-name}` (checks against Circle/standards/ if exists)
+6. All artifacts are organized in `Circle/{task-name}/` for easy tracking
 
 ### Agent Coordination (Specialized Agents)
 
@@ -93,13 +106,11 @@ Circle/{task-name}/
 - **codebase-analyst**: Pattern discovery, conventions, architecture understanding
 - **implementation-strategist**: Architectural decision-making, trade-off analysis, ultrathink mode
 
-**Implementation Agents** (used in `/3_implement`):
-- **code-implementer**: Incremental code implementation, pattern following, quality assurance
+**Review & Quality Agent** (used in `/4_review`):
+- **code-reviewer**: Comprehensive code review including quality analysis, automated QA checks (linting, type-check, formatting), standards compliance validation, security assessment, and performance analysis
 
-**Review & Quality Agents** (used in `/4_review`):
-- **code-reviewer**: Code quality analysis, maintainability assessment, recommendations
-- **quality-assurance-agent**: Automated linting, type checking, formatting validation
-- **standards-compliance-agent**: Coding standards validation, architecture adherence
+**Standards Generation Agent** (used in `/standards`):
+- **standards-generator**: Analyzes codebase patterns to generate project-specific coding standards document in Circle/standards/README.md
 
 ### Quality Standards
 - Always use XML tags in prompts: `<instruction>`, `<context>`, `<thinking>`, `<output>`
@@ -142,16 +153,18 @@ Expected output format
 ## Key Features
 
 ### Streamlined Workflow
-- **4-step workflow**: Ticket → Plan → Implement → Review
+- **4-step core workflow**: Ticket → Plan → Implement → Review
+- **Standards setup**: Optional `/standards` command to generate project coding standards
 - **Comprehensive tickets**: Deep codebase analysis with parallel agent coordination
 - **Research-driven planning**: Web search + multi-agent coordination for comprehensive plans
-- **Automated quality**: Parallel QA and compliance checks during review
+- **Direct implementation**: Claude Code implements directly following project patterns (no subagent delegation)
+- **Unified review**: Single code-reviewer agent handles all QA, compliance, security, and performance checks
 
 ### Agent Orchestration
 - **Parallel execution**: Multiple agents run concurrently at each phase for maximum speed
-- **Phase-specific agents**: Different specialized agents for each workflow phase
-- **Specialized expertise**: Each agent focuses on specific analysis or implementation domains
-- **Smart delegation**: code-implementer for implementation, code-reviewer for reviews
+- **Phase-specific agents**: 7 specialized agents across 4 workflow phases
+- **Specialized expertise**: Each agent focuses on specific analysis domains
+- **Consolidated review**: code-reviewer handles all quality aspects in single comprehensive review
 
 ### Best Practices Integration
 - **XML-structured prompts**: Clear separation of instructions and data
@@ -169,7 +182,7 @@ Expected output format
 - **Phase-optimized**: Each command phase uses specialized agents designed for that stage
 - **Batch tool calls**: Use multiple tool invocations in single message
 - **Selective research**: Only research what's needed for the specific task
-- **Automated quality**: Parallel QA and compliance checks during review phase
+- **Unified review**: Single code-reviewer agent performs all quality checks in one comprehensive review
 
 ## Security Considerations
 - Never commit sensitive information to context files

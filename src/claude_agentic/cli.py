@@ -40,7 +40,8 @@ COMMANDS = [
     "2_plan.md",
     "3_implement.md",
     "4_review.md",
-    "standards.md"
+    "standards.md",
+    "fix-pr-comments.md"
 ]
 
 AGENTS = [
