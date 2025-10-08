@@ -45,7 +45,6 @@ COMMANDS = [
 AGENTS = [
     "architecture-explorer.md",
     "codebase-analyst.md",
-    "code-implementer.md",
     "code-reviewer.md",
     "dependency-mapper.md",
     "feature-finder.md",

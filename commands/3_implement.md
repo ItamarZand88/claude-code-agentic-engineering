@@ -16,7 +16,7 @@ allowed-tools: Read, Write, Edit, Glob, Grep, Bash, Task, TodoWrite
 
 - Validate git status before starting (clean working directory)
 - Use TodoWrite to track progress throughout
-- Delegate non-trivial implementation to code-implementer agent
+- Implement incrementally following project patterns
 - Validate after each phase (linting, type-check, build)
 - Handle errors gracefully with recovery options
 
@@ -143,19 +143,11 @@ git branch --show-current        # Check current branch
 
 3. **Execute task**:
 
-   - IF task is non-trivial (complex logic, multiple files) → Delegate to code-implementer agent
-   - ELSE (simple config, single file edit) → Implement directly
-
-   **For agent delegation**:
-
-   ```
-   Use code-implementer agent to implement: {specific_task}
-
-   Context:
-   - Files to modify: {file_list}
-   - Pattern to follow: {similar_code_reference}
-   - Requirements: {task_requirements}
-   ```
+   - Read similar existing code to understand patterns
+   - Implement following project conventions
+   - Make small, incremental changes
+   - Handle errors explicitly
+   - Add comments for complex logic
 
 4. **Validate changes**:
 
@@ -257,8 +249,8 @@ Use TodoWrite: ONE task "in_progress" at a time, mark completed IMMEDIATELY
 4. **Implementation loop** - FOR EACH task in plan:
 
    - Mark task as in_progress in TodoWrite
-   - IF task is non-trivial → Delegate to code-implementer agent
-   - ELSE → Implement directly
+   - Read similar code to understand patterns
+   - Implement following project conventions
    - Validate changes (lint, type-check, build)
    - IF validation fails → Offer retry/skip/debug/rollback options
    - Mark task as completed in TodoWrite
