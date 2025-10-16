@@ -34,24 +34,40 @@ TAGLINE = "Advanced Development Workflow System"
 REPO_URL = "https://github.com/ItamarZand88/claude-code-agentic-engineering"
 RAW_URL = "https://raw.githubusercontent.com/ItamarZand88/claude-code-agentic-engineering/main"
 
-# File lists for installation - Updated to match new simplified structure
+# File lists for installation - Updated to include all commands and agents
 COMMANDS = [
     "1_ticket.md",
+    "1_ticket-mini.md",
     "2_plan.md",
+    "2_plan-mini.md",
     "3_implement.md",
+    "3_implement-mini.md",
     "4_review.md",
+    "4_review-mini.md",
     "standards.md",
-    "fix-pr-comments.md"
+    "standards-mini.md",
+    "fix-pr-comments.md",
+    "fix-pr-comments-mini.md",
+    "checks-mini.md"
 ]
 
 AGENTS = [
     "architecture-explorer.md",
+    "architecture-explorer-mini.md",
     "codebase-analyst.md",
+    "codebase-analyst-mini.md",
     "code-reviewer.md",
+    "code-reviewer-mini.md",
     "dependency-mapper.md",
+    "dependency-mapper-mini.md",
     "feature-finder.md",
+    "feature-finder-mini.md",
     "implementation-strategist.md",
-    "standards-generator.md"
+    "implementation-strategist-mini.md",
+    "quality-assurance-agent-mini.md",
+    "standards-compliance-agent-mini.md",
+    "standards-generator.md",
+    "standards-generator-mini.md"
 ]
 
 def show_banner():
