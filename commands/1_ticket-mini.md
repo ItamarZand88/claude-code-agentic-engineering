@@ -188,7 +188,7 @@ Save to `Circle/{task-name}/ticket.md`:
 
 ## Next
 
-`/2_plan @Circle/{task-name}`
+`/2_plan-mini @Circle/{task-name}`
 ```
 
 ### 7. Report
@@ -204,10 +204,10 @@ Key Findings:
 - {finding_1}
 - {finding_2}
 
-Ready for planning? (I'll run /2_plan)
+Ready for planning? (I'll run /2_plan-mini)
 ```
 
-If user confirms → run `/2_plan @Circle/{task-name}`
+If user confirms → run `/2_plan-mini @Circle/{task-name}`
 
 ## Guidelines
 

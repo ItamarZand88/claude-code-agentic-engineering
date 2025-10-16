@@ -26,7 +26,7 @@ Extract:
 - Affected areas
 - Dependencies
 
-If ticket missing → STOP, tell user to run `/1_ticket`.
+If ticket missing → STOP, tell user to run `/1_ticket-mini`.
 
 ### 2. Research (if needed)
 
@@ -143,7 +143,7 @@ Save to `Circle/{task-folder}/plan.md`:
 
 ## Next
 
-`/3_implement Circle/{task-folder}`
+`/3_implement-mini Circle/{task-folder}`
 ```
 
 ### 5. Report
@@ -154,7 +154,7 @@ Save to `Circle/{task-folder}/plan.md`:
 Phases: {N}
 Tasks: {M}
 
-Ready to implement? (I'll run /3_implement)
+Ready to implement? (I'll run /3_implement-mini)
 ```
 
-If confirmed → run `/3_implement @Circle/{task-folder}`
+If confirmed → run `/3_implement-mini @Circle/{task-folder}`

@@ -49,6 +49,7 @@ Read("src/existing-similar-file.ts")
 </example>
 
 **Implement**:
+
 - Follow project patterns
 - Make incremental changes
 - Handle errors explicitly
@@ -82,7 +83,7 @@ Files: {M} modified
 Modified:
 - {file}: {what_changed}
 
-Next: Code review? (I'll run /4_review)
+Next: Code review? (I'll run /4_review-mini)
 ```
 
-If confirmed → run `/4_review @Circle/{task-folder}`
+If confirmed → run `/4_review-mini @Circle/{task-folder}`
