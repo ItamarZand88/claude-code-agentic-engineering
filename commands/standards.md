@@ -14,7 +14,7 @@ Analyze codebase and generate `Circle/standards/README.md`.
 ## Process
 
 <example>
-Task(standards-generator-mini, "Analyze codebase and create standards:
+Task(standards-generator, "Analyze codebase and create standards:
 - Sample 20-30 files
 - Extract naming conventions
 - Document patterns

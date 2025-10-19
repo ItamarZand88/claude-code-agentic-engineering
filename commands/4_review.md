@@ -32,7 +32,7 @@ Bash("npm run test")
 ### 3. Comprehensive Review
 
 <example>
-Task(code-reviewer-mini, "Review implementation for Circle/{task-folder}:
+Task(code-reviewer, "Review implementation for Circle/{task-folder}:
 
 1. Requirements: Check all acceptance criteria from ticket
 2. Code Quality: Find critical/high/medium/low severity issues

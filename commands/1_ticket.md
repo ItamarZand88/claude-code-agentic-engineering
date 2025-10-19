@@ -48,14 +48,14 @@ Choose agents based on task complexity:
 
 **For new features** (complex):
 <example>
-Task(architecture-explorer-mini, "Discover project structure for {task}")
-Task(feature-finder-mini, "Find similar implementations for {task}")
-Task(dependency-mapper-mini, "Map dependencies for {task}")
+Task(architecture-explorer, "Discover project structure for {task}")
+Task(feature-finder, "Find similar implementations for {task}")
+Task(dependency-mapper, "Map dependencies for {task}")
 </example>
 
 **For bug fixes** (simple):
 <example>
-Task(feature-finder-mini, "Locate affected code for {bug_description}")
+Task(feature-finder, "Locate affected code for {bug_description}")
 </example>
 
 ### 3. Analyze Codebase
@@ -64,14 +64,14 @@ Choose agents based on task complexity:
 
 **For new features** (complex):
 <example>
-Task(architecture-explorer-mini, "Discover project structure for {task}")
-Task(feature-finder-mini, "Find similar implementations for {task}")
-Task(dependency-mapper-mini, "Map dependencies for {task}")
+Task(architecture-explorer, "Discover project structure for {task}")
+Task(feature-finder, "Find similar implementations for {task}")
+Task(dependency-mapper, "Map dependencies for {task}")
 </example>
 
 **For bug fixes** (simple):
 <example>
-Task(feature-finder-mini, "Locate affected code for {bug_description}")
+Task(feature-finder, "Locate affected code for {bug_description}")
 </example>
 
 **For simple changes** - skip agents, use direct search.
@@ -81,7 +81,7 @@ Task(feature-finder-mini, "Locate affected code for {bug_description}")
 For complex tasks with multiple implementation approaches:
 
 <example>
-Task(implementation-strategist-mini, "Evaluate approaches for {task}:
+Task(implementation-strategist, "Evaluate approaches for {task}:
 - List 2-3 viable options
 - Analyze trade-offs
 - Recommend best approach with rationale")
@@ -188,7 +188,7 @@ Save to `Circle/{task-name}/ticket.md`:
 
 ## Next
 
-`/2_plan-mini @Circle/{task-name}`
+`/2_plan @Circle/{task-name}`
 ```
 
 ### 7. Report
@@ -204,10 +204,10 @@ Key Findings:
 - {finding_1}
 - {finding_2}
 
-Ready for planning? (I'll run /2_plan-mini)
+Ready for planning? (I'll run /2_plan)
 ```
 
-If user confirms → run `/2_plan-mini @Circle/{task-name}`
+If user confirms → run `/2_plan @Circle/{task-name}`
 
 ## Guidelines
 

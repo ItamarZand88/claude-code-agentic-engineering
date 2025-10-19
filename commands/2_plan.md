@@ -26,7 +26,7 @@ Extract:
 - Affected areas
 - Dependencies
 
-If ticket missing → STOP, tell user to run `/1_ticket-mini`.
+If ticket missing → STOP, tell user to run `/1_ticket`.
 
 ### 2. Research (if needed)
 
@@ -40,8 +40,8 @@ WebFetch("https://oauth.net/2/")
 
 **For codebase patterns**:
 <example>
-Task(feature-finder-mini, "Find similar auth implementations")
-Task(codebase-analyst-mini, "Extract error handling patterns")
+Task(feature-finder, "Find similar auth implementations")
+Task(codebase-analyst, "Extract error handling patterns")
 </example>
 
 **For library usage**:
@@ -143,7 +143,7 @@ Save to `Circle/{task-folder}/plan.md`:
 
 ## Next
 
-`/3_implement-mini Circle/{task-folder}`
+`/3_implement Circle/{task-folder}`
 ```
 
 ### 5. Report
@@ -154,7 +154,7 @@ Save to `Circle/{task-folder}/plan.md`:
 Phases: {N}
 Tasks: {M}
 
-Ready to implement? (I'll run /3_implement-mini)
+Ready to implement? (I'll run /3_implement)
 ```
 
-If confirmed → run `/3_implement-mini @Circle/{task-folder}`
+If confirmed → run `/3_implement @Circle/{task-folder}`

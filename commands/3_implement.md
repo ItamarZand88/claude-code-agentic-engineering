@@ -83,7 +83,7 @@ Files: {M} modified
 Modified:
 - {file}: {what_changed}
 
-Next: Code review? (I'll run /4_review-mini)
+Next: Code review? (I'll run /4_review)
 ```
 
-If confirmed → run `/4_review-mini @Circle/{task-folder}`
+If confirmed → run `/4_review @Circle/{task-folder}`
