@@ -34,39 +34,26 @@ TAGLINE = "Advanced Development Workflow System"
 REPO_URL = "https://github.com/ItamarZand88/claude-code-agentic-engineering"
 RAW_URL = "https://raw.githubusercontent.com/ItamarZand88/claude-code-agentic-engineering/main"
 
-# File lists for installation - Updated to include all commands and agents
+# File lists for installation - Only mini versions
 COMMANDS = [
-    "1_ticket.md",
     "1_ticket-mini.md",
-    "2_plan.md",
     "2_plan-mini.md",
-    "3_implement.md",
     "3_implement-mini.md",
-    "4_review.md",
     "4_review-mini.md",
-    "standards.md",
     "standards-mini.md",
-    "fix-pr-comments.md",
     "fix-pr-comments-mini.md",
     "checks-mini.md"
 ]
 
 AGENTS = [
-    "architecture-explorer.md",
     "architecture-explorer-mini.md",
-    "codebase-analyst.md",
     "codebase-analyst-mini.md",
-    "code-reviewer.md",
     "code-reviewer-mini.md",
-    "dependency-mapper.md",
     "dependency-mapper-mini.md",
-    "feature-finder.md",
     "feature-finder-mini.md",
-    "implementation-strategist.md",
     "implementation-strategist-mini.md",
     "quality-assurance-agent-mini.md",
     "standards-compliance-agent-mini.md",
-    "standards-generator.md",
     "standards-generator-mini.md"
 ]
 
@@ -210,10 +197,10 @@ def status():
   [bright_blue]/agents[/bright_blue]                   List specialized agents
 
 [bold bright_cyan]4-Step Workflow:[/bold bright_cyan]
-  [bright_green]/1_ticket[/bright_green]                Create comprehensive task ticket
-  [bright_green]/2_plan[/bright_green]                  Generate implementation plan with research
-  [bright_green]/3_implement[/bright_green]             Execute the implementation plan
-  [bright_green]/4_review[/bright_green]                Quality assurance and code review"""
+  [bright_green]/1_ticket-mini[/bright_green]           Create comprehensive task ticket
+  [bright_green]/2_plan-mini[/bright_green]             Generate implementation plan with research
+  [bright_green]/3_implement-mini[/bright_green]        Execute the implementation plan
+  [bright_green]/4_review-mini[/bright_green]           Quality assurance and code review"""
 
         console.print(Panel(
             next_steps,
@@ -344,10 +331,10 @@ def show_success_panel(target: str):
 
     # Create workflow example
     workflow_steps = """[bold bright_cyan]4-Step Workflow:[/bold bright_cyan]
-[bright_green]/1_ticket[/bright_green] "Add OAuth authentication"
-[bright_green]/2_plan[/bright_green] Circle/oauth-authentication
-[bright_green]/3_implement[/bright_green] Circle/oauth-authentication
-[bright_green]/4_review[/bright_green] Circle/oauth-authentication
+[bright_green]/1_ticket-mini[/bright_green] "Add OAuth authentication"
+[bright_green]/2_plan-mini[/bright_green] Circle/oauth-authentication
+[bright_green]/3_implement-mini[/bright_green] Circle/oauth-authentication
+[bright_green]/4_review-mini[/bright_green] Circle/oauth-authentication
 
 [bold bright_cyan]Quick Start:[/bold bright_cyan]
 [bright_blue]claude[/bright_blue]                Launch Claude Code
