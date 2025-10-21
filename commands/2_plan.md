@@ -1,6 +1,6 @@
 ---
 description: Create detailed implementation plan with code examples
-argument-hint: <task_folder_path>
+argument-hint: <task_folder_path> [--continue=implement|review|all]
 model: inherit
 allowed-tools: Read, Write, Glob, Grep, Bash, Task, WebSearch, WebFetch, SlashCommand
 ---
@@ -146,15 +146,27 @@ Save to `Circle/{task-folder}/plan.md`:
 `/3_implement Circle/{task-folder}`
 ```
 
-### 5. Report
+### 5. Report & Continue
+
+Show summary:
 
 ```
 ✅ Plan: Circle/{task-folder}/plan.md
 
 Phases: {N}
 Tasks: {M}
-
-Ready to implement? (I'll run /3_implement)
 ```
 
-If confirmed → run `/3_implement @Circle/{task-folder}`
+**Handle --continue argument** (check if `$ARGUMENTS` contains `--continue=<value>`):
+
+<example>
+# Parse arguments to extract --continue value
+if "--continue=all" or "--continue=review" in arguments:
+  SlashCommand("/3_implement Circle/{task-folder} --continue=review")
+elif "--continue=implement" in arguments:
+  SlashCommand("/3_implement Circle/{task-folder}")
+else:
+  # No --continue flag, ask user
+  Ask: "Ready to implement? (I'll run /3_implement)"
+  If confirmed → SlashCommand("/3_implement Circle/{task-folder}")
+</example>
