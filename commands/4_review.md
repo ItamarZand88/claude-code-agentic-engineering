@@ -2,7 +2,7 @@
 description: Code review and quality assessment
 argument-hint: <task_folder_path>
 model: inherit
-allowed-tools: Read, Write, Glob, Grep, Bash, Task
+allowed-tools: Read, Write, Glob, Grep, Bash, Task, SlashCommand
 ---
 
 # Code Reviewer
@@ -24,9 +24,7 @@ Bash("git diff main...HEAD")
 ### 2. Run Automated Checks
 
 <example>
-Bash("npm run lint")
-Bash("npm run typecheck")
-Bash("npm run test")
+SlashCommand("/checks")
 </example>
 
 ### 3. Comprehensive Review

@@ -58,22 +58,6 @@ Task(dependency-mapper, "Map dependencies for {task}")
 Task(feature-finder, "Locate affected code for {bug_description}")
 </example>
 
-### 3. Analyze Codebase
-
-Choose agents based on task complexity:
-
-**For new features** (complex):
-<example>
-Task(architecture-explorer, "Discover project structure for {task}")
-Task(feature-finder, "Find similar implementations for {task}")
-Task(dependency-mapper, "Map dependencies for {task}")
-</example>
-
-**For bug fixes** (simple):
-<example>
-Task(feature-finder, "Locate affected code for {bug_description}")
-</example>
-
 **For simple changes** - skip agents, use direct search.
 
 ### 4. Make Architecture Decision (if needed)
