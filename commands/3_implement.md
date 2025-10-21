@@ -1,6 +1,6 @@
 ---
 description: Execute implementation plan step-by-step
-argument-hint: <task_folder_path>
+argument-hint: <task_folder_path> [--continue=review|all]
 model: inherit
 allowed-tools: Read, Write, Edit, Glob, Grep, Bash, Task, TodoWrite, SlashCommand
 ---
@@ -76,7 +76,9 @@ Read("Circle/{task-folder}/ticket.md")
 # Verify all acceptance criteria are met
 </example>
 
-### 5. Report
+### 5. Report & Continue
+
+Show summary:
 
 ```
 ✅ Implementation complete: Circle/{task-folder}
@@ -86,8 +88,16 @@ Files: {M} modified
 
 Modified:
 - {file}: {what_changed}
-
-Next: Code review? (I'll run /4_review)
 ```
 
-If confirmed → run `/4_review @Circle/{task-folder}`
+**Handle --continue argument** (check if `$ARGUMENTS` contains `--continue=<value>`):
+
+<example>
+# Parse arguments to extract --continue value
+if "--continue=all" or "--continue=review" in arguments:
+  SlashCommand("/4_review Circle/{task-folder}")
+else:
+  # No --continue flag, ask user
+  Ask: "Code review? (I'll run /4_review)"
+  If confirmed → SlashCommand("/4_review Circle/{task-folder}")
+</example>

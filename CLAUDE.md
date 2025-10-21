@@ -95,6 +95,37 @@ Circle/{task-name}/
 5. Validate with `/4_review Circle/{task-name}` (checks against Circle/standards/ if exists)
 6. All artifacts are organized in `Circle/{task-name}/` for easy tracking
 
+### Command Chaining (Auto-Continue)
+
+Run multiple steps automatically without manual confirmation using the `--continue` flag:
+
+**From Ticket**:
+- `/1_ticket "description" --continue=plan` - Auto-run planning after ticket
+- `/1_ticket "description" --continue=implement` - Auto-run plan + implement
+- `/1_ticket "description" --continue=review` - Run full workflow through review
+- `/1_ticket "description" --continue=all` - Same as `--continue=review`
+
+**From Plan**:
+- `/2_plan Circle/{task-name} --continue=implement` - Auto-run implementation
+- `/2_plan Circle/{task-name} --continue=review` - Auto-run implement + review
+- `/2_plan Circle/{task-name} --continue=all` - Same as `--continue=review`
+
+**From Implement**:
+- `/3_implement Circle/{task-name} --continue=review` - Auto-run review
+- `/3_implement Circle/{task-name} --continue=all` - Same as `--continue=review`
+
+**Examples**:
+```bash
+# Create ticket and automatically plan + implement
+/1_ticket "Add JWT authentication" --continue=implement
+
+# Plan and automatically implement (but stop before review)
+/2_plan Circle/add-jwt-auth --continue=implement
+
+# Implement and automatically review
+/3_implement Circle/add-jwt-auth --continue=review
+```
+
 ### Agent Coordination (Specialized Agents)
 
 **Exploration & Analysis Agents** (used in `/1_ticket`):
