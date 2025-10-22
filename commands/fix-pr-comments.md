@@ -2,7 +2,7 @@
 description: Fix PR review comments
 argument-hint: <pr_number> [task_folder]
 model: inherit
-allowed-tools: Read, Write, Edit, Glob, Grep, Bash, Task, TodoWrite
+allowed-tools: Read, Write, Edit, Glob, Grep, Bash, Task, TodoWrite, SlashCommand
 ---
 
 # PR Comment Fixer
@@ -38,8 +38,7 @@ TodoWrite("mark_completed", comment_id)
 ### 4. Validate
 
 <example>
-Bash("npm run lint")
-Bash("npm test")
+SlashCommand("/checks")
 </example>
 
 ### 5. Update Task Review (if task_folder provided)

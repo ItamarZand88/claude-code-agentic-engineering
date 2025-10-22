@@ -1,8 +1,8 @@
 ---
 description: Create task ticket from user prompt with codebase analysis
-argument-hint: <task_description>
+argument-hint: <task_description> [--continue=plan|implement|review|all]
 model: inherit
-allowed-tools: Read, Write, Glob, Grep, Bash, Task
+allowed-tools: Read, Write, Glob, Grep, Bash, Task, SlashCommand
 ---
 
 # Task Ticket Generator
@@ -41,22 +41,6 @@ Analyze `$ARGUMENTS` to identify:
 - Unclear areas (flag for clarification)
 
 If requirements are completely unclear → ask clarifying questions and STOP.
-
-### 3. Analyze Codebase
-
-Choose agents based on task complexity:
-
-**For new features** (complex):
-<example>
-Task(architecture-explorer, "Discover project structure for {task}")
-Task(feature-finder, "Find similar implementations for {task}")
-Task(dependency-mapper, "Map dependencies for {task}")
-</example>
-
-**For bug fixes** (simple):
-<example>
-Task(feature-finder, "Locate affected code for {bug_description}")
-</example>
 
 ### 3. Analyze Codebase
 
@@ -191,9 +175,9 @@ Save to `Circle/{task-name}/ticket.md`:
 `/2_plan @Circle/{task-name}`
 ```
 
-### 7. Report
+### 7. Report & Continue
 
-Show summary and ask:
+Show summary:
 
 ```
 ✅ Ticket: Circle/{task-name}/ticket.md
@@ -203,11 +187,23 @@ Summary: {brief_task_description}
 Key Findings:
 - {finding_1}
 - {finding_2}
-
-Ready for planning? (I'll run /2_plan)
 ```
 
-If user confirms → run `/2_plan @Circle/{task-name}`
+**Handle --continue argument** (check if `$ARGUMENTS` contains `--continue=<value>`):
+
+<example>
+# Parse arguments to extract --continue value
+if "--continue=all" or "--continue=review" in arguments:
+  SlashCommand("/2_plan Circle/{task-name} --continue=review")
+elif "--continue=implement" in arguments:
+  SlashCommand("/2_plan Circle/{task-name} --continue=implement")
+elif "--continue=plan" in arguments:
+  SlashCommand("/2_plan Circle/{task-name}")
+else:
+  # No --continue flag, ask user
+  Ask: "Ready for planning? (I'll run /2_plan)"
+  If confirmed → SlashCommand("/2_plan Circle/{task-name}")
+</example>
 
 ## Guidelines
 
