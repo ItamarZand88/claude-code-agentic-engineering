@@ -78,14 +78,16 @@ def main():
 @click.argument('project_name', required=False)
 @click.option('--templates-only', is_flag=True, help='Install only templates')
 @click.option('--commands-only', is_flag=True, help='Install only commands and agents')
-@click.option('--force', is_flag=True, help='Force overwrite existing files')
+@click.option('--skip-existing', is_flag=True, help='Skip existing files (default: overwrite with latest)')
 @click.option('--dir', '-d', default='.', help='Target directory (default: current)')
-def init(project_name: Optional[str], templates_only: bool, commands_only: bool, force: bool, dir: str):
+def init(project_name: Optional[str], templates_only: bool, commands_only: bool, skip_existing: bool, dir: str):
     """Initialize a new project with Claude Code agentic engineering setup.
+
+    By default, overwrites existing files with latest versions.
 
     Examples:
         agentic init my-project
-        agentic init --templates-only
+        agentic init --skip-existing          # Keep existing files
         agentic init --dir ./my-app my-app
     """
     target_dir = Path(dir)
@@ -113,16 +115,20 @@ def init(project_name: Optional[str], templates_only: bool, commands_only: bool,
         transient=False
     ) as progress:
         task = progress.add_task("Installing commands and agents...", total=None)
-        install_commands_and_agents(force)
+        install_commands_and_agents(skip_existing)
         progress.remove_task(task)
 
     # Show success message
     show_success_panel(project_name or "current directory")
 
 @main.command()
-@click.option('--force', is_flag=True, help='Force overwrite existing files')
-def install(force: bool):
-    """Install or update agentic engineering components in current directory."""
+@click.option('--skip-existing', is_flag=True, help='Skip existing files (default: overwrite with latest)')
+def install(skip_existing: bool):
+    """Install or update agentic engineering components in current directory.
+
+    By default, overwrites existing files with latest versions from the repository.
+    Use --skip-existing to keep your local modifications.
+    """
     # Show banner
     show_banner()
 
@@ -135,7 +141,7 @@ def install(force: bool):
         transient=False
     ) as progress:
         task = progress.add_task("Installing commands and agents...", total=None)
-        install_commands_and_agents(force)
+        install_commands_and_agents(skip_existing)
         progress.remove_task(task)
 
     show_success_panel("current directory")
@@ -221,21 +227,24 @@ def status():
             box=box.ROUNDED
         ))
 
-def download_file(url: str, dest: Path, force: bool = False) -> bool:
+def download_file(url: str, dest: Path, skip_existing: bool = False) -> bool:
     """Download a file from URL to destination with enhanced status display."""
-    if dest.exists() and not force:
+    file_exists = dest.exists()
+
+    if file_exists and skip_existing:
         console.print(f"[cyan]Skipped existing:[/cyan] [dim]{dest.name}[/dim]")
         return True
 
     try:
-        with Status(f"[cyan]Downloading {dest.name}...[/cyan]", console=console):
+        with Status(f"[cyan]{'Updating' if file_exists else 'Downloading'} {dest.name}...[/cyan]", console=console):
             response = requests.get(url, timeout=30)
             response.raise_for_status()
 
             dest.parent.mkdir(parents=True, exist_ok=True)
             dest.write_text(response.text, encoding='utf-8')
 
-        console.print(f"[green]Downloaded:[/green] [bold]{dest.name}[/bold]")
+        status_msg = "Updated" if file_exists else "Downloaded"
+        console.print(f"[green]{status_msg}:[/green] [bold]{dest.name}[/bold]")
         return True
     except Exception as e:
         console.print(f"[red]Failed to download[/red] [bold]{dest.name}[/bold]: [dim]{e}[/dim]")
@@ -258,7 +267,7 @@ def create_project_directories():
         else:
             console.print(f"[blue]Exists:[/blue] [bold cyan]{directory}[/bold cyan] [dim]({description})[/dim]")
 
-def install_commands_and_agents(force: bool = False):
+def install_commands_and_agents(skip_existing: bool = False):
     """Install command and agent files with enhanced progress tracking."""
     commands_dir = Path(".claude/commands")
     agents_dir = Path(".claude/agents")
@@ -295,7 +304,7 @@ def install_commands_and_agents(force: bool = False):
             progress.update(task, description=f"Installing command [cyan]{command}[/cyan]")
             url = f"{RAW_URL}/commands/{command}"
             dest = commands_dir / command
-            if download_file(url, dest, force):
+            if download_file(url, dest, skip_existing):
                 cmd_success += 1
             progress.advance(task)
 
@@ -304,7 +313,7 @@ def install_commands_and_agents(force: bool = False):
             progress.update(task, description=f"Installing agent [cyan]{agent}[/cyan]")
             url = f"{RAW_URL}/agents/{agent}"
             dest = agents_dir / agent
-            if download_file(url, dest, force):
+            if download_file(url, dest, skip_existing):
                 agent_success += 1
             progress.advance(task)
 
