@@ -28,8 +28,8 @@ If quality checks fail → STOP
 ### 2. Load Plan
 
 <example>
-Read("Circle/{task-folder}/ticket.md")
-Read("Circle/{task-folder}/plan.md")
+Read(".claude/tasks/{task-folder}/ticket.md")
+Read(".claude/tasks/{task-folder}/plan.md")
 </example>
 
 Create TodoWrite list with all tasks.
@@ -72,7 +72,7 @@ Run full quality checks and validate against acceptance criteria from ticket:
 
 <example>
 SlashCommand("/checks")
-Read("Circle/{task-folder}/ticket.md")
+Read(".claude/tasks/{task-folder}/ticket.md")
 # Verify all acceptance criteria are met
 </example>
 
@@ -81,7 +81,7 @@ Read("Circle/{task-folder}/ticket.md")
 Show summary:
 
 ```
-✅ Implementation complete: Circle/{task-folder}
+Implementation complete: .claude/tasks/{task-folder}
 
 Tasks: {N} completed
 Files: {M} modified
@@ -95,9 +95,9 @@ Modified:
 <example>
 # Parse arguments to extract --continue value
 if "--continue=all" or "--continue=review" in arguments:
-  SlashCommand("/4_review Circle/{task-folder}")
+  SlashCommand("/4_review .claude/tasks/{task-folder}")
 else:
   # No --continue flag, ask user
   Ask: "Code review? (I'll run /4_review)"
-  If confirmed → SlashCommand("/4_review Circle/{task-folder}")
+  If confirmed → SlashCommand("/4_review .claude/tasks/{task-folder}")
 </example>

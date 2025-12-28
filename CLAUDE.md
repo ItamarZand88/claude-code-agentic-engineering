@@ -12,13 +12,18 @@ This is an agentic engineering framework designed to leverage Claude Code's capa
 ```
 ./commands/     - Slash command definitions for common workflows
 ./agents/       - Specialized agent prompt templates
-./Circle/       - Organized task workspaces (generated)
-  ├── {task-name}/      - Individual task folder
-  │   ├── ticket.md     - Task requirements
-  │   ├── plan.md       - Implementation plan
-  │   └── review.md     - Code review results
-  └── standards/        - Project coding standards
-      └── README.md     - Generated standards document
+./skills/       - Advanced skill modules (e.g., code-standards)
+./.claude/      - Installed components and task workspaces
+  ├── commands/         - Installed slash commands
+  ├── agents/           - Installed agent templates
+  ├── skills/           - Installed skill modules
+  ├── tasks/            - Organized task workspaces (generated)
+  │   └── {task-name}/  - Individual task folder
+  │       ├── ticket.md - Task requirements
+  │       ├── plan.md   - Implementation plan
+  │       └── review.md - Code review results
+  └── best-practices/   - Project coding best practices
+      └── README.md     - Generated best practices document
 ```
 
 ## Core Philosophy
@@ -33,67 +38,67 @@ This is an agentic engineering framework designed to leverage Claude Code's capa
 
 ### Command Workflow (Streamlined with Organized Storage)
 
-The framework uses a **5-command workflow** with all artifacts organized in the `Circle/` directory:
+The framework uses a **5-command workflow** with all artifacts organized in the `.claude/` directory:
 
 **Core Workflow (4 steps)**:
 
 1. **`/1_ticket <user_prompt>`** - Comprehensive task ticket creation
    - Deep parallel codebase analysis with specialized agents
    - Clarification questions for unclear requirements
-   - **Creates task folder**: `Circle/{task-name}/`
-   - **Saves ticket**: `Circle/{task-name}/ticket.md`
+   - **Creates task folder**: `.claude/tasks/{task-name}/`
+   - **Saves ticket**: `.claude/tasks/{task-name}/ticket.md`
    - **Focus**: WHAT needs to be done with full context
 
-2. **`/2_plan Circle/{task-name}`** - Research-driven comprehensive planning
-   - Reads `Circle/{task-name}/ticket.md`
+2. **`/2_plan .claude/tasks/{task-name}`** - Research-driven comprehensive planning
+   - Reads `.claude/tasks/{task-name}/ticket.md`
    - Web research for best practices
    - **Parallel agent coordination** for pattern discovery
    - Architecture and design decisions with rationale
    - Detailed phase-based implementation breakdown
-   - **Saves plan**: `Circle/{task-name}/plan.md`
+   - **Saves plan**: `.claude/tasks/{task-name}/plan.md`
    - **Focus**: HOW to implement with research-backed decisions
 
-3. **`/3_implement Circle/{task-name}`** - Execute the implementation plan
-   - Reads `Circle/{task-name}/plan.md`
+3. **`/3_implement .claude/tasks/{task-name}`** - Execute the implementation plan
+   - Reads `.claude/tasks/{task-name}/plan.md`
    - Step-by-step execution with validation
    - Direct implementation (no subagent delegation)
    - Git status checks and branch management
    - Testing at each phase
    - Reports progress in real-time
 
-4. **`/4_review Circle/{task-name}`** - Quality assurance
+4. **`/4_review .claude/tasks/{task-name}`** - Quality assurance
    - Reads artifacts (ticket, plan) + git diff
    - Automated code review against requirements
    - Security and performance analysis
-   - **Checks Circle/standards/ for compliance**
-   - **Saves review**: `Circle/{task-name}/review.md`
+   - **Checks .claude/best-practices/ for compliance**
+   - **Saves review**: `.claude/tasks/{task-name}/review.md`
 
 **Setup Command**:
 
-5. **`/standards`** - Generate project coding standards
+5. **`/best-practices`** - Generate project coding best practices
    - Analyzes existing codebase patterns
    - Discovers naming conventions, architecture, testing patterns
-   - **Saves standards**: `Circle/standards/README.md`
+   - **Saves best practices**: `.claude/best-practices/README.md`
    - Used by `/4_review` for compliance checking
-   - Run once per project or when standards evolve
+   - Run once per project or when best practices evolve
 
 ### Task Folder Structure
 
 Each task gets its own organized workspace:
 ```
-Circle/{task-name}/
+.claude/tasks/{task-name}/
 ├── ticket.md  - Task requirements and acceptance criteria
 ├── plan.md    - Implementation plan with research
 └── review.md  - Code review and quality assessment
 ```
 
 ### Before Starting Any Major Task
-1. **(Optional, once per project)**: Run `/standards` to generate project coding standards
+1. **(Optional, once per project)**: Run `/best-practices` to generate project coding best practices
 2. Start with `/1_ticket "your requirement"` to create a comprehensive task ticket
-3. Then run `/2_plan Circle/{task-name}` for comprehensive planning
-4. Execute with `/3_implement Circle/{task-name}`
-5. Validate with `/4_review Circle/{task-name}` (checks against Circle/standards/ if exists)
-6. All artifacts are organized in `Circle/{task-name}/` for easy tracking
+3. Then run `/2_plan .claude/tasks/{task-name}` for comprehensive planning
+4. Execute with `/3_implement .claude/tasks/{task-name}`
+5. Validate with `/4_review .claude/tasks/{task-name}` (checks against .claude/best-practices/ if exists)
+6. All artifacts are organized in `.claude/tasks/{task-name}/` for easy tracking
 
 ### Command Chaining (Auto-Continue)
 
@@ -106,13 +111,13 @@ Run multiple steps automatically without manual confirmation using the `--contin
 - `/1_ticket "description" --continue=all` - Same as `--continue=review`
 
 **From Plan**:
-- `/2_plan Circle/{task-name} --continue=implement` - Auto-run implementation
-- `/2_plan Circle/{task-name} --continue=review` - Auto-run implement + review
-- `/2_plan Circle/{task-name} --continue=all` - Same as `--continue=review`
+- `/2_plan .claude/tasks/{task-name} --continue=implement` - Auto-run implementation
+- `/2_plan .claude/tasks/{task-name} --continue=review` - Auto-run implement + review
+- `/2_plan .claude/tasks/{task-name} --continue=all` - Same as `--continue=review`
 
 **From Implement**:
-- `/3_implement Circle/{task-name} --continue=review` - Auto-run review
-- `/3_implement Circle/{task-name} --continue=all` - Same as `--continue=review`
+- `/3_implement .claude/tasks/{task-name} --continue=review` - Auto-run review
+- `/3_implement .claude/tasks/{task-name} --continue=all` - Same as `--continue=review`
 
 **Examples**:
 ```bash
@@ -120,10 +125,10 @@ Run multiple steps automatically without manual confirmation using the `--contin
 /1_ticket "Add JWT authentication" --continue=implement
 
 # Plan and automatically implement (but stop before review)
-/2_plan Circle/add-jwt-auth --continue=implement
+/2_plan .claude/tasks/add-jwt-auth --continue=implement
 
 # Implement and automatically review
-/3_implement Circle/add-jwt-auth --continue=review
+/3_implement .claude/tasks/add-jwt-auth --continue=review
 ```
 
 ### Agent Coordination (Specialized Agents)
@@ -138,10 +143,10 @@ Run multiple steps automatically without manual confirmation using the `--contin
 - **implementation-strategist**: Architectural decision-making, trade-off analysis, ultrathink mode
 
 **Review & Quality Agent** (used in `/4_review`):
-- **code-reviewer**: Comprehensive code review including quality analysis, automated QA checks (linting, type-check, formatting), standards compliance validation, security assessment, and performance analysis
+- **code-reviewer**: Comprehensive code review including quality analysis, automated QA checks (linting, type-check, formatting), best practices compliance validation, security assessment, and performance analysis
 
-**Standards Generation Agent** (used in `/standards`):
-- **standards-generator**: Analyzes codebase patterns to generate project-specific coding standards document in Circle/standards/README.md
+**Best Practices Generation Agent** (used in `/best-practices`):
+- **best-practices-generator**: Analyzes codebase patterns to generate project-specific coding best practices document in .claude/best-practices/README.md
 
 ### Quality Standards
 - Always use XML tags in prompts: `<instruction>`, `<context>`, `<thinking>`, `<output>`
@@ -185,7 +190,7 @@ Expected output format
 
 ### Streamlined Workflow
 - **4-step core workflow**: Ticket → Plan → Implement → Review
-- **Standards setup**: Optional `/standards` command to generate project coding standards
+- **Best practices setup**: Optional `/best-practices` command to generate project coding best practices
 - **Comprehensive tickets**: Deep codebase analysis with parallel agent coordination
 - **Research-driven planning**: Web search + multi-agent coordination for comprehensive plans
 - **Direct implementation**: Claude Code implements directly following project patterns (no subagent delegation)

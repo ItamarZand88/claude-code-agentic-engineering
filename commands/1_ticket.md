@@ -13,13 +13,13 @@ Understand WHAT needs to be done by analyzing the codebase and asking clarifying
 
 ## Process
 
-### 1. Load Project Standards
+### 1. Load Project Best Practices
 
-**ALWAYS start by reading standards** (if they exist):
+**ALWAYS start by reading best practices** (if they exist):
 
 <example>
-Bash("ls Circle/standards/")
-Read("Circle/standards/README.md")
+Bash("ls .claude/best-practices/")
+Read(".claude/best-practices/README.md")
 </example>
 
 This ensures the ticket accounts for:
@@ -27,9 +27,9 @@ This ensures the ticket accounts for:
 - Project conventions
 - Technical constraints
 - Architecture patterns
-- Coding standards
+- Coding best practices
 
-If no standards exist → continue without them.
+If no best practices exist → continue without them.
 
 ### 2. Understand Requirements
 
@@ -96,13 +96,13 @@ STOP and wait for user decision.
 Generate kebab-case folder name and create:
 
 ```
-./Circle/{task-name}/
+./.claude/tasks/{task-name}/
 ├── ticket.md
 ```
 
 ### 6. Generate Ticket
 
-Save to `Circle/{task-name}/ticket.md`:
+Save to `.claude/tasks/{task-name}/ticket.md`:
 
 ```markdown
 # {Task Title}
@@ -119,9 +119,9 @@ Save to `Circle/{task-name}/ticket.md`:
 
 {Existing implementation, patterns discovered from agents}
 
-## Project Standards (if exist)
+## Project Best Practices (if exist)
 
-{Key standards from Circle/standards/ relevant to this task:
+{Key best practices from .claude/best-practices/ relevant to this task:
 
 - Naming conventions to follow
 - Architecture patterns to use
@@ -134,7 +134,7 @@ Save to `Circle/{task-name}/ticket.md`:
 - **Key Decisions**: {important_choices}
 - **Technologies**: {libraries_to_use}
 - **Integration Points**: {where_it_connects}
-- **Standards Alignment**: {how_approach_follows_standards}
+- **Best Practices Alignment**: {how_approach_follows_best_practices}
 
 ## Requirements
 
@@ -147,7 +147,7 @@ Save to `Circle/{task-name}/ticket.md`:
 
 - [ ] {performance_requirement}
 - [ ] {security_requirement}
-- [ ] Follows project standards
+- [ ] Follows project best practices
 
 ## Affected Areas
 
@@ -164,7 +164,7 @@ Save to `Circle/{task-name}/ticket.md`:
 
 - [ ] {criterion_1}
 - [ ] {criterion_2}
-- [ ] Code follows Circle/standards/
+- [ ] Code follows .claude/best-practices/
 
 ## Risks
 
@@ -172,7 +172,7 @@ Save to `Circle/{task-name}/ticket.md`:
 
 ## Next
 
-`/2_plan @Circle/{task-name}`
+`/2_plan @.claude/tasks/{task-name}`
 ```
 
 ### 7. Report & Continue
@@ -180,7 +180,7 @@ Save to `Circle/{task-name}/ticket.md`:
 Show summary:
 
 ```
-✅ Ticket: Circle/{task-name}/ticket.md
+Ticket: .claude/tasks/{task-name}/ticket.md
 
 Summary: {brief_task_description}
 
@@ -194,22 +194,22 @@ Key Findings:
 <example>
 # Parse arguments to extract --continue value
 if "--continue=all" or "--continue=review" in arguments:
-  SlashCommand("/2_plan Circle/{task-name} --continue=review")
+  SlashCommand("/2_plan .claude/tasks/{task-name} --continue=review")
 elif "--continue=implement" in arguments:
-  SlashCommand("/2_plan Circle/{task-name} --continue=implement")
+  SlashCommand("/2_plan .claude/tasks/{task-name} --continue=implement")
 elif "--continue=plan" in arguments:
-  SlashCommand("/2_plan Circle/{task-name}")
+  SlashCommand("/2_plan .claude/tasks/{task-name}")
 else:
   # No --continue flag, ask user
   Ask: "Ready for planning? (I'll run /2_plan)"
-  If confirmed → SlashCommand("/2_plan Circle/{task-name}")
+  If confirmed → SlashCommand("/2_plan .claude/tasks/{task-name}")
 </example>
 
 ## Guidelines
 
-- **ALWAYS read standards first**
+- **ALWAYS read best practices first**
 - Focus on WHAT, not HOW
 - Choose agents intelligently (don't use all for simple tasks)
 - Ask clarifications when needed
 - Document architectural decisions clearly
-- Ensure ticket aligns with project standards
+- Ensure ticket aligns with project best practices

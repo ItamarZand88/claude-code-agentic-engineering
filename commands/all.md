@@ -24,7 +24,7 @@ Wait for completion, then automatically proceed to planning.
 ### 2. Create Plan
 
 <example>
-SlashCommand("/2_plan Circle/{task-folder}")
+SlashCommand("/2_plan .claude/tasks/{task-folder}")
 </example>
 
 Wait for completion, then automatically proceed to implementation.
@@ -32,7 +32,7 @@ Wait for completion, then automatically proceed to implementation.
 ### 3. Implement
 
 <example>
-SlashCommand("/3_implement Circle/{task-folder}")
+SlashCommand("/3_implement .claude/tasks/{task-folder}")
 </example>
 
 Wait for completion, then automatically proceed to review.
@@ -40,7 +40,7 @@ Wait for completion, then automatically proceed to review.
 ### 4. Review
 
 <example>
-SlashCommand("/4_review Circle/{task-folder}")
+SlashCommand("/4_review .claude/tasks/{task-folder}")
 </example>
 
 Wait for completion, then show final summary.
@@ -48,13 +48,13 @@ Wait for completion, then show final summary.
 ## Report
 
 ```
-✅ Complete Workflow Finished: Circle/{task-folder}
+Complete Workflow Finished: .claude/tasks/{task-folder}
 
 All Steps Completed:
-- ✅ Ticket created
-- ✅ Plan generated
-- ✅ Implementation executed
-- ✅ Code reviewed
+- Ticket created
+- Plan generated
+- Implementation executed
+- Code reviewed
 
 Task Summary: {brief_description}
 

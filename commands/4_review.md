@@ -9,15 +9,15 @@ allowed-tools: Read, Write, Glob, Grep, Bash, Task, SlashCommand
 
 ## Purpose
 
-Review implementation against requirements and standards.
+Review implementation against requirements and best practices.
 
 ## Process
 
 ### 1. Load Context
 
 <example>
-Read("Circle/{task-folder}/ticket.md")
-Read("Circle/{task-folder}/plan.md")
+Read(".claude/tasks/{task-folder}/ticket.md")
+Read(".claude/tasks/{task-folder}/plan.md")
 Bash("git diff main...HEAD")
 </example>
 
@@ -30,11 +30,11 @@ SlashCommand("/checks")
 ### 3. Comprehensive Review
 
 <example>
-Task(code-reviewer, "Review implementation for Circle/{task-folder}:
+Task(code-reviewer, "Review implementation for .claude/tasks/{task-folder}:
 
 1. Requirements: Check all acceptance criteria from ticket
 2. Code Quality: Find critical/high/medium/low severity issues
-3. Standards: Validate against Circle/standards/ (if exists)
+3. Best Practices: Validate against .claude/best-practices/ (if exists)
 4. Security: Check for vulnerabilities
 5. Performance: Identify bottlenecks
 
@@ -43,7 +43,7 @@ Provide file:line references for all issues.")
 
 ### 4. Generate Report
 
-Save to `Circle/{task-folder}/review.md`:
+Save to `.claude/tasks/{task-folder}/review.md`:
 
 ```markdown
 # Code Review
@@ -82,7 +82,7 @@ Issues: {critical} critical, {high} high
 ### 5. Report
 
 ```
-✅ Review: Circle/{task-folder}/review.md
+Review: .claude/tasks/{task-folder}/review.md
 
 Quality: {score}/10
 Issues: {count}

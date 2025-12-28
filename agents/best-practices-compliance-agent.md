@@ -1,21 +1,21 @@
 ---
-name: "standards-compliance-agent"
-description: "Validate code against Circle/standards/"
+name: "best-practices-compliance-agent"
+description: "Validate code against .claude/best-practices/"
 ---
 
-You check code compliance with project standards.
+You check code compliance with project best practices.
 
 ## Goal
 
-Validate implementation against standards in `Circle/standards/`.
+Validate implementation against best practices in `.claude/best-practices/`.
 
 ## Process
 
-### 1. Load Standards
+### 1. Load Best Practices
 
 <example>
-Bash("ls Circle/standards/")
-Read("Circle/standards/README.md")
+Bash("ls .claude/best-practices/")
+Read(".claude/best-practices/README.md")
 </example>
 
 ### 2. Get Changes
@@ -41,10 +41,10 @@ Read("src/controllers/user.ts")
 ## Output
 
 <o>
-# Standards Compliance
+# Best Practices Compliance
 
 **Score**: {percentage}%
-**Status**: {✅/⚠️/❌}
+**Status**: {pass/warning/fail}
 
 | Category | Score | Violations |
 |----------|-------|------------|
@@ -65,17 +65,17 @@ Read("src/controllers/user.ts")
 ...
 
 ## Positive
-- ✅ {compliant_area_1}
-- ✅ {compliant_area_2}
+- {compliant_area_1}
+- {compliant_area_2}
 
 ## Recommendations
 1. {critical_fix} - `{file}:{line}`
 2. {high_priority_fix}
 
-**Standards Used**:
-- `Circle/standards/README.md`
+**Best Practices Used**:
+- `.claude/best-practices/README.md`
 </o>
 
 ## Guidelines
 
-If no standards exist → skip gracefully and note it.
+If no best practices exist → skip gracefully and note it.

@@ -5,7 +5,7 @@
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 [![Claude Code](https://img.shields.io/badge/Claude%20Code-Compatible-blue)](https://claude.ai/code)
 
-## 🚀 Quick Start
+## Quick Start
 
 ```bash
 # Install in existing project
@@ -16,7 +16,7 @@ claude
 /help    # Should show your new commands
 ```
 
-### ⚡ Even Easier with Aliases!
+### Even Easier with Aliases!
 
 Tired of typing the long command? Set up a short alias:
 
@@ -40,7 +40,7 @@ agi
 
 See [ALIASES.md](ALIASES.md) for permanent setup instructions.
 
-### 📦 All Installation Options
+### All Installation Options
 
 ```bash
 # Initialize new project
@@ -53,41 +53,44 @@ uvx --from git+https://github.com/ItamarZand88/claude-code-agentic-engineering.g
 uvx --from git+https://github.com/ItamarZand88/claude-code-agentic-engineering.git agentic status
 ```
 
-## 🎯 What This Gives You
+## What This Gives You
 
 Transform your development workflow with a **4-step core workflow** plus **setup commands** and **9 specialized AI agents** that work together to create a comprehensive engineering system.
 
-### ⚡ The Complete Workflow
+### The Complete Workflow
 
 ```bash
-# 0. 📋 One-time setup: Generate project coding standards
-/standards
+# 0. One-time setup: Generate project coding best practices
+/best-practices
 
-# 1. 🎫 Comprehensive task ticket creation with deep analysis
+# 1. Comprehensive task ticket creation with deep analysis
 /1_ticket "Add OAuth integration with Google"
 
-# 2. 📐 Research-driven implementation planning
-/2_plan Circle/add-oauth-integration
+# 2. Research-driven implementation planning
+/2_plan .claude/tasks/add-oauth-integration
 
-# 3. 🛠️ Execute implementation following the plan
-/3_implement Circle/add-oauth-integration
+# 3. Execute implementation following the plan
+/3_implement .claude/tasks/add-oauth-integration
 
-# 4. ✅ Comprehensive quality review and validation
-/4_review Circle/add-oauth-integration
+# 4. Comprehensive quality review and validation
+/4_review .claude/tasks/add-oauth-integration
 ```
 
-All task artifacts are organized in the `Circle/` directory:
+All task artifacts are organized in the `.claude/` directory:
 ```
-Circle/
-├── {task-name}/
-│   ├── ticket.md     # Task requirements and acceptance criteria
-│   ├── plan.md       # Research-driven implementation plan
-│   └── review.md     # Code review and quality assessment
-└── standards/
-    └── README.md     # Project coding standards
+.claude/
+├── tasks/
+│   └── {task-name}/
+│       ├── ticket.md     # Task requirements and acceptance criteria
+│       ├── plan.md       # Research-driven implementation plan
+│       └── review.md     # Code review and quality assessment
+├── best-practices/
+│   └── README.md         # Project coding best practices
+└── skills/
+    └── code-standards/   # Advanced skill for extracting PR best practices
 ```
 
-## 🔧 Slash Commands
+## Slash Commands
 
 ### Core Workflow Commands
 
@@ -96,64 +99,64 @@ Circle/
 | `/1_ticket <description>` | Task ticket creation | Deep codebase analysis, parallel agent coordination, clarification questions, comprehensive requirements |
 | `/2_plan <task_folder>` | Implementation planning | Web research, architecture decisions, phase-based breakdown, pattern discovery |
 | `/3_implement <task_folder>` | Execute implementation | Direct implementation, git management, testing validation, progress tracking |
-| `/4_review <task_folder>` | Quality assurance | Automated QA checks, standards compliance, security & performance analysis |
+| `/4_review <task_folder>` | Quality assurance | Automated QA checks, best practices compliance, security & performance analysis |
 
 ### Setup & Utility Commands
 
 | Command | Purpose | When to Use |
 |---------|---------|-------------|
-| `/standards` | Generate project standards | Run once per project or when standards evolve |
+| `/best-practices` | Generate project best practices | Run once per project or when best practices evolve |
 | `/checks` | Run quality checks | TypeScript, Prettier, Lint validation |
 | `/fix-pr-comments <pr_number>` | Fix PR review comments | Address code review feedback |
 | `/all` | Complete workflow | Run all 4 steps in sequence |
 
-## 🤖 Specialized Agents
+## Specialized Agents
 
 The framework includes 9 specialized agents organized by workflow phase:
 
-### 🔍 Exploration & Analysis (used in `/1_ticket`)
+### Exploration & Analysis (used in `/1_ticket`)
 | Agent | Expertise |
 |-------|-----------|
 | **architecture-explorer** | Project structure, tech stack mapping, directory organization |
 | **feature-finder** | Similar implementation discovery, pattern extraction, integration points |
 | **dependency-mapper** | Internal/external dependency mapping, API integration analysis |
 
-### 📐 Planning & Design (used in `/2_plan`)
+### Planning & Design (used in `/2_plan`)
 | Agent | Expertise |
 |-------|-----------|
 | **codebase-analyst** | Pattern discovery, conventions, architecture understanding |
 | **implementation-strategist** | Architectural decision-making, trade-off analysis, approach evaluation |
 
-### ✅ Review & Quality (used in `/4_review`)
+### Review & Quality (used in `/4_review`)
 | Agent | Expertise |
 |-------|-----------|
-| **code-reviewer** | Comprehensive code review, QA automation, standards compliance, security & performance |
+| **code-reviewer** | Comprehensive code review, QA automation, best practices compliance, security & performance |
 | **quality-assurance-agent** | Automated lint, typecheck, format validation |
-| **standards-compliance-agent** | Validates code against Circle/standards/ |
+| **best-practices-compliance-agent** | Validates code against .claude/best-practices/ |
 
-### 📋 Standards Generation (used in `/standards`)
+### Best Practices Generation (used in `/best-practices`)
 | Agent | Expertise |
 |-------|-----------|
-| **standards-generator** | Analyzes codebase to generate project-specific coding standards |
+| **best-practices-generator** | Analyzes codebase to generate project-specific coding best practices |
 
-## 📁 Repository Structure
+## Repository Structure
 
 ```
 claude-code-agentic-engineering/
-├── 📋 README.md                           # This file
-├── 📋 CLAUDE.md                           # Project context for Claude
-├── 🚀 setup-aliases.sh/ps1                # Alias setup scripts
-├── 📜 LICENSE                             # MIT License
-├── commands/                              # Slash Commands
-│   ├── 1_ticket.md                        # Task ticket creation
-│   ├── 2_plan.md                          # Implementation planning
-│   ├── 3_implement.md                     # Execute implementation
-│   ├── 4_review.md                        # Quality review
-│   ├── standards.md                       # Generate standards
-│   ├── checks.md                          # Run quality checks
-│   ├── fix-pr-comments.md                 # Fix PR comments
-│   └── all.md                             # Complete workflow
-├── agents/                                # Specialized Agents
+├── README.md                           # This file
+├── CLAUDE.md                           # Project context for Claude
+├── setup-aliases.sh/ps1                # Alias setup scripts
+├── LICENSE                             # MIT License
+├── commands/                           # Slash Commands
+│   ├── 1_ticket.md                     # Task ticket creation
+│   ├── 2_plan.md                       # Implementation planning
+│   ├── 3_implement.md                  # Execute implementation
+│   ├── 4_review.md                     # Quality review
+│   ├── best-practices.md               # Generate best practices
+│   ├── checks.md                       # Run quality checks
+│   ├── fix-pr-comments.md              # Fix PR comments
+│   └── all.md                          # Complete workflow
+├── agents/                             # Specialized Agents
 │   ├── architecture-explorer.md
 │   ├── feature-finder.md
 │   ├── dependency-mapper.md
@@ -161,48 +164,57 @@ claude-code-agentic-engineering/
 │   ├── implementation-strategist.md
 │   ├── code-reviewer.md
 │   ├── quality-assurance-agent.md
-│   ├── standards-compliance-agent.md
-│   └── standards-generator.md
-├── src/                                   # CLI implementation
+│   ├── best-practices-compliance-agent.md
+│   └── best-practices-generator.md
+├── skills/                             # Advanced Skill Modules
+│   └── code-standards/                 # Extract best practices from PRs
+│       ├── SKILL.md                    # Skill definition
+│       ├── references/                 # Reference documentation
+│       └── scripts/                    # Helper scripts
+├── src/                                # CLI implementation
 │   └── claude_agentic/
-│       ├── cli.py                         # Main CLI tool
-│       └── commands/                      # CLI command handlers
-└── Circle/                                # Generated task workspaces
-    ├── {task-name}/                       # Task-specific folder
-    │   ├── ticket.md
-    │   ├── plan.md
-    │   └── review.md
-    └── standards/                         # Project coding standards
+│       ├── cli.py                      # Main CLI tool
+│       └── commands/                   # CLI command handlers
+└── .claude/                            # Generated task workspaces (installed)
+    ├── commands/                       # Installed slash commands
+    ├── agents/                         # Installed agent templates
+    ├── skills/                         # Installed skill modules
+    ├── tasks/
+    │   └── {task-name}/                # Task-specific folder
+    │       ├── ticket.md
+    │       ├── plan.md
+    │       └── review.md
+    └── best-practices/                 # Project coding best practices
         └── README.md
 ```
 
-## 🎨 Key Features
+## Key Features
 
-### 🧠 **Intelligent Agent Orchestration**
+### Intelligent Agent Orchestration
 - **Parallel execution**: Multiple agents run concurrently for maximum speed
 - **Phase-specific specialization**: Each workflow phase uses optimized agents
 - **Comprehensive analysis**: Deep codebase understanding before implementation
 
-### 🛡️ **Safety & Quality First**
+### Safety & Quality First
 - Git branching and status checks for all implementations
 - Testing validation at each phase
 - Comprehensive code review with automated QA
-- Standards compliance validation
+- Best practices compliance validation
 - Security and performance analysis
 
-### 📋 **Organized Task Management**
-- All artifacts organized in `Circle/{task-name}/` folders
+### Organized Task Management
+- All artifacts organized in `.claude/tasks/{task-name}/` folders
 - Clear separation of ticket, plan, and review
-- Project-wide standards in `Circle/standards/`
+- Project-wide best practices in `.claude/best-practices/`
 - Easy tracking and collaboration
 
-### 🔬 **Research-Driven Development**
+### Research-Driven Development
 - Web research integration during planning phase
 - Pattern discovery from existing codebase
 - Architecture decision rationale documentation
 - Best practices integration
 
-## 🚀 Installation
+## Installation
 
 ### Option 1: CLI Tool (Recommended)
 Use the `agentic` CLI tool for the best experience:
@@ -234,47 +246,48 @@ git clone https://github.com/ItamarZand88/claude-code-agentic-engineering.git
 cd claude-code-agentic-engineering
 
 # Create directories in your project
-mkdir -p .claude/commands .claude/agents
+mkdir -p .claude/commands .claude/agents .claude/skills
 
 # Copy files
 cp commands/*.md .claude/commands/
 cp agents/*.md .claude/agents/
+cp -r skills/* .claude/skills/
 
 # Verify installation
 claude
 /help
 ```
 
-## 💡 Usage Examples
+## Usage Examples
 
 ### Basic Feature Development
 ```bash
-# Generate standards first (one-time setup)
-/standards
+# Generate best practices first (one-time setup)
+/best-practices
 
 # Then follow the 4-step workflow
 /1_ticket "Add dark mode toggle to the header"
-/2_plan Circle/add-dark-mode-toggle
-/3_implement Circle/add-dark-mode-toggle
-/4_review Circle/add-dark-mode-toggle
+/2_plan .claude/tasks/add-dark-mode-toggle
+/3_implement .claude/tasks/add-dark-mode-toggle
+/4_review .claude/tasks/add-dark-mode-toggle
 ```
 
 ### Complex System Integration
 ```bash
 # Setup
-/standards
+/best-practices
 
 # Create comprehensive ticket with deep analysis
 /1_ticket "Integrate Stripe payments with subscription management"
 
 # Research-driven planning
-/2_plan Circle/integrate-stripe-payments
+/2_plan .claude/tasks/integrate-stripe-payments
 
 # Execute implementation
-/3_implement Circle/integrate-stripe-payments
+/3_implement .claude/tasks/integrate-stripe-payments
 
 # Comprehensive review
-/4_review Circle/integrate-stripe-payments
+/4_review .claude/tasks/integrate-stripe-payments
 ```
 
 ### Complete Workflow (All in One)
@@ -283,10 +296,10 @@ claude
 /all "Add user authentication with email verification"
 ```
 
-### Quality & Standards
+### Quality & Best Practices
 ```bash
-# Generate or update project standards
-/standards
+# Generate or update project best practices
+/best-practices
 
 # Run quality checks
 /checks
@@ -295,7 +308,7 @@ claude
 /fix-pr-comments 123
 ```
 
-## 🔧 Customization
+## Customization
 
 All commands and agents are fully customizable:
 
@@ -306,7 +319,7 @@ All commands and agents are fully customizable:
 
 Each command and agent uses XML-structured prompts for optimal Claude performance.
 
-## 📚 Core Principles
+## Core Principles
 
 ### XML-Structured Prompts
 All prompts use XML tags for clear organization:
@@ -336,57 +349,57 @@ Expected output format
 
 ### Knowledge Preservation
 - All decisions documented in task folders
-- Standards captured in `Circle/standards/`
+- Best practices captured in `.claude/best-practices/`
 - Patterns discovered and reused
 - Context maintained across tasks
 
-## 🤝 Contributing
+## Contributing
 
 We welcome contributions! Please see our [Contributing Guidelines](CONTRIBUTING.md).
 
 ### Ways to Contribute:
-- 🐛 Report bugs and issues
-- 💡 Suggest new commands or agents
-- 📖 Improve documentation
-- 🔧 Submit pull requests
-- ⭐ Star the repository if you find it useful!
+- Report bugs and issues
+- Suggest new commands or agents
+- Improve documentation
+- Submit pull requests
+- Star the repository if you find it useful!
 
-## 📚 Documentation
+## Documentation
 
 - [CLAUDE.md](CLAUDE.md) - Project context for Claude Code
 - [ALIASES.md](ALIASES.md) - CLI alias setup guide
 
-## 🔄 Changelog
+## Changelog
 
 ### v2.0.0 (Latest)
-- 🔄 Streamlined to 4-step core workflow
-- 📁 Organized task management in `Circle/` directory
-- 🤖 Expanded to 9 specialized agents
-- 📋 Added `/standards` for project-wide coding standards
-- ⚡ Improved parallel agent coordination
-- 🎯 Phase-optimized agent specialization
+- Streamlined to 4-step core workflow
+- Organized task management in `.claude/` directory
+- Expanded to 9 specialized agents
+- Added `/best-practices` for project-wide coding best practices
+- Improved parallel agent coordination
+- Phase-optimized agent specialization
 
 ### v1.0.0 (Initial)
-- 🚀 Initial release with basic workflow
-- 🛡️ Git branching and safety features
-- 📖 Comprehensive documentation
+- Initial release with basic workflow
+- Git branching and safety features
+- Comprehensive documentation
 
-## 📄 License
+## License
 
 This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
 
-## 🙏 Acknowledgments
+## Acknowledgments
 
 - Built for [Claude Code](https://claude.ai/code) by Anthropic
 - Inspired by agentic prompt engineering principles
 - Follows XML-structured prompt best practices
 
-## ⭐ Star This Repository
+## Star This Repository
 
 If this project helps you build better software faster, please consider giving it a star! It helps others discover this work.
 
 ---
 
-**Built with ❤️ for the Claude Code community**
+**Built with love for the Claude Code community**
 
 > "The future of software engineering is agentic, collaborative, and intelligent."

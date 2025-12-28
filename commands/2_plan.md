@@ -16,7 +16,7 @@ Transform ticket requirements into actionable tasks with code examples. Architec
 ### 1. Load Ticket
 
 <example>
-Read("Circle/{task-folder}/ticket.md")
+Read(".claude/tasks/{task-folder}/ticket.md")
 </example>
 
 Extract:
@@ -106,7 +106,7 @@ Effort: S (15min)
 
 ### 4. Generate Plan
 
-Save to `Circle/{task-folder}/plan.md`:
+Save to `.claude/tasks/{task-folder}/plan.md`:
 
 ```markdown
 # Implementation Plan
@@ -143,7 +143,7 @@ Save to `Circle/{task-folder}/plan.md`:
 
 ## Next
 
-`/3_implement Circle/{task-folder}`
+`/3_implement .claude/tasks/{task-folder}`
 ```
 
 ### 5. Report & Continue
@@ -151,7 +151,7 @@ Save to `Circle/{task-folder}/plan.md`:
 Show summary:
 
 ```
-✅ Plan: Circle/{task-folder}/plan.md
+Plan: .claude/tasks/{task-folder}/plan.md
 
 Phases: {N}
 Tasks: {M}
@@ -162,11 +162,11 @@ Tasks: {M}
 <example>
 # Parse arguments to extract --continue value
 if "--continue=all" or "--continue=review" in arguments:
-  SlashCommand("/3_implement Circle/{task-folder} --continue=review")
+  SlashCommand("/3_implement .claude/tasks/{task-folder} --continue=review")
 elif "--continue=implement" in arguments:
-  SlashCommand("/3_implement Circle/{task-folder}")
+  SlashCommand("/3_implement .claude/tasks/{task-folder}")
 else:
   # No --continue flag, ask user
   Ask: "Ready to implement? (I'll run /3_implement)"
-  If confirmed → SlashCommand("/3_implement Circle/{task-folder}")
+  If confirmed → SlashCommand("/3_implement .claude/tasks/{task-folder}")
 </example>

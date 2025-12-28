@@ -41,7 +41,7 @@ COMMANDS = [
     "2_plan.md",
     "3_implement.md",
     "4_review.md",
-    "standards.md",
+    "best-practices.md",
     "fix-pr-comments.md",
     "checks.md"
 ]
@@ -54,9 +54,19 @@ AGENTS = [
     "feature-finder.md",
     "implementation-strategist.md",
     "quality-assurance-agent.md",
-    "standards-compliance-agent.md",
-    "standards-generator.md"
+    "best-practices-compliance-agent.md",
+    "best-practices-generator.md"
 ]
+
+# Skills with their relative paths (from skills/ directory)
+SKILLS = {
+    "code-standards": [
+        "SKILL.md",
+        "references/default-categories.md",
+        "scripts/extract_pr_comments.sh",
+        "scripts/sort_comments_by_filetree.sh"
+    ]
+}
 
 def show_banner():
     """Display a simple banner with enhanced styling."""
@@ -69,7 +79,7 @@ def show_banner():
     console.print()
 
 @click.group()
-@click.version_option(version="1.0.0")
+@click.version_option(version="2.0.0")
 def main():
     """Claude Code Agentic Engineering CLI - Initialize and manage agentic workflows."""
     pass
@@ -114,8 +124,8 @@ def init(project_name: Optional[str], templates_only: bool, commands_only: bool,
         console=console,
         transient=False
     ) as progress:
-        task = progress.add_task("Installing commands and agents...", total=None)
-        install_commands_and_agents(skip_existing)
+        task = progress.add_task("Installing components...", total=None)
+        install_all_components(skip_existing)
         progress.remove_task(task)
 
     # Show success message
@@ -140,8 +150,8 @@ def install(skip_existing: bool):
         console=console,
         transient=False
     ) as progress:
-        task = progress.add_task("Installing commands and agents...", total=None)
-        install_commands_and_agents(skip_existing)
+        task = progress.add_task("Installing components...", total=None)
+        install_all_components(skip_existing)
         progress.remove_task(task)
 
     show_success_panel("current directory")
@@ -165,6 +175,7 @@ def status():
     claude_dir = Path(".claude")
     commands_dir = claude_dir / "commands"
     agents_dir = claude_dir / "agents"
+    skills_dir = claude_dir / "skills"
 
     # Enhanced status indicators
     def get_status_style(exists, count=0):
@@ -177,6 +188,7 @@ def status():
 
     commands_count = len(list(commands_dir.glob("**/*.md"))) if commands_dir.exists() else 0
     agents_count = len(list(agents_dir.glob("*.md"))) if agents_dir.exists() else 0
+    skills_count = len(list(skills_dir.glob("**/SKILL.md"))) if skills_dir.exists() else 0
 
     table.add_row(
         "Commands",
@@ -192,9 +204,16 @@ def status():
         "Specialized AI agent templates"
     )
 
+    table.add_row(
+        "Skills",
+        get_status_style(skills_dir.exists(), skills_count),
+        str(skills_count),
+        "Advanced skill modules"
+    )
+
     console.print(table)
 
-    if claude_dir.exists() and any([commands_count, agents_count]):
+    if claude_dir.exists() and any([commands_count, agents_count, skills_count]):
         # Create a beautiful next steps panel
         next_steps = """[green]Ready to use![/green]
 
@@ -203,8 +222,8 @@ def status():
   [bright_blue]/help[/bright_blue]                     Show available commands
   [bright_blue]/agents[/bright_blue]                   List specialized agents
 
-[bold bright_cyan]Quick Start:[/bold bright_cyan]
-  [bright_yellow]/all[/bright_yellow]                   Complete workflow (ticket→plan→implement→review)
+[bold bright_cyan]Complete Workflow:[/bold bright_cyan]
+  [bright_yellow]/all[/bright_yellow]                   Complete workflow (ticket->plan->implement->review)
 
 [bold bright_cyan]4-Step Workflow:[/bold bright_cyan]
   [bright_green]/1_ticket[/bright_green]                Create comprehensive task ticket
@@ -253,8 +272,8 @@ def download_file(url: str, dest: Path, skip_existing: bool = False) -> bool:
 def create_project_directories():
     """Create project directories for workflow organization with enhanced styling."""
     directories = [
-        ("./Circle", "Task workspace (organized by task folder)"),
-        ("./Circle/standards", "Project coding standards")
+        ("./.claude/tasks", "Task workspace (organized by task folder)"),
+        ("./.claude/best-practices", "Project coding best practices")
     ]
 
     console.print(Rule("[bold cyan]Project Structure Setup[/bold cyan]"))
@@ -267,10 +286,11 @@ def create_project_directories():
         else:
             console.print(f"[blue]Exists:[/blue] [bold cyan]{directory}[/bold cyan] [dim]({description})[/dim]")
 
-def install_commands_and_agents(skip_existing: bool = False):
-    """Install command and agent files with enhanced progress tracking."""
+def install_all_components(skip_existing: bool = False):
+    """Install all components: commands, agents, and skills."""
     commands_dir = Path(".claude/commands")
     agents_dir = Path(".claude/agents")
+    skills_dir = Path(".claude/skills")
 
     # Check and preserve existing directories
     if commands_dir.exists():
@@ -285,9 +305,19 @@ def install_commands_and_agents(skip_existing: bool = False):
         agents_dir.mkdir(parents=True, exist_ok=True)
         console.print("[green]Created[/green] .claude/agents directory")
 
-    total_items = len(COMMANDS) + len(AGENTS)
+    if skills_dir.exists():
+        console.print("[blue]Found existing[/blue] .claude/skills directory")
+    else:
+        skills_dir.mkdir(parents=True, exist_ok=True)
+        console.print("[green]Created[/green] .claude/skills directory")
+
+    # Count total items
+    total_skill_files = sum(len(files) for files in SKILLS.values())
+    total_items = len(COMMANDS) + len(AGENTS) + total_skill_files
+
     cmd_success = 0
     agent_success = 0
+    skill_success = 0
 
     with Progress(
         SpinnerColumn(),
@@ -297,7 +327,7 @@ def install_commands_and_agents(skip_existing: bool = False):
         console=console,
         transient=True
     ) as progress:
-        task = progress.add_task("Installing commands and agents", total=total_items)
+        task = progress.add_task("Installing components", total=total_items)
 
         # Install commands
         for command in COMMANDS:
@@ -317,6 +347,19 @@ def install_commands_and_agents(skip_existing: bool = False):
                 agent_success += 1
             progress.advance(task)
 
+        # Install skills
+        for skill_name, skill_files in SKILLS.items():
+            skill_dest_dir = skills_dir / skill_name
+            skill_dest_dir.mkdir(parents=True, exist_ok=True)
+
+            for skill_file in skill_files:
+                progress.update(task, description=f"Installing skill [cyan]{skill_name}/{skill_file}[/cyan]")
+                url = f"{RAW_URL}/skills/{skill_name}/{skill_file}"
+                dest = skill_dest_dir / skill_file
+                if download_file(url, dest, skip_existing):
+                    skill_success += 1
+                progress.advance(task)
+
     # Create project directories
     create_project_directories()
 
@@ -328,11 +371,15 @@ def install_commands_and_agents(skip_existing: bool = False):
 
     summary_table.add_row("Commands", f"{cmd_success}/{len(COMMANDS)}", "processed")
     summary_table.add_row("Agents", f"{agent_success}/{len(AGENTS)}", "processed")
+    summary_table.add_row("Skills", f"{skill_success}/{total_skill_files}", "processed")
 
     console.print(summary_table)
 
 def show_success_panel(target: str):
     """Show success message with next steps using enhanced styling."""
+    # Count total skill files
+    total_skill_files = sum(len(files) for files in SKILLS.values())
+
     # Create installation summary
     install_summary = Table(box=box.SIMPLE, show_header=False, padding=(0, 1))
     install_summary.add_column("Component", style="cyan", width=20)
@@ -341,6 +388,7 @@ def show_success_panel(target: str):
 
     install_summary.add_row("Commands", str(len(COMMANDS)), ".claude/commands/")
     install_summary.add_row("Agents", str(len(AGENTS)), ".claude/agents/")
+    install_summary.add_row("Skills", str(len(SKILLS)), ".claude/skills/")
 
     # Create workflow example
     workflow_steps = """[bold bright_cyan]Quick Start:[/bold bright_cyan]
@@ -348,11 +396,14 @@ def show_success_panel(target: str):
 
 [bold bright_cyan]4-Step Workflow:[/bold bright_cyan]
 [bright_green]/1_ticket[/bright_green] "Add OAuth authentication"
-[bright_green]/2_plan[/bright_green] Circle/oauth-authentication
-[bright_green]/3_implement[/bright_green] Circle/oauth-authentication
-[bright_green]/4_review[/bright_green] Circle/oauth-authentication
+[bright_green]/2_plan[/bright_green] .claude/tasks/oauth-authentication
+[bright_green]/3_implement[/bright_green] .claude/tasks/oauth-authentication
+[bright_green]/4_review[/bright_green] .claude/tasks/oauth-authentication
 
-[bold bright_cyan]Quick Start:[/bold bright_cyan]
+[bold bright_cyan]Available Skills:[/bold bright_cyan]
+[bright_magenta]code-standards[/bright_magenta]    Extract best practices from PR comments
+
+[bold bright_cyan]Getting Started:[/bold bright_cyan]
 [bright_blue]claude[/bright_blue]                Launch Claude Code
 [bright_blue]/help[/bright_blue]                 Show available commands
 [bright_blue]/agents[/bright_blue]               List specialized agents"""
@@ -372,7 +423,7 @@ def show_success_panel(target: str):
     console.print()
 
     # Print directories
-    console.print("Project directories: [cyan]Circle/[/cyan], [cyan]Circle/standards/[/cyan]")
+    console.print("Project directories: [cyan].claude/tasks/[/cyan], [cyan].claude/best-practices/[/cyan], [cyan].claude/skills/[/cyan]")
     console.print()
 
     # Print workflow steps
