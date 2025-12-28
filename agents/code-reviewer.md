@@ -98,13 +98,42 @@ Document ALL errors and warnings with exact file:line references.
 
 ### Phase 3: Best Practices Compliance
 
-**CRITICAL**: Always read best practices first (if they exist):
+**CRITICAL**: Always load ALL best practices files first (if they exist):
 
 <example>
+// First, check if best practices exist
+Bash("ls -la .claude/best-practices/")
+
+// Read the index
 Read(".claude/best-practices/README.md")
+
+// Load ALL category files
+Glob(".claude/best-practices/*.md")
+// Then Read() each discovered file
+
+// Common files to look for:
+Read(".claude/best-practices/naming-conventions.md")
+Read(".claude/best-practices/error-handling.md")
+Read(".claude/best-practices/type-safety.md")
+Read(".claude/best-practices/testing.md")
+Read(".claude/best-practices/security.md")
+Read(".claude/best-practices/performance.md")
+Read(".claude/best-practices/code-organization.md")
+Read(".claude/best-practices/api-design.md")
+// etc.
 </example>
 
-Then validate against ALL best practice categories. For each violation found, reference the specific best practice section.
+**Then perform file-to-category mapping**:
+
+| File Pattern | Relevant Best Practices |
+|-------------|------------------------|
+| `*.ts`, `*.tsx` | naming-conventions, error-handling, type-safety, code-organization |
+| `*.test.ts`, `*.spec.ts` | testing, naming-conventions |
+| Components (`components/*.tsx`) | react-patterns, performance, accessibility, naming-conventions |
+| API routes (`api/*.ts`) | api-design, error-handling, security |
+| Database files | database-queries, security |
+
+For each changed file, validate against applicable best practice categories. For each violation found, reference the specific best practice section with document name and guideline number.
 
 **Common categories to check:**
 
@@ -116,6 +145,8 @@ Then validate against ALL best practice categories. For each violation found, re
 - Performance
 - Security
 - API Design
+- React Patterns (if applicable)
+- Accessibility (for UI components)
 
 **Step 4: Code Quality Analysis**
 For each modified file:
@@ -154,11 +185,32 @@ Prettier (npm run check:prettier): [pass/fail with files]
 Linting (npm run check:lint): [pass/fail with warnings]
 ```
 
-**Best Practices Compliance** (Reference .claude/best-practices/):
+**Best Practices Compliance**:
 
-**For each category in .claude/best-practices/**:
+**Overall Compliance**: {percentage}% ({compliant}/{total} guidelines checked)
 
-- file:line - violation + best practice reference + fix
+**✅ Compliant Categories**:
+
+- **{Category Name}** ({filename}.md #{guideline numbers})
+  - Brief summary of what was checked and found compliant
+
+**❌ Violations by Category**:
+
+**For each violated category in .claude/best-practices/**:
+
+- **{Category Violation}** ({filename}.md #{guideline_number})
+  - **File**: {file}:{line}
+  - **Issue**: {description of what violates the guideline}
+  - **Guideline**: "{quoted text from best practices document}"
+  - **Fix**: {concrete code example showing the fix}
+
+  ```typescript
+  // Current (violates guideline)
+  {actual_code}
+
+  // Expected (follows guideline)
+  {corrected_code}
+  ```
 
 **Issues by Severity**:
 

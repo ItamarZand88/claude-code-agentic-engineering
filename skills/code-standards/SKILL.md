@@ -82,6 +82,67 @@ bash scripts/extract_pr_comments.sh ts-agent
 
 ---
 
+**⚡⚡ NEW: Incremental Updates (Recommended for existing repositories)**
+
+If you've already extracted PR comments before, use the incremental update script to fetch only NEW PRs since your last update:
+
+```bash
+# Run incremental update
+bash scripts/incremental_update.sh OWNER REPO_NAME
+
+# Examples:
+bash scripts/incremental_update.sh earlyai backend
+bash scripts/incremental_update.sh myorg frontend
+```
+
+**What the incremental update does:**
+- Tracks the last update timestamp in `.state.json`
+- Fetches only PRs merged since last update (uses GitHub search `merged:>=DATE`)
+- Much faster than full extraction (processes only 3-5 new PRs instead of 100+)
+- Saves to `{REPO}_inline_comments_incremental.ndjson`
+- Updates state file with statistics
+
+**First run behavior:**
+- If no previous state exists, runs full extraction automatically
+- Saves state for future incremental runs
+- Next runs will be incremental
+
+**Output example:**
+```
+╔════════════════════════════════════════╗
+║  Incremental PR Comment Update         ║
+╚════════════════════════════════════════╝
+
+Repository: earlyai/backend
+
+📅 Last update: 2025-12-20T10:00:00Z
+   Fetching only NEW PRs merged after this date...
+
+📊 Found 3 new merged PRs
+
+🔍 Extracting comments from new PRs...
+
+  ✓ PR #1234: 5 comments
+  ✓ PR #1235: 2 comments
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+✅ Incremental Update Complete
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+📈 Statistics:
+   New PRs processed: 3
+   Comments extracted: 7
+   Output file: backend_inline_comments_incremental.ndjson
+
+💾 State updated. Next run will start from: 2025-12-28T10:30:00Z
+```
+
+**When to use incremental vs. full:**
+- **Incremental:** Regular updates (weekly/monthly), existing repositories
+- **Full:** First time setup, major retrospectives, or reset needed
+
+---
+
 **Step 1b: Sort Comments by File Tree (Recommended)**
 
 After extracting comments, organize them into a folder structure matching the repo:
