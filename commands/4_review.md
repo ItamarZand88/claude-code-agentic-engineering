@@ -16,9 +16,15 @@ Review implementation against requirements and best practices.
 ### 1. Load Context
 
 <example>
+# Read task requirements and plan
 Read(".claude/tasks/{task-folder}/ticket.md")
 Read(".claude/tasks/{task-folder}/plan.md")
+
+# Get ONLY changes for this task (not entire codebase)
 Bash("git diff main...HEAD")
+
+# Identify which files were changed in this task
+Bash("git diff --name-only main...HEAD")
 
 # Check for best practices
 if [ -d ".claude/best-practices" ]; then
@@ -28,6 +34,11 @@ else
     echo "⚠️  No best practices found (run /best-practices to generate)"
 fi
 </example>
+
+**CRITICAL SCOPE CONSTRAINT**:
+- Review ONLY files and lines changed in this specific task
+- Do NOT review unchanged code or unrelated files
+- Focus on the git diff output from this task's branch
 
 ### 2. Run Automated Checks
 
@@ -40,20 +51,27 @@ SlashCommand("/checks")
 <example>
 Task(code-reviewer, "Review implementation for .claude/tasks/{task-folder}:
 
+**CRITICAL**: Review ONLY the changes introduced by this specific task.
+- Scope: ONLY files changed in git diff main...HEAD
+- Focus: ONLY lines modified in this task
+- Ignore: Unchanged code, unrelated files, existing issues in other parts of codebase
+
+Review Checklist:
+
 1. Requirements: Check all acceptance criteria from ticket
-2. Code Quality: Find critical/high/medium/low severity issues
+2. Code Quality: Find critical/high/medium/low severity issues IN CHANGED CODE ONLY
 3. Best Practices Compliance:
    - IF .claude/best-practices/ exists:
      * Load all .md files from the directory
-     * Map changed files to relevant best practice categories
-     * Validate code against applicable guidelines
+     * Map ONLY changed files to relevant best practice categories
+     * Validate ONLY modified code against applicable guidelines
      * Report violations with file:line, guideline reference, and fix examples
-     * Calculate compliance score (% of guidelines followed)
+     * Calculate compliance score for changed code only
    - ELSE: Skip and note in report
-4. Security: Check for vulnerabilities
-5. Performance: Identify bottlenecks
+4. Security: Check for vulnerabilities IN CHANGED CODE
+5. Performance: Identify bottlenecks IN CHANGED CODE
 
-Provide file:line references for all issues.
+Provide file:line references for all issues found in the git diff.
 
 See: skills/code-standards/review-integration-guide.md for detailed best practices validation instructions.")
 </example>

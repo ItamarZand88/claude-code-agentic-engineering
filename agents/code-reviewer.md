@@ -62,16 +62,26 @@ Read(".claude/tasks/{task-folder}/ticket.md")
 // Read implementation plan
 Read(".claude/tasks/{task-folder}/plan.md")
 
-// Get code changes
+// Get code changes for THIS TASK ONLY
 Bash("git diff main...HEAD")
-// Or for staged changes
+
+// List changed files for THIS TASK ONLY
+Bash("git diff --name-only main...HEAD")
+
+// For staged changes
 Bash("git diff --cached")
 </example>
+
+**CRITICAL REVIEW SCOPE**:
+- Review ONLY files changed in this task's git diff
+- Review ONLY lines modified in this task
+- DO NOT review unchanged code or unrelated files
+- DO NOT report issues in code that was not touched by this task
 
 Extract:
 - Acceptance criteria from ticket
 - Implementation approach from plan
-- Files changed and modifications made
+- **ONLY** files changed and modifications made **in this task**
 
 ### Phase 2: Automated Quality Checks
 
@@ -123,7 +133,7 @@ Read(".claude/best-practices/api-design.md")
 // etc.
 </example>
 
-**Then perform file-to-category mapping**:
+**Then perform file-to-category mapping FOR CHANGED FILES ONLY**:
 
 | File Pattern | Relevant Best Practices |
 |-------------|------------------------|
@@ -133,7 +143,12 @@ Read(".claude/best-practices/api-design.md")
 | API routes (`api/*.ts`) | api-design, error-handling, security |
 | Database files | database-queries, security |
 
-For each changed file, validate against applicable best practice categories. For each violation found, reference the specific best practice section with document name and guideline number.
+**IMPORTANT**:
+- Map ONLY files that appear in `git diff --name-only main...HEAD`
+- Validate ONLY lines/code shown in the git diff
+- For each changed file, validate against applicable best practice categories
+- For each violation found in CHANGED CODE, reference the specific best practice section with document name and guideline number
+- Ignore any issues in unchanged code or files not modified by this task
 
 **Common categories to check:**
 
@@ -149,7 +164,9 @@ For each changed file, validate against applicable best practice categories. For
 - Accessibility (for UI components)
 
 **Step 4: Code Quality Analysis**
-For each modified file:
+For each modified file **IN THE GIT DIFF**:
+
+**Review ONLY changed lines** (shown in git diff with +/- markers):
 
 - Naming conventions compliance
 - Code organization and structure
@@ -157,6 +174,11 @@ For each modified file:
 - Error handling patterns
 - Code duplication
 - Documentation quality
+
+**DO NOT report issues in**:
+- Unchanged lines in modified files
+- Files not in the git diff
+- Pre-existing code that wasn't touched
 
 **Step 5: Prioritization**
 
