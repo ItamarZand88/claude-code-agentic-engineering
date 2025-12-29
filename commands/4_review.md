@@ -59,7 +59,9 @@ Task(code-reviewer, "Review implementation for .claude/tasks/{task-folder}:
 Review Checklist:
 
 1. Requirements: Check all acceptance criteria from ticket
+
 2. Code Quality: Find critical/high/medium/low severity issues IN CHANGED CODE ONLY
+
 3. Best Practices Compliance:
    - IF .claude/best-practices/ exists:
      * Load all .md files from the directory
@@ -68,8 +70,20 @@ Review Checklist:
      * Report violations with file:line, guideline reference, and fix examples
      * Calculate compliance score for changed code only
    - ELSE: Skip and note in report
-4. Security: Check for vulnerabilities IN CHANGED CODE
-5. Performance: Identify bottlenecks IN CHANGED CODE
+
+4. Pattern Compliance (NEW):
+   - Read "Similar Implementations in Codebase" section from ticket
+   - IF similar implementations documented:
+     * Compare new implementation against documented patterns
+     * Check: naming conventions, structure, error handling, patterns
+     * Validate consistency with existing similar code
+     * Report deviations with specific pattern references
+     * Calculate pattern compliance score
+   - ELSE: Skip and note in report
+
+5. Security: Check for vulnerabilities IN CHANGED CODE
+
+6. Performance: Identify bottlenecks IN CHANGED CODE
 
 Provide file:line references for all issues found in the git diff.
 
@@ -86,6 +100,7 @@ Save to `.claude/tasks/{task-folder}/review.md`:
 **Date**: {date}
 **Quality**: {score}/10
 **Best Practices Compliance**: {percentage}% ({X}/{Y} guidelines)
+**Pattern Compliance**: {percentage}% ({X}/{Y} patterns matched)
 **Status**: {pass/warning/fail}
 
 ## Summary
@@ -117,6 +132,40 @@ Issues: {critical} critical, {high} high
   - **Issue**: {description}
   - **Guideline**: "{quoted_guideline}"
   - **Fix**: {concrete_fix_with_code_example}
+
+#### Medium Severity
+
+- {similar_format}
+
+## Pattern Compliance
+
+**Overall Pattern Match**: {percentage}% ({matched}/{total} patterns followed)
+
+### ✅ Patterns Followed
+
+- **{Pattern Name}** (from {similar_file}:{line})
+  - Naming convention matches
+  - Structure follows established pattern
+  - Error handling consistent
+
+### ❌ Pattern Deviations
+
+#### High Severity
+
+- **Pattern Deviation: {pattern_name}** (ref: {ticket_section})
+  - **File**: {file}:{line}
+  - **Issue**: {description of deviation}
+  - **Expected Pattern** (from {similar_file}:{line}):
+    ```typescript
+    // Existing pattern
+    {pattern_code}
+    ```
+  - **Actual Implementation**:
+    ```typescript
+    // New code (deviates)
+    {actual_code}
+    ```
+  - **Fix**: Align with existing pattern for consistency
 
 #### Medium Severity
 

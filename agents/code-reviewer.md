@@ -180,7 +180,58 @@ For each modified file **IN THE GIT DIFF**:
 - Files not in the git diff
 - Pre-existing code that wasn't touched
 
-**Step 5: Prioritization**
+**Step 5: Pattern Compliance (NEW)**
+
+Check if implementation matches similar existing code patterns:
+
+<example>
+// Read ticket to find documented similar implementations
+Read(".claude/tasks/{task-folder}/ticket.md")
+
+// Look for "Similar Implementations in Codebase" section
+// Extract:
+// - Location of similar code
+// - Patterns to follow
+// - Example code snippets
+</example>
+
+**For each similar implementation documented in ticket**:
+
+1. **Read the reference implementation**
+   ```
+   Read({similar_file_path})
+   ```
+
+2. **Compare patterns**:
+   - **Naming conventions**: Do variable/function names follow same pattern?
+   - **Code structure**: Is the structure/organization similar?
+   - **Error handling**: Does error handling match the pattern?
+   - **Return types**: Are return types consistent?
+   - **API design**: Does API follow established patterns?
+
+3. **Report deviations**:
+   - **File**: New code location
+   - **Pattern**: Reference implementation location
+   - **Deviation**: What doesn't match
+   - **Impact**: Why consistency matters
+   - **Fix**: How to align with pattern
+
+**Example deviations to check**:
+
+| Pattern Aspect | Example Deviation |
+|----------------|-------------------|
+| Naming | `getUserData()` vs `fetchUser()` (inconsistent verbs) |
+| Structure | Different folder organization for similar features |
+| Error handling | `try-catch` vs callbacks (inconsistent approach) |
+| Return types | `Promise<User>` vs `User | null` (inconsistent async) |
+| Validation | Different validation libraries for similar inputs |
+
+**Pattern compliance score**:
+- Count total patterns from ticket
+- Count how many are followed
+- Calculate: (matched / total) × 100
+
+**Step 6: Prioritization**
 
 - **CRITICAL**: Best practice violations that break TypeScript, security issues, data loss
 - **HIGH**: Major best practice violations, architecture issues, maintainability problems
@@ -198,6 +249,7 @@ Provide structured findings:
 - Requirements status (Met / Missing / Partial)
 - Issue counts by severity (Critical/High/Medium/Low)
 - Best practices compliance score
+- Pattern compliance score
 
 **Automated Checks Results**:
 
@@ -233,6 +285,37 @@ Linting (npm run check:lint): [pass/fail with warnings]
   // Expected (follows guideline)
   {corrected_code}
   ```
+
+**Pattern Compliance**:
+
+**Overall Pattern Match**: {percentage}% ({matched}/{total} patterns followed)
+
+**✅ Patterns Followed**:
+
+- **{Pattern Name}** (from {similar_file}:{line})
+  - Naming convention matches
+  - Structure follows established pattern
+  - Error handling consistent
+
+**❌ Pattern Deviations**:
+
+**For each deviation**:
+
+- **Pattern Deviation: {pattern_name}** (ref: ticket "Similar Implementations")
+  - **File**: {file}:{line}
+  - **Issue**: {description of deviation}
+  - **Expected Pattern** (from {similar_file}:{line}):
+    ```typescript
+    // Existing pattern
+    {pattern_code}
+    ```
+  - **Actual Implementation**:
+    ```typescript
+    // New code (deviates)
+    {actual_code}
+    ```
+  - **Fix**: Align with existing pattern for consistency
+  - **Impact**: Inconsistency makes codebase harder to maintain
 
 **Issues by Severity**:
 
