@@ -62,16 +62,26 @@ Read(".claude/tasks/{task-folder}/ticket.md")
 // Read implementation plan
 Read(".claude/tasks/{task-folder}/plan.md")
 
-// Get code changes
+// Get code changes for THIS TASK ONLY
 Bash("git diff main...HEAD")
-// Or for staged changes
+
+// List changed files for THIS TASK ONLY
+Bash("git diff --name-only main...HEAD")
+
+// For staged changes
 Bash("git diff --cached")
 </example>
+
+**CRITICAL REVIEW SCOPE**:
+- Review ONLY files changed in this task's git diff
+- Review ONLY lines modified in this task
+- DO NOT review unchanged code or unrelated files
+- DO NOT report issues in code that was not touched by this task
 
 Extract:
 - Acceptance criteria from ticket
 - Implementation approach from plan
-- Files changed and modifications made
+- **ONLY** files changed and modifications made **in this task**
 
 ### Phase 2: Automated Quality Checks
 
@@ -98,13 +108,47 @@ Document ALL errors and warnings with exact file:line references.
 
 ### Phase 3: Best Practices Compliance
 
-**CRITICAL**: Always read best practices first (if they exist):
+**CRITICAL**: Always load ALL best practices files first (if they exist):
 
 <example>
+// First, check if best practices exist
+Bash("ls -la .claude/best-practices/")
+
+// Read the index
 Read(".claude/best-practices/README.md")
+
+// Load ALL category files
+Glob(".claude/best-practices/*.md")
+// Then Read() each discovered file
+
+// Common files to look for:
+Read(".claude/best-practices/naming-conventions.md")
+Read(".claude/best-practices/error-handling.md")
+Read(".claude/best-practices/type-safety.md")
+Read(".claude/best-practices/testing.md")
+Read(".claude/best-practices/security.md")
+Read(".claude/best-practices/performance.md")
+Read(".claude/best-practices/code-organization.md")
+Read(".claude/best-practices/api-design.md")
+// etc.
 </example>
 
-Then validate against ALL best practice categories. For each violation found, reference the specific best practice section.
+**Then perform file-to-category mapping FOR CHANGED FILES ONLY**:
+
+| File Pattern | Relevant Best Practices |
+|-------------|------------------------|
+| `*.ts`, `*.tsx` | naming-conventions, error-handling, type-safety, code-organization |
+| `*.test.ts`, `*.spec.ts` | testing, naming-conventions |
+| Components (`components/*.tsx`) | react-patterns, performance, accessibility, naming-conventions |
+| API routes (`api/*.ts`) | api-design, error-handling, security |
+| Database files | database-queries, security |
+
+**IMPORTANT**:
+- Map ONLY files that appear in `git diff --name-only main...HEAD`
+- Validate ONLY lines/code shown in the git diff
+- For each changed file, validate against applicable best practice categories
+- For each violation found in CHANGED CODE, reference the specific best practice section with document name and guideline number
+- Ignore any issues in unchanged code or files not modified by this task
 
 **Common categories to check:**
 
@@ -116,9 +160,13 @@ Then validate against ALL best practice categories. For each violation found, re
 - Performance
 - Security
 - API Design
+- React Patterns (if applicable)
+- Accessibility (for UI components)
 
 **Step 4: Code Quality Analysis**
-For each modified file:
+For each modified file **IN THE GIT DIFF**:
+
+**Review ONLY changed lines** (shown in git diff with +/- markers):
 
 - Naming conventions compliance
 - Code organization and structure
@@ -127,7 +175,63 @@ For each modified file:
 - Code duplication
 - Documentation quality
 
-**Step 5: Prioritization**
+**DO NOT report issues in**:
+- Unchanged lines in modified files
+- Files not in the git diff
+- Pre-existing code that wasn't touched
+
+**Step 5: Pattern Compliance (NEW)**
+
+Check if implementation matches similar existing code patterns:
+
+<example>
+// Read ticket to find documented similar implementations
+Read(".claude/tasks/{task-folder}/ticket.md")
+
+// Look for "Similar Implementations in Codebase" section
+// Extract:
+// - Location of similar code
+// - Patterns to follow
+// - Example code snippets
+</example>
+
+**For each similar implementation documented in ticket**:
+
+1. **Read the reference implementation**
+   ```
+   Read({similar_file_path})
+   ```
+
+2. **Compare patterns**:
+   - **Naming conventions**: Do variable/function names follow same pattern?
+   - **Code structure**: Is the structure/organization similar?
+   - **Error handling**: Does error handling match the pattern?
+   - **Return types**: Are return types consistent?
+   - **API design**: Does API follow established patterns?
+
+3. **Report deviations**:
+   - **File**: New code location
+   - **Pattern**: Reference implementation location
+   - **Deviation**: What doesn't match
+   - **Impact**: Why consistency matters
+   - **Fix**: How to align with pattern
+
+**Example deviations to check**:
+
+| Pattern Aspect | Example Deviation |
+|----------------|-------------------|
+| Naming | `getUserData()` vs `fetchUser()` (inconsistent verbs) |
+| Structure | Different folder organization for similar features |
+| Error handling | `try-catch` vs callbacks (inconsistent approach) |
+| Return types | `Promise<User>` vs `User | null` (inconsistent async) |
+| Validation | Different validation libraries for similar inputs |
+
+**Pattern compliance score**:
+- Count total patterns from ticket
+- Count how many are followed
+- Calculate: (matched / total) × 100
+
+**Step 6: Prioritization**
 
 - **CRITICAL**: Best practice violations that break TypeScript, security issues, data loss
 - **HIGH**: Major best practice violations, architecture issues, maintainability problems
@@ -145,6 +249,7 @@ Provide structured findings:
 - Requirements status (Met / Missing / Partial)
 - Issue counts by severity (Critical/High/Medium/Low)
 - Best practices compliance score
+- Pattern compliance score
 
 **Automated Checks Results**:
 
@@ -154,11 +259,63 @@ Prettier (npm run check:prettier): [pass/fail with files]
 Linting (npm run check:lint): [pass/fail with warnings]
 ```
 
-**Best Practices Compliance** (Reference .claude/best-practices/):
+**Best Practices Compliance**:
 
-**For each category in .claude/best-practices/**:
+**Overall Compliance**: {percentage}% ({compliant}/{total} guidelines checked)
 
-- file:line - violation + best practice reference + fix
+**✅ Compliant Categories**:
+
+- **{Category Name}** ({filename}.md #{guideline numbers})
+  - Brief summary of what was checked and found compliant
+
+**❌ Violations by Category**:
+
+**For each violated category in .claude/best-practices/**:
+
+- **{Category Violation}** ({filename}.md #{guideline_number})
+  - **File**: {file}:{line}
+  - **Issue**: {description of what violates the guideline}
+  - **Guideline**: "{quoted text from best practices document}"
+  - **Fix**: {concrete code example showing the fix}
+
+  ```typescript
+  // Current (violates guideline)
+  {actual_code}
+
+  // Expected (follows guideline)
+  {corrected_code}
+  ```
+
+**Pattern Compliance**:
+
+**Overall Pattern Match**: {percentage}% ({matched}/{total} patterns followed)
+
+**✅ Patterns Followed**:
+
+- **{Pattern Name}** (from {similar_file}:{line})
+  - Naming convention matches
+  - Structure follows established pattern
+  - Error handling consistent
+
+**❌ Pattern Deviations**:
+
+**For each deviation**:
+
+- **Pattern Deviation: {pattern_name}** (ref: ticket "Similar Implementations")
+  - **File**: {file}:{line}
+  - **Issue**: {description of deviation}
+  - **Expected Pattern** (from {similar_file}:{line}):
+    ```typescript
+    // Existing pattern
+    {pattern_code}
+    ```
+  - **Actual Implementation**:
+    ```typescript
+    // New code (deviates)
+    {actual_code}
+    ```
+  - **Fix**: Align with existing pattern for consistency
+  - **Impact**: Inconsistency makes codebase harder to maintain
 
 **Issues by Severity**:
 

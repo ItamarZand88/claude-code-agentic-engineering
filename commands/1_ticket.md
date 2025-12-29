@@ -119,6 +119,21 @@ Save to `.claude/tasks/{task-name}/ticket.md`:
 
 {Existing implementation, patterns discovered from agents}
 
+## Similar Implementations in Codebase
+
+{Document similar existing implementations found by feature-finder agent:
+
+**Pattern**: {name_of_pattern}
+- **Location**: {file_path}:{line}
+- **Key Approach**: {how_it_works}
+- **Patterns to Follow**: {naming, structure, error handling, etc.}
+- **Example**:
+  ```typescript
+  // Show relevant code snippet
+  ```
+
+This implementation should follow the same patterns for consistency.}
+
 ## Project Best Practices (if exist)
 
 {Key best practices from .claude/best-practices/ relevant to this task:
@@ -165,6 +180,7 @@ Save to `.claude/tasks/{task-name}/ticket.md`:
 - [ ] {criterion_1}
 - [ ] {criterion_2}
 - [ ] Code follows .claude/best-practices/
+- [ ] Implementation matches patterns from similar existing code
 
 ## Risks
 
