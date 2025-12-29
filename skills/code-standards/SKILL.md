@@ -5,6 +5,15 @@ description: Extract and maintain company-specific coding best practices from PR
 
 # Code Standards Skill
 
+> **⚠️ DEPRECATED**: This skill has been split into two focused skills for better organization and clarity:
+>
+> - **`best-practices-extractor`** - Extract best practices from PR comments
+> - **`code-compliance`** - Validate code against best practices
+>
+> **Migration Guide**: See `SKILLS_MIGRATION_GUIDE.md` for details.
+>
+> **This skill is maintained for backwards compatibility but will be removed in a future release.**
+
 ## Overview
 
 This skill helps you build and maintain a living documentation of your team's coding best practices by analyzing PR review comments. It extracts patterns, categorizes feedback, and creates structured markdown files that can serve as reference documentation for future development work.

@@ -29,7 +29,7 @@ Bash("git diff --name-only main...HEAD")
 # Check for best practices
 if [ -d ".claude/best-practices" ]; then
     echo "✅ Best practices found - will validate compliance"
-    Bash("bash skills/code-standards/scripts/check_compliance.sh .claude/best-practices")
+    Bash("bash skills/code-compliance/scripts/check_compliance.sh .claude/best-practices")
 else
     echo "⚠️  No best practices found (run /best-practices to generate)"
 fi
@@ -73,7 +73,7 @@ Review Checklist:
 
 Provide file:line references for all issues found in the git diff.
 
-See: skills/code-standards/review-integration-guide.md for detailed best practices validation instructions.")
+See: skills/code-compliance/review-integration-guide.md for detailed best practices validation instructions.")
 </example>
 
 ### 4. Generate Report
