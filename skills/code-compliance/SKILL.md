@@ -248,10 +248,7 @@ This skill is **automatically invoked** by the `/4_review` command.
 
 2. **Generate if Missing**
    ```bash
-   # Option 1: Use /best-practices command
-   /best-practices
-
-   # Option 2: Use best-practices-extractor skill
+   # Use best-practices-extractor skill
    cd skills/best-practices-extractor
    bash scripts/incremental_update.sh owner repo
    ```
@@ -328,8 +325,9 @@ This skill is **automatically invoked** by the `/4_review` command.
 No best practices found in .claude/best-practices/
 
 To generate best practices:
-1. Run: /best-practices
-2. Or use best-practices-extractor skill
+Use the best-practices-extractor skill:
+  cd skills/best-practices-extractor
+  bash scripts/incremental_update.sh owner repo
 
 Review will proceed without best practices validation.
 ```
@@ -396,10 +394,7 @@ bash skills/code-compliance/scripts/check_compliance.sh
 
 **Solution:**
 ```bash
-# Generate best practices first
-/best-practices
-
-# Or use extractor skill
+# Generate best practices using extractor skill
 cd skills/best-practices-extractor
 bash scripts/incremental_update.sh owner repo
 ```

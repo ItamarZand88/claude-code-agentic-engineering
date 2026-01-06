@@ -31,7 +31,7 @@ if [ -d ".claude/best-practices" ]; then
     echo "✅ Best practices found - will validate compliance"
     Bash("bash skills/code-compliance/scripts/check_compliance.sh .claude/best-practices")
 else
-    echo "⚠️  No best practices found (run /best-practices to generate)"
+    echo "⚠️  No best practices found (use best-practices-extractor skill to generate)"
 fi
 </example>
 

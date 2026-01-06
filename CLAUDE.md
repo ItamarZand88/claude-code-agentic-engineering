@@ -73,15 +73,6 @@ The framework uses a **5-command workflow** with all artifacts organized in the 
    - **Checks .claude/best-practices/ for compliance**
    - **Saves review**: `.claude/tasks/{task-name}/review.md`
 
-**Setup Command**:
-
-5. **`/best-practices`** - Generate project coding best practices
-   - Analyzes existing codebase patterns
-   - Discovers naming conventions, architecture, testing patterns
-   - **Saves best practices**: `.claude/best-practices/README.md`
-   - Used by `/4_review` for compliance checking
-   - Run once per project or when best practices evolve
-
 ### Task Folder Structure
 
 Each task gets its own organized workspace:
@@ -93,7 +84,7 @@ Each task gets its own organized workspace:
 ```
 
 ### Before Starting Any Major Task
-1. **(Optional, once per project)**: Run `/best-practices` to generate project coding best practices
+1. **(Optional, once per project)**: Use the `best-practices-extractor` skill to generate project coding best practices
 2. Start with `/1_ticket "your requirement"` to create a comprehensive task ticket
 3. Then run `/2_plan .claude/tasks/{task-name}` for comprehensive planning
 4. Execute with `/3_implement .claude/tasks/{task-name}`
@@ -145,7 +136,7 @@ Run multiple steps automatically without manual confirmation using the `--contin
 **Review & Quality Agent** (used in `/4_review`):
 - **code-reviewer**: Comprehensive code review including quality analysis, automated QA checks (linting, type-check, formatting), best practices compliance validation, security assessment, and performance analysis
 
-**Best Practices Generation Agent** (used in `/best-practices`):
+**Best Practices Generation Agent** (used in `best-practices-extractor` skill):
 - **best-practices-generator**: Analyzes codebase patterns to generate project-specific coding best practices document in .claude/best-practices/README.md
 
 ### Quality Standards
@@ -190,7 +181,7 @@ Expected output format
 
 ### Streamlined Workflow
 - **4-step core workflow**: Ticket → Plan → Implement → Review
-- **Best practices setup**: Optional `/best-practices` command to generate project coding best practices
+- **Best practices setup**: Optional `best-practices-extractor` skill to generate project coding best practices
 - **Comprehensive tickets**: Deep codebase analysis with parallel agent coordination
 - **Research-driven planning**: Web search + multi-agent coordination for comprehensive plans
 - **Direct implementation**: Claude Code implements directly following project patterns (no subagent delegation)
