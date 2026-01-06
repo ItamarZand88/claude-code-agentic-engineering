@@ -348,6 +348,14 @@ elif "--continue=implement" in arguments:
   Output: `\n🔄 Auto-continuing to implementation...\n`
   SlashCommand("/3_implement .claude/tasks/{task-folder}")
 else:
-  # No --continue flag, show next step
-  Output shown above
+  # No --continue flag, ask user interactively
+  AskUserQuestion("The implementation plan has been created successfully. Would you like to continue to the implementation phase?
+
+I'll run: `/3_implement .claude/tasks/{task-folder}`
+
+Type 'yes' to continue automatically, or 'no' to stop here and review the plan first.")
+
+  # If user confirms:
+  Output: `\n🔄 Continuing to implementation...\n`
+  SlashCommand("/3_implement .claude/tasks/{task-folder}")
 </example>

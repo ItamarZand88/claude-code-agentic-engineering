@@ -237,6 +237,14 @@ if "--continue=all" or "--continue=review" in arguments:
   Output: `\n🔄 Auto-continuing to review (--continue=review)...\n`
   SlashCommand("/4_review .claude/tasks/{task-folder}")
 else:
-  # No --continue flag, show next step
-  Output shown above
+  # No --continue flag, ask user interactively
+  AskUserQuestion("The implementation has been completed successfully. Would you like to continue to the code review phase?
+
+I'll run: `/4_review .claude/tasks/{task-folder}`
+
+Type 'yes' to continue automatically, or 'no' to stop here and test the changes manually first.")
+
+  # If user confirms:
+  Output: `\n🔄 Continuing to review...\n`
+  SlashCommand("/4_review .claude/tasks/{task-folder}")
 </example>

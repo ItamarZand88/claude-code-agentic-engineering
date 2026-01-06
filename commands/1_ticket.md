@@ -289,8 +289,16 @@ elif "--continue=plan" in arguments:
   Output: `\n🔄 Auto-continuing to planning...\n`
   SlashCommand("/2_plan .claude/tasks/{task-name}")
 else:
-  # No --continue flag, show next step
-  Output shown above
+  # No --continue flag, ask user interactively
+  AskUserQuestion("The ticket has been created successfully. Would you like to continue to the planning phase?
+
+I'll run: `/2_plan .claude/tasks/{task-name}`
+
+Type 'yes' to continue automatically, or 'no' to stop here and review the ticket first.")
+
+  # If user confirms:
+  Output: `\n🔄 Continuing to planning...\n`
+  SlashCommand("/2_plan .claude/tasks/{task-name}")
 </example>
 
 ## Guidelines
