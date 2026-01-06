@@ -11,15 +11,44 @@ allowed-tools: Read, Write, Edit, Glob, Grep, Bash, Task, TodoWrite, WebSearch, 
 
 Execute the complete 4-step workflow automatically: ticket → plan → implement → review. No user interaction needed between steps.
 
+Output: `🚀 Starting Complete Workflow`
+
 ## Process
 
+Show workflow progress:
+```
+📋 Workflow Progress:
+├─ ⚪ 1. Ticket
+├─ ⚪ 2. Plan
+├─ ⚪ 3. Implementation
+└─ ⚪ 4. Review
+```
+
 ### 1. Create Ticket
+
+Update progress:
+```
+📋 Workflow Progress:
+├─ 🔄 1. Ticket (in progress)
+├─ ⚪ 2. Plan
+├─ ⚪ 3. Implementation
+└─ ⚪ 4. Review
+```
 
 <example>
 SlashCommand("/1_ticket {task_description}")
 </example>
 
-Wait for completion, then automatically proceed to planning.
+Wait for completion:
+```
+📋 Workflow Progress:
+├─ ✅ 1. Ticket (completed)
+├─ 🔄 2. Plan (in progress)
+├─ ⚪ 3. Implementation
+└─ ⚪ 4. Review
+```
+
+Then automatically proceed to planning.
 
 ### 2. Create Plan
 
@@ -47,25 +76,36 @@ Wait for completion, then show final summary.
 
 ## Report
 
+Show final summary:
+
 ```
-Complete Workflow Finished: .claude/tasks/{task-folder}
+┌─────────────────────────────────────────────┐
+│ 🚀 Complete Workflow Finished               │
+├─────────────────────────────────────────────┤
+│ Task: {Task Title}                          │
+│ Folder: .claude/tasks/{task-folder}/        │
+│ Total Duration: {time}                      │
+└─────────────────────────────────────────────┘
 
-All Steps Completed:
-- Ticket created
-- Plan generated
-- Implementation executed
-- Code reviewed
+✅ All Steps Completed:
+├─ ✅ 1. Ticket created ({time}s)
+├─ ✅ 2. Plan generated ({time}s)
+├─ ✅ 3. Implementation executed ({time}s)
+└─ ✅ 4. Code reviewed ({time}s)
 
-Task Summary: {brief_description}
+📁 Files Created/Modified ({N} total):
+├─ {file1} (created)
+├─ {file2} (modified)
+└─ {file3} (modified)
 
-Files Created/Modified:
-- {file1} - {what_changed}
-- {file2} - {what_changed}
+📊 Final Quality Score: {score}/10
+├─ Issues: {count} total ({critical}🔴 {high}🟡)
+├─ Tests: {✅/❌} ({N}/{N} passing)
+└─ Overall: {✅ READY|⚠️ NEEDS FIXES|❌ BLOCKED}
 
-Quality Score: {score}/10
-Issues Found: {count}
-
-Ready for production!
+⏭️  Next Steps:
+1. {Review issues if any|Commit and push changes|Fix blocking issues}
+2. {Create PR|Deploy|Test manually}
 ```
 
 ## Guidelines
