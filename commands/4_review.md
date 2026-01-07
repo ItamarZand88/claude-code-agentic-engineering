@@ -13,7 +13,11 @@ Review implementation against requirements and best practices.
 
 ## Process
 
+Output: `📊 Starting Code Review`
+
 ### 1. Load Context
+
+Output: `🔄 Step 1/4: Loading context...`
 
 <example>
 # Read task requirements and plan
@@ -26,12 +30,14 @@ Bash("git diff main...HEAD")
 # Identify which files were changed in this task
 Bash("git diff --name-only main...HEAD")
 
+Output: `✅ Context loaded ({N} files changed)`
+
 # Check for best practices
 if [ -d ".claude/best-practices" ]; then
-    echo "✅ Best practices found - will validate compliance"
+    Output: `✅ Best practices found - will validate compliance`
     Bash("bash skills/code-compliance/scripts/check_compliance.sh .claude/best-practices")
 else
-    echo "⚠️  No best practices found (run /best-practices to generate)"
+    Output: `ℹ️  No best practices found (skipping compliance check)`
 fi
 </example>
 
@@ -42,11 +48,27 @@ fi
 
 ### 2. Run Automated Checks
 
+Output: `🔄 Step 2/4: Running automated checks...`
+
 <example>
 SlashCommand("/checks")
+
+Show results:
+```
+| Check | Status | Details |
+|-------|--------|---------|
+| TypeScript | {✅/❌} | {No errors|N errors} |
+| ESLint | {✅/❌} | {No errors|N errors} |
+| Prettier | {✅/❌} | {Formatted|N files need formatting} |
+| Tests | {✅/❌} | {N/N passed|failures} |
+```
+
+Output: `✅ Automated checks complete`
 </example>
 
 ### 3. Comprehensive Review
+
+Output: `🔄 Step 3/4: Comprehensive code review...`
 
 <example>
 Task(code-reviewer, "Review implementation for .claude/tasks/{task-folder}:
@@ -88,11 +110,17 @@ Review Checklist:
 Provide file:line references for all issues found in the git diff.
 
 See: skills/code-compliance/review-integration-guide.md for detailed best practices validation instructions.")
+
+Output: `✅ Review completed ({time}s)`
 </example>
 
 ### 4. Generate Report
 
+Output: `🔄 Step 4/4: Generating report...`
+
 Save to `.claude/tasks/{task-folder}/review.md`:
+
+Output: `✅ Report generated`
 
 ```markdown
 # Code Review
@@ -189,13 +217,36 @@ Issues: {critical} critical, {high} high
 
 ### 5. Report
 
+Show comprehensive summary:
+
 ```
-Review: .claude/tasks/{task-folder}/review.md
+┌─────────────────────────────────────────────┐
+│ 📊 Code Review Complete                     │
+├─────────────────────────────────────────────┤
+│ Overall: {✅ PASS|⚠️ PASS WITH WARNINGS|❌ FAIL} │
+│ Quality Score: {score}/10                   │
+│ Issues: {N} total ({critical}🔴 {high}🟡)  │
+│ Duration: {time}s                           │
+└─────────────────────────────────────────────┘
 
-Quality: {score}/10
-Issues: {count}
+📊 Quality Summary:
+├─ Tests: {✅/❌} ({N}/{N} passing)
+├─ Best Practices: {percentage}% compliant
+├─ Pattern Compliance: {percentage}% matched
+├─ Security: {✅/⚠️/❌} ({N} issues)
+└─ Performance: {✅/⚠️/❌} ({N} issues)
 
-Top Issues:
-- {issue_1}
-- {issue_2}
+⚠️ Action Required ({N} issues):
+├─ 🔴 {N} critical severity (blocking)
+├─ 🟡 {N} high severity (fix soon)
+├─ 🟠 {N} medium severity (consider)
+└─ ⚪ {N} low severity (optional)
+
+📁 Files:
+└─ 📝 .claude/tasks/{task-folder}/review.md
+
+⏭️  Next Steps:
+1. Review detailed report in review.md
+2. Fix critical and high severity issues
+3. Commit changes
 ```

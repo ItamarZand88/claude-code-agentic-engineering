@@ -13,10 +13,15 @@ Transform ticket requirements into actionable tasks with code examples. Architec
 
 ## Process
 
+Output: `📋 Creating Implementation Plan`
+
 ### 1. Load Ticket
+
+Output: `🔄 Step 1/5: Loading ticket...`
 
 <example>
 Read(".claude/tasks/{task-folder}/ticket.md")
+Output: `✅ Ticket loaded`
 </example>
 
 Extract:
@@ -26,11 +31,41 @@ Extract:
 - Affected areas
 - Dependencies
 
-If ticket missing → STOP, tell user to run `/1_ticket`.
+If ticket missing:
+```
+❌ Planning Failed
+
+**Error**: Ticket file not found
+**Location**: .claude/tasks/{task-folder}/ticket.md
+**Cause**: The ticket was never created or was deleted
+
+**Recovery Options**:
+1. ✅ Create ticket first (recommended)
+   Command: /1_ticket "your task description"
+
+2. Use existing task folder
+   Command: /2_plan .claude/tasks/{existing-task}/
+
+**Need Help?**
+See: CLAUDE.md or run /help 2_plan
+```
+STOP.
 
 ### 2. Interactive Clarification
 
+Output: `🔄 Step 2/5: Analyzing requirements for clarity...`
+
 **CRITICAL**: Before diving into research and planning, identify unclear areas and ask the user clarifying questions.
+
+If clarification needed:
+<example>
+Output: `❓ Found {N} areas needing clarification`
+</example>
+
+If no clarification needed:
+<example>
+Output: `✅ Requirements are clear (no clarification needed)`
+</example>
 
 **Use AskUserQuestion tool to clarify**:
 
@@ -103,10 +138,25 @@ Wait for answers → Continue with planning
 
 ### 3. Research (if needed)
 
+Output: `🔄 Step 3/5: Researching...`
+
 Launch only relevant research:
 
 **For new technologies**:
 <example>
+Output: `🔄 Running web research in parallel...`
+
+Show research progress:
+```
+┌─────────────────────────────────────────────┐
+│ Research Progress                           │
+├─────────────────────────────────────────────┤
+│ 🟡 Web search         (running)             │
+│ 🟡 Documentation      (running)             │
+│ ⚪ Pattern analysis   (pending)             │
+└─────────────────────────────────────────────┘
+```
+
 WebSearch("OAuth2 best practices 2025")
 WebFetch("https://oauth.net/2/")
 </example>
@@ -123,7 +173,27 @@ Context7_resolve-library-id("next-auth")
 Context7_get-library-docs("/nextauthjs/next-auth")
 </example>
 
+After research completes:
+<example>
+Output: `✅ Research completed ({time}s)`
+
+Show results:
+```
+📚 Research Results:
+├─ ✅ Web: {N} articles analyzed
+├─ ✅ Codebase: {N} patterns found
+└─ ✅ Documentation: {library} docs retrieved
+```
+</example>
+
+If no research needed:
+<example>
+Output: `ℹ️  No research needed (using ticket information)`
+</example>
+
 ### 4. Create Tasks
+
+Output: `🔄 Step 4/5: Creating implementation tasks...`
 
 Break into phases with detailed tasks:
 
@@ -179,7 +249,11 @@ Effort: S (15min)
 
 ### 5. Generate Plan
 
+Output: `🔄 Step 5/5: Generating plan document...`
+
 Save to `.claude/tasks/{task-folder}/plan.md`:
+
+Output: `✅ Plan generated`
 
 ```markdown
 # Implementation Plan
@@ -231,13 +305,36 @@ Include all clarifications that influenced the plan.}
 
 ### 6. Report & Continue
 
-Show summary:
+Show comprehensive summary:
 
 ```
-Plan: .claude/tasks/{task-folder}/plan.md
+┌─────────────────────────────────────────────┐
+│ 📋 Plan Generated                           │
+├─────────────────────────────────────────────┤
+│ Task: {Task Title}                          │
+│ Phases: {N}                                 │
+│ Tasks: {M}                                  │
+│ Estimated Effort: {X-Y hours}               │
+│ Duration: {total_time}s                     │
+└─────────────────────────────────────────────┘
 
-Phases: {N}
-Tasks: {M}
+📊 Plan Summary:
+├─ Phase 1: Foundation ({N} tasks, ~{X}h)
+├─ Phase 2: Core ({N} tasks, ~{X}h)
+├─ Phase 3: Integration ({N} tasks, ~{X}h)
+├─ Phase 4: Validation ({N} tasks, ~{X}h)
+└─ Phase 5: Documentation ({N} tasks, ~{X}h)
+
+📚 Research:
+├─ Web research: {completed|skipped}
+├─ Codebase patterns: {N patterns|skipped}
+└─ Library docs: {retrieved|skipped}
+
+📁 Files:
+└─ 📝 .claude/tasks/{task-folder}/plan.md
+
+⏭️  Next Step:
+/3_implement .claude/tasks/{task-folder}
 ```
 
 **Handle --continue argument** (check if `$ARGUMENTS` contains `--continue=<value>`):
@@ -245,11 +342,33 @@ Tasks: {M}
 <example>
 # Parse arguments to extract --continue value
 if "--continue=all" or "--continue=review" in arguments:
+  Output: `\n🔄 Auto-continuing to implementation (--continue=all)...\n`
   SlashCommand("/3_implement .claude/tasks/{task-folder} --continue=review")
 elif "--continue=implement" in arguments:
+  Output: `\n🔄 Auto-continuing to implementation...\n`
   SlashCommand("/3_implement .claude/tasks/{task-folder}")
 else:
-  # No --continue flag, ask user
-  Ask: "Ready to implement? (I'll run /3_implement)"
-  If confirmed → SlashCommand("/3_implement .claude/tasks/{task-folder}")
+  # No --continue flag, ask user interactively
+  response = AskUserQuestion(
+    question: "The implementation plan has been created successfully. What would you like to do next?",
+    options: [
+      "Continue to implementation phase (/3_implement)",
+      "Review the plan first (stop here)",
+      "Revise the plan (make changes)",
+      "Other (specify custom action)"
+    ]
+  )
+
+  # Handle response:
+  if response == "Continue to implementation phase (/3_implement)":
+    Output: `\n🔄 Continuing to implementation...\n`
+    SlashCommand("/3_implement .claude/tasks/{task-folder}")
+  elif response == "Review the plan first (stop here)":
+    Output: `\n✅ Stopped. Review the plan at .claude/tasks/{task-folder}/plan.md\n`
+  elif response == "Revise the plan (make changes)":
+    Output: `\n✅ Plan saved at .claude/tasks/{task-folder}/plan.md\nPlease tell me what changes you'd like to make.\n`
+  else:
+    # User selected "Other" or provided custom input
+    Output: `\n✅ Plan saved at .claude/tasks/{task-folder}/plan.md\n`
+    # Handle custom user input as needed
 </example>
