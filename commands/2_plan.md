@@ -249,7 +249,27 @@ if "--continue=all" or "--continue=review" in arguments:
 elif "--continue=implement" in arguments:
   SlashCommand("/3_implement .claude/tasks/{task-folder}")
 else:
-  # No --continue flag, ask user
-  Ask: "Ready to implement? (I'll run /3_implement)"
-  If confirmed → SlashCommand("/3_implement .claude/tasks/{task-folder}")
+  # No --continue flag, ask user interactively
+  response = AskUserQuestion(
+    question: "The implementation plan has been created successfully. What would you like to do next?",
+    options: [
+      "Continue to implementation phase (/3_implement)",
+      "Review the plan first (stop here)",
+      "Revise the plan (make changes)",
+      "Other (specify custom action)"
+    ]
+  )
+
+  # Handle response:
+  if response == "Continue to implementation phase (/3_implement)":
+    Output: `\n🔄 Continuing to implementation...\n`
+    SlashCommand("/3_implement .claude/tasks/{task-folder}")
+  elif response == "Review the plan first (stop here)":
+    Output: `\n✅ Stopped. Review the plan at .claude/tasks/{task-folder}/plan.md\n`
+  elif response == "Revise the plan (make changes)":
+    Output: `\n✅ Plan saved at .claude/tasks/{task-folder}/plan.md\nPlease tell me what changes you'd like to make.\n`
+  else:
+    # User selected "Other" or provided custom input
+    Output: `\n✅ Plan saved at .claude/tasks/{task-folder}/plan.md\n`
+    # Handle custom user input as needed
 </example>
