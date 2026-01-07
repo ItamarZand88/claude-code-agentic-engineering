@@ -238,13 +238,27 @@ if "--continue=all" or "--continue=review" in arguments:
   SlashCommand("/4_review .claude/tasks/{task-folder}")
 else:
   # No --continue flag, ask user interactively
-  AskUserQuestion("The implementation has been completed successfully. Would you like to continue to the code review phase?
+  response = AskUserQuestion(
+    question: "The implementation has been completed successfully. What would you like to do next?",
+    options: [
+      "Continue to code review phase (/4_review)",
+      "Test the changes manually first (stop here)",
+      "Run quality checks (/checks)",
+      "Other (specify custom action)"
+    ]
+  )
 
-I'll run: `/4_review .claude/tasks/{task-folder}`
-
-Type 'yes' to continue automatically, or 'no' to stop here and test the changes manually first.")
-
-  # If user confirms:
-  Output: `\n🔄 Continuing to review...\n`
-  SlashCommand("/4_review .claude/tasks/{task-folder}")
+  # Handle response:
+  if response == "Continue to code review phase (/4_review)":
+    Output: `\n🔄 Continuing to review...\n`
+    SlashCommand("/4_review .claude/tasks/{task-folder}")
+  elif response == "Test the changes manually first (stop here)":
+    Output: `\n✅ Implementation complete. Test your changes before running /4_review\n`
+  elif response == "Run quality checks (/checks)":
+    Output: `\n🔄 Running quality checks...\n`
+    SlashCommand("/checks")
+  else:
+    # User selected "Other" or provided custom input
+    Output: `\n✅ Implementation complete.\n`
+    # Handle custom user input as needed
 </example>

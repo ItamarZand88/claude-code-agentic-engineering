@@ -290,15 +290,25 @@ elif "--continue=plan" in arguments:
   SlashCommand("/2_plan .claude/tasks/{task-name}")
 else:
   # No --continue flag, ask user interactively
-  AskUserQuestion("The ticket has been created successfully. Would you like to continue to the planning phase?
+  response = AskUserQuestion(
+    question: "The ticket has been created successfully. What would you like to do next?",
+    options: [
+      "Continue to planning phase (/2_plan)",
+      "Review the ticket first (stop here)",
+      "Other (specify custom action)"
+    ]
+  )
 
-I'll run: `/2_plan .claude/tasks/{task-name}`
-
-Type 'yes' to continue automatically, or 'no' to stop here and review the ticket first.")
-
-  # If user confirms:
-  Output: `\n🔄 Continuing to planning...\n`
-  SlashCommand("/2_plan .claude/tasks/{task-name}")
+  # Handle response:
+  if response == "Continue to planning phase (/2_plan)":
+    Output: `\n🔄 Continuing to planning...\n`
+    SlashCommand("/2_plan .claude/tasks/{task-name}")
+  elif response == "Review the ticket first (stop here)":
+    Output: `\n✅ Stopped. Review the ticket at .claude/tasks/{task-name}/ticket.md\n`
+  else:
+    # User selected "Other" or provided custom input
+    Output: `\n✅ Task ticket saved at .claude/tasks/{task-name}/ticket.md\n`
+    # Handle custom user input as needed
 </example>
 
 ## Guidelines
