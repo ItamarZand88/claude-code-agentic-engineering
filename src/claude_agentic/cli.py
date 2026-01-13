@@ -9,7 +9,7 @@ from pathlib import Path
 from typing import Optional
 
 import click
-import requests
+import importlib.resources
 from rich.console import Console
 from rich.progress import Progress, SpinnerColumn, TextColumn, BarColumn, MofNCompleteColumn
 from rich.panel import Panel
@@ -32,41 +32,8 @@ TAGLINE = "Advanced Development Workflow System"
 
 # Repository configuration
 REPO_URL = "https://github.com/ItamarZand88/claude-code-agentic-engineering"
-RAW_URL = "https://raw.githubusercontent.com/ItamarZand88/claude-code-agentic-engineering/main"
 
-# File lists for installation
-COMMANDS = [
-    "all.md",
-    "1_ticket.md",
-    "2_plan.md",
-    "3_implement.md",
-    "4_review.md",
-    "best-practices.md",
-    "fix-pr-comments.md",
-    "checks.md"
-]
 
-AGENTS = [
-    "architecture-explorer.md",
-    "codebase-analyst.md",
-    "code-reviewer.md",
-    "dependency-mapper.md",
-    "feature-finder.md",
-    "implementation-strategist.md",
-    "quality-assurance-agent.md",
-    "best-practices-compliance-agent.md",
-    "best-practices-generator.md"
-]
-
-# Skills with their relative paths (from skills/ directory)
-SKILLS = {
-    "code-standards": [
-        "SKILL.md",
-        "references/default-categories.md",
-        "scripts/extract_pr_comments.sh",
-        "scripts/sort_comments_by_filetree.sh"
-    ]
-}
 
 def show_banner():
     """Display a simple banner with enhanced styling."""
@@ -246,8 +213,8 @@ def status():
             box=box.ROUNDED
         ))
 
-def download_file(url: str, dest: Path, skip_existing: bool = False) -> bool:
-    """Download a file from URL to destination with enhanced status display."""
+def install_file(content: str, dest: Path, skip_existing: bool = False) -> bool:
+    """Write content to destination file with enhanced status display."""
     file_exists = dest.exists()
 
     if file_exists and skip_existing:
@@ -255,18 +222,15 @@ def download_file(url: str, dest: Path, skip_existing: bool = False) -> bool:
         return True
 
     try:
-        with Status(f"[cyan]{'Updating' if file_exists else 'Downloading'} {dest.name}...[/cyan]", console=console):
-            response = requests.get(url, timeout=30)
-            response.raise_for_status()
-
+        with Status(f"[cyan]{'Updating' if file_exists else 'Creating'} {dest.name}...[/cyan]", console=console):
             dest.parent.mkdir(parents=True, exist_ok=True)
-            dest.write_text(response.text, encoding='utf-8')
+            dest.write_text(content, encoding='utf-8')
 
-        status_msg = "Updated" if file_exists else "Downloaded"
+        status_msg = "Updated" if file_exists else "Created"
         console.print(f"[green]{status_msg}:[/green] [bold]{dest.name}[/bold]")
         return True
     except Exception as e:
-        console.print(f"[red]Failed to download[/red] [bold]{dest.name}[/bold]: [dim]{e}[/dim]")
+        console.print(f"[red]Failed to install[/red] [bold]{dest.name}[/bold]: [dim]{e}[/dim]")
         return False
 
 def create_project_directories():
@@ -286,35 +250,66 @@ def create_project_directories():
         else:
             console.print(f"[blue]Exists:[/blue] [bold cyan]{directory}[/bold cyan] [dim]({description})[/dim]")
 
+
+def install_resources_recursively(resource_root, dest_dir: Path, progress, task, skip_existing: bool) -> int:
+    """Recursively install all resources from a resource directory."""
+    count = 0
+    if not resource_root.is_dir():
+        return 0
+
+    for item in resource_root.iterdir():
+        if item.name.startswith("__") or item.name.startswith("."):
+            continue
+
+        if item.is_dir():
+            # Create subdirectory
+            subdir = dest_dir / item.name
+            subdir.mkdir(parents=True, exist_ok=True)
+            # Recurse
+            count += install_resources_recursively(item, subdir, progress, task, skip_existing)
+        else:
+            # Install file
+            dest_file = dest_dir / item.name
+            
+            # Simple description for progress
+            rel_path = dest_file.relative_to(dest_dir.parent.parent).as_posix() # e.g. .claude/skills/foo/bar.md
+            progress.update(task, description=f"Installing [cyan]{rel_path}[/cyan]")
+            
+            try:
+                content = item.read_text(encoding='utf-8')
+                if install_file(content, dest_file, skip_existing):
+                    count += 1
+            except Exception as e:
+                console.print(f"[red]Failed to read resource[/red] [bold]{item.name}[/bold]: [dim]{e}[/dim]")
+            
+            progress.advance(task)
+            
+    return count
+
 def install_all_components(skip_existing: bool = False):
     """Install all components: commands, agents, and skills."""
     commands_dir = Path(".claude/commands")
     agents_dir = Path(".claude/agents")
     skills_dir = Path(".claude/skills")
 
-    # Check and preserve existing directories
-    if commands_dir.exists():
-        console.print("[blue]Found existing[/blue] .claude/commands directory")
-    else:
-        commands_dir.mkdir(parents=True, exist_ok=True)
-        console.print("[green]Created[/green] .claude/commands directory")
+    for d in [commands_dir, agents_dir, skills_dir]:
+        if not d.exists():
+            d.mkdir(parents=True, exist_ok=True)
+            console.print(f"[green]Created directory[/green] {d}")
+        else:
+            console.print(f"[blue]Found existing directory[/blue] {d}")
 
-    if agents_dir.exists():
-        console.print("[blue]Found existing[/blue] .claude/agents directory")
-    else:
-        agents_dir.mkdir(parents=True, exist_ok=True)
-        console.print("[green]Created[/green] .claude/agents directory")
+    # Access resources
+    try:
+        resources = importlib.resources.files("claude_agentic.resources")
+    except Exception as e:
+        console.print(f"[red]Error accessing resources: {e}[/red]")
+        return
 
-    if skills_dir.exists():
-        console.print("[blue]Found existing[/blue] .claude/skills directory")
-    else:
-        skills_dir.mkdir(parents=True, exist_ok=True)
-        console.print("[green]Created[/green] .claude/skills directory")
-
-    # Count total items
-    total_skill_files = sum(len(files) for files in SKILLS.values())
-    total_items = len(COMMANDS) + len(AGENTS) + total_skill_files
-
+    # Count total items for progress bar (approximate)
+    # Note: Traversing to count might be slow, so we'll use an indefinite spinner or just update total dynamically if possible
+    # For now, let's just set a large number or None
+    
     cmd_success = 0
     agent_success = 0
     skill_success = 0
@@ -327,38 +322,16 @@ def install_all_components(skip_existing: bool = False):
         console=console,
         transient=True
     ) as progress:
-        task = progress.add_task("Installing components", total=total_items)
+        task = progress.add_task("Installing components", total=None)
 
         # Install commands
-        for command in COMMANDS:
-            progress.update(task, description=f"Installing command [cyan]{command}[/cyan]")
-            url = f"{RAW_URL}/commands/{command}"
-            dest = commands_dir / command
-            if download_file(url, dest, skip_existing):
-                cmd_success += 1
-            progress.advance(task)
+        cmd_success = install_resources_recursively(resources / "commands", commands_dir, progress, task, skip_existing)
 
         # Install agents
-        for agent in AGENTS:
-            progress.update(task, description=f"Installing agent [cyan]{agent}[/cyan]")
-            url = f"{RAW_URL}/agents/{agent}"
-            dest = agents_dir / agent
-            if download_file(url, dest, skip_existing):
-                agent_success += 1
-            progress.advance(task)
+        agent_success = install_resources_recursively(resources / "agents", agents_dir, progress, task, skip_existing)
 
         # Install skills
-        for skill_name, skill_files in SKILLS.items():
-            skill_dest_dir = skills_dir / skill_name
-            skill_dest_dir.mkdir(parents=True, exist_ok=True)
-
-            for skill_file in skill_files:
-                progress.update(task, description=f"Installing skill [cyan]{skill_name}/{skill_file}[/cyan]")
-                url = f"{RAW_URL}/skills/{skill_name}/{skill_file}"
-                dest = skill_dest_dir / skill_file
-                if download_file(url, dest, skip_existing):
-                    skill_success += 1
-                progress.advance(task)
+        skill_success = install_resources_recursively(resources / "skills", skills_dir, progress, task, skip_existing)
 
     # Create project directories
     create_project_directories()
@@ -369,26 +342,29 @@ def install_all_components(skip_existing: bool = False):
     summary_table.add_column(style="bold green", justify="right")
     summary_table.add_column(style="dim")
 
-    summary_table.add_row("Commands", f"{cmd_success}/{len(COMMANDS)}", "processed")
-    summary_table.add_row("Agents", f"{agent_success}/{len(AGENTS)}", "processed")
-    summary_table.add_row("Skills", f"{skill_success}/{total_skill_files}", "processed")
+    summary_table.add_row("Commands", f"{cmd_success}", "installed")
+    summary_table.add_row("Agents", f"{agent_success}", "installed")
+    summary_table.add_row("Skills", f"{skill_success}", "installed")
 
     console.print(summary_table)
 
 def show_success_panel(target: str):
     """Show success message with next steps using enhanced styling."""
-    # Count total skill files
-    total_skill_files = sum(len(files) for files in SKILLS.values())
-
+    
+    # Simple check for counts (checking loose files count in destination)
+    commands_count = len(list(Path(".claude/commands").glob("**/*"))) if Path(".claude/commands").exists() else 0
+    agents_count = len(list(Path(".claude/agents").glob("**/*"))) if Path(".claude/agents").exists() else 0
+    skills_count = len(list(Path(".claude/skills").glob("**/*"))) if Path(".claude/skills").exists() else 0
+    
     # Create installation summary
     install_summary = Table(box=box.SIMPLE, show_header=False, padding=(0, 1))
     install_summary.add_column("Component", style="cyan", width=20)
     install_summary.add_column("Count", style="bold green", justify="right", width=5)
     install_summary.add_column("Location", style="dim", width=30)
 
-    install_summary.add_row("Commands", str(len(COMMANDS)), ".claude/commands/")
-    install_summary.add_row("Agents", str(len(AGENTS)), ".claude/agents/")
-    install_summary.add_row("Skills", str(len(SKILLS)), ".claude/skills/")
+    install_summary.add_row("Commands", str(commands_count), ".claude/commands/")
+    install_summary.add_row("Agents", str(agents_count), ".claude/agents/")
+    install_summary.add_row("Skills", str(skills_count), ".claude/skills/")
 
     # Create workflow example
     workflow_steps = """[bold bright_cyan]Quick Start:[/bold bright_cyan]

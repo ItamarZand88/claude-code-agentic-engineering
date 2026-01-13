@@ -4,11 +4,11 @@ build-backend = "hatchling.build"
 
 [project]
 name = "claude-agentic"
-version = "1.0.0"
+version = "2.0.0"
 description = "Agentic engineering commands and templates for Claude Code"
 readme = "README.md"
 license = "MIT"
-requires-python = ">=3.8"
+requires-python = ">=3.9"
 authors = [
     {name = "Claude Code Community"},
 ]
@@ -18,7 +18,6 @@ classifiers = [
     "Intended Audience :: Developers",
     "License :: OSI Approved :: MIT License",
     "Programming Language :: Python :: 3",
-    "Programming Language :: Python :: 3.8",
     "Programming Language :: Python :: 3.9",
     "Programming Language :: Python :: 3.10",
     "Programming Language :: Python :: 3.11",
@@ -29,7 +28,6 @@ classifiers = [
 dependencies = [
     "click>=8.0.0",
     "rich>=10.0.0",
-    "requests>=2.25.0",
 ]
 
 [project.optional-dependencies]
@@ -51,16 +49,17 @@ agentic = "claude_agentic.cli:main"
 
 [tool.hatch.build.targets.wheel]
 packages = ["src/claude_agentic"]
+# Include all resource files (md, sh, json, ndjson) in the wheel
+artifacts = [
+    "src/claude_agentic/resources/**/*.md",
+    "src/claude_agentic/resources/**/*.sh",
+    "src/claude_agentic/resources/**/*.json",
+    "src/claude_agentic/resources/**/*.ndjson",
+]
 
 [tool.hatch.build.targets.sdist]
 include = [
     "/src",
-    "/commands",
-    "/agents",
-    "/templates",
-    "/context",
-    "/docs",
-    "/examples",
     "README.md",
     "LICENSE",
 ]

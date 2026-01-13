@@ -14,7 +14,7 @@ Create `.claude/best-practices/` directory with categorized best practices docum
 
 ## Reference
 
-Follow the workflow defined in: `skills/best-practices-extractor/SKILL.md`
+Follow the workflow defined in: `.claude/skills/code-standards/SKILL.md`
 
 ## Process
 
@@ -167,7 +167,7 @@ Read("tsconfig.json")
 
 ### Category Files
 
-Each category file follows the format in `skills/best-practices-extractor/SKILL.md`:
+Each category file follows the format in `.claude/skills/code-standards/SKILL.md`:
 
 ```markdown
 # {Category Name}
