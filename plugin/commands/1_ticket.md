@@ -1,108 +1,124 @@
 ---
-description: Create task ticket from user prompt with codebase analysis
+description: Create comprehensive task ticket with codebase analysis and clarifying questions
 argument-hint: <task_description> [--continue=plan|implement|review|all]
-model: inherit
-allowed-tools: Read, Write, Glob, Grep, Bash, Task, SlashCommand
 ---
 
 # Task Ticket Generator
 
-## Purpose
+You are helping create a comprehensive task ticket that defines WHAT needs to be built. Follow a systematic approach: understand the request, explore the codebase, ask clarifying questions, then document everything.
 
-Understand WHAT needs to be done by analyzing the codebase and asking clarifying questions. The ticket defines requirements and context for the planning phase.
+## Core Principles
 
-## Process
+- **Ask clarifying questions**: Identify ambiguities and underspecified details. Ask specific questions rather than making assumptions. Wait for answers before finalizing the ticket.
+- **Understand before documenting**: Read and comprehend existing code patterns first
+- **Read files identified by agents**: When launching agents, ask them to return lists of key files. After agents complete, read those files to build context.
+- **Use TodoWrite**: Track all progress throughout
 
-### 1. Load Project Best Practices
+---
 
-**ALWAYS start by reading best practices** (if they exist):
+## Phase 1: Discovery
 
-<example>
-Bash("ls .claude/best-practices/")
-Read(".claude/best-practices/README.md")
-</example>
+**Goal**: Understand what needs to be built
 
-This ensures the ticket accounts for:
+Initial request: $ARGUMENTS
 
-- Project conventions
-- Technical constraints
-- Architecture patterns
-- Coding best practices
+**Actions**:
+1. Create todo list with all phases
+2. Load best practices if they exist:
+   ```
+   Glob(".claude/best-practices/*.md")
+   Read(".claude/best-practices/README.md")
+   ```
+3. Analyze the request to identify:
+   - Task type (feature/bugfix/refactor/documentation)
+   - Core requirements
+   - Mentioned technologies
+   - Unclear areas (flag for clarification)
+4. If requirements are completely unclear, ask user for clarification and STOP
 
-If no best practices exist → continue without them.
+---
 
-### 2. Understand Requirements
+## Phase 2: Codebase Exploration
 
-Analyze `$ARGUMENTS` to identify:
+**Goal**: Understand relevant existing code and patterns
 
-- Task type (feature/bugfix/refactor/documentation)
-- Core requirements
-- Mentioned technologies
-- Unclear areas (flag for clarification)
+**Actions**:
+1. Launch 2-3 code-explorer agents in parallel. Each agent should:
+   - Trace through code comprehensively
+   - Focus on architecture, abstractions, and control flow
+   - Target different aspects (similar features, architecture, integrations)
+   - Include a list of 5-10 key files to read
 
-If requirements are completely unclear → ask clarifying questions and STOP.
+   **Example agent prompts**:
+   - "Find features similar to [feature] and trace their implementation comprehensively"
+   - "Map the architecture and abstractions for [feature area]"
+   - "Analyze integration points and dependencies for [feature]"
 
-### 3. Analyze Codebase
+2. Once agents return, read all files they identified
+3. Summarize findings: patterns discovered, conventions, relevant code locations
 
-Choose agents based on task complexity:
+---
 
-**For new features** (complex):
-<example>
-Task(architecture-explorer, "Discover project structure for {task}")
-Task(feature-finder, "Find similar implementations for {task}")
-Task(dependency-mapper, "Map dependencies for {task}")
-</example>
+## Phase 3: Clarifying Questions
 
-**For bug fixes** (simple):
-<example>
-Task(feature-finder, "Locate affected code for {bug_description}")
-</example>
+**Goal**: Fill in gaps and resolve ambiguities before documenting
 
-**For simple changes** - skip agents, use direct search.
+**CRITICAL**: This is one of the most important phases. DO NOT SKIP.
 
-### 4. Make Architecture Decision (if needed)
+**Actions**:
+1. Review codebase findings and original request
+2. Identify underspecified aspects:
+   - Edge cases and error handling
+   - Integration points and scope boundaries
+   - Design preferences and constraints
+   - Performance and security needs
+3. **Present all questions to user in a clear, organized list**
+4. **Wait for answers before proceeding**
 
-For complex tasks with multiple implementation approaches:
+If user says "whatever you think is best", provide your recommendation and get explicit confirmation.
 
-<example>
-Task(implementation-strategist, "Evaluate approaches for {task}:
-- List 2-3 viable options
-- Analyze trade-offs
-- Recommend best approach with rationale")
-</example>
+---
 
-Present options to user:
+## Phase 4: Architecture Decision (if needed)
 
-```
-I've analyzed {N} approaches for {task}:
+**Goal**: Evaluate implementation approaches for complex tasks
 
-Option 1: {name}
-- Pros: {benefits}
-- Cons: {drawbacks}
+**Actions**:
+1. For complex tasks with multiple viable approaches, launch 1-2 code-architect agents:
+   - "Evaluate implementation approaches for [task]: list 2-3 options with trade-offs"
+   - Focus on: minimal changes vs clean architecture vs pragmatic balance
 
-Option 2: {name}
-- Pros: {benefits}
-- Cons: {drawbacks}
+2. Present options to user:
+   ```
+   I've analyzed approaches for {task}:
 
-Recommendation: {choice} because {reason}
+   Option 1: {name}
+   - Pros: {benefits}
+   - Cons: {drawbacks}
 
-Which approach would you like?
-```
+   Option 2: {name}
+   - Pros: {benefits}
+   - Cons: {drawbacks}
 
-STOP and wait for user decision.
+   Recommendation: {choice} because {reason}
 
-### 5. Create Task Folder
+   Which approach would you like?
+   ```
 
-Generate kebab-case folder name and create:
+3. **Wait for user decision before proceeding**
 
-```
-./.claude/tasks/{task-name}/
-├── ticket.md
-```
+For simple tasks, skip this phase.
 
-### 6. Generate Ticket
+---
 
-Save to `.claude/tasks/{task-name}/ticket.md`:
+## Phase 5: Generate Ticket
+
+**Goal**: Document everything in a comprehensive ticket
+
+**Actions**:
+1. Create task folder: `.claude/tasks/{task-name}/`
+2. Generate kebab-case folder name from task description
+3. Save ticket to `.claude/tasks/{task-name}/ticket.md`:
 
 ```markdown
 # {Task Title}
@@ -117,70 +133,42 @@ Save to `.claude/tasks/{task-name}/ticket.md`:
 
 ## Context
 
-{Existing implementation, patterns discovered from agents}
+{Existing implementation, patterns discovered from exploration}
 
-## Similar Implementations in Codebase
+## Similar Implementations
 
-{Document similar existing implementations found by feature-finder agent:
-
-**Pattern**: {name_of_pattern}
+{From code-explorer findings:
 - **Location**: {file_path}:{line}
-- **Key Approach**: {how_it_works}
-- **Patterns to Follow**: {naming, structure, error handling, etc.}
-- **Example**:
-  ```typescript
-  // Show relevant code snippet
-  ```
+- **Pattern**: {how it works}
+- **Follow**: {naming, structure, error handling patterns}}
 
-This implementation should follow the same patterns for consistency.}
+## Best Practices (if exist)
 
-## Project Best Practices (if exist)
-
-{Key best practices from .claude/best-practices/ relevant to this task:
-
-- Naming conventions to follow
-- Architecture patterns to use
-- Technical constraints to consider}
+{Key guidelines from .claude/best-practices/ relevant to this task}
 
 ## Implementation Strategy (if architectural decision made)
 
 - **Approach**: {chosen_approach}
 - **Rationale**: {why}
 - **Key Decisions**: {important_choices}
-- **Technologies**: {libraries_to_use}
-- **Integration Points**: {where_it_connects}
-- **Best Practices Alignment**: {how_approach_follows_best_practices}
 
 ## Requirements
 
 **Functional**:
-
 - [ ] {requirement_1}
 - [ ] {requirement_2}
 
 **Non-Functional**:
-
-- [ ] {performance_requirement}
-- [ ] {security_requirement}
-- [ ] Follows project best practices
+- [ ] {performance/security requirements}
 
 ## Affected Areas
 
-- {file_to_modify}
-- {file_to_create}
-- {config_to_update}
-
-## Dependencies
-
-- {internal_dependency}
-- {external_library}
+- {files to modify/create}
 
 ## Acceptance Criteria
 
 - [ ] {criterion_1}
 - [ ] {criterion_2}
-- [ ] Code follows .claude/best-practices/
-- [ ] Implementation matches patterns from similar existing code
 
 ## Risks
 
@@ -188,44 +176,30 @@ This implementation should follow the same patterns for consistency.}
 
 ## Next
 
-`/2_plan @.claude/tasks/{task-name}`
+`/2_plan .claude/tasks/{task-name}`
 ```
 
-### 7. Report & Continue
+---
 
-Show summary:
+## Phase 6: Summary
 
-```
-Ticket: .claude/tasks/{task-name}/ticket.md
+**Goal**: Report and optionally continue
 
-Summary: {brief_task_description}
+**Actions**:
+1. Mark all todos complete
+2. Show summary:
+   ```
+   Ticket: .claude/tasks/{task-name}/ticket.md
 
-Key Findings:
-- {finding_1}
-- {finding_2}
-```
+   Summary: {brief description}
 
-**Handle --continue argument** (check if `$ARGUMENTS` contains `--continue=<value>`):
+   Key Findings:
+   - {finding_1}
+   - {finding_2}
+   ```
 
-<example>
-# Parse arguments to extract --continue value
-if "--continue=all" or "--continue=review" in arguments:
-  SlashCommand("/2_plan .claude/tasks/{task-name} --continue=review")
-elif "--continue=implement" in arguments:
-  SlashCommand("/2_plan .claude/tasks/{task-name} --continue=implement")
-elif "--continue=plan" in arguments:
-  SlashCommand("/2_plan .claude/tasks/{task-name}")
-else:
-  # No --continue flag, ask user
-  Ask: "Ready for planning? (I'll run /2_plan)"
-  If confirmed → SlashCommand("/2_plan .claude/tasks/{task-name}")
-</example>
-
-## Guidelines
-
-- **ALWAYS read best practices first**
-- Focus on WHAT, not HOW
-- Choose agents intelligently (don't use all for simple tasks)
-- Ask clarifications when needed
-- Document architectural decisions clearly
-- Ensure ticket aligns with project best practices
+3. Handle `--continue` flag in `$ARGUMENTS`:
+   - `--continue=plan` → run `/2_plan .claude/tasks/{task-name}`
+   - `--continue=implement` → run `/2_plan .claude/tasks/{task-name} --continue=implement`
+   - `--continue=review` or `--continue=all` → run `/2_plan .claude/tasks/{task-name} --continue=review`
+   - No flag → ask user if ready for planning

@@ -1,103 +1,146 @@
 ---
-description: Execute implementation plan step-by-step
+description: Execute implementation plan step-by-step with validation
 argument-hint: <task_folder_path> [--continue=review|all]
-model: inherit
-allowed-tools: Read, Write, Edit, Glob, Grep, Bash, Task, TodoWrite, SlashCommand
 ---
 
 # Plan Executor
 
-## Purpose
+You are implementing the feature by executing the plan step-by-step. Follow the plan closely, validate after each task, and track progress throughout.
 
-Execute plan tasks sequentially with validation. Track progress with TodoWrite.
+## Core Principles
 
-## Process
+- **Follow the plan**: The plan has been approved - execute it faithfully
+- **Validate continuously**: Run checks after each task to catch issues early
+- **Read before writing**: Always read existing files before modifying them
+- **Use TodoWrite**: Track every task's progress in real-time
+- **Ask when blocked**: If something doesn't work as planned, ask user before improvising
 
-### 1. Pre-flight Checks
+---
 
-<example>
-Bash("git status --porcelain")
-Bash("git branch --show-current")
-SlashCommand("/checks")
-</example>
+## Phase 1: Pre-flight Checks
 
-If working directory not clean → ask user: "(1) Commit (2) Stash (3) Continue"
-If on main branch → suggest feature branch
-If quality checks fail → STOP
+**Goal**: Ensure clean starting state
 
-### 2. Load Plan
+Input: $ARGUMENTS (task folder path)
 
-<example>
-Read(".claude/tasks/{task-folder}/ticket.md")
-Read(".claude/tasks/{task-folder}/plan.md")
-</example>
+**Actions**:
+1. Check git status:
+   ```
+   git status --porcelain
+   git branch --show-current
+   ```
 
-Create TodoWrite list with all tasks.
+2. Handle issues:
+   - If working directory not clean → ask user: "Commit, Stash, or Continue anyway?"
+   - If on main branch → suggest creating feature branch
 
-### 3. Implement Each Task
+3. Run quality checks to establish baseline:
+   ```
+   /checks
+   ```
+   If checks fail on existing code, note it but continue.
 
-For each task:
+---
 
-**Mark in progress**:
-<example>
-TodoWrite("mark_in_progress", task_id)
-</example>
+## Phase 2: Load Plan
 
-**Read patterns**:
-<example>
-Read("src/existing-similar-file.ts")
-</example>
+**Goal**: Understand what needs to be built
 
-**Implement**:
+**Actions**:
+1. Read ticket and plan:
+   ```
+   Read(".claude/tasks/{task-folder}/ticket.md")
+   Read(".claude/tasks/{task-folder}/plan.md")
+   ```
 
-- Follow project patterns
-- Make incremental changes
-- Handle errors explicitly
+2. Extract all tasks from plan
+3. Create TodoWrite list with every task from the plan
 
-**Validate**:
-<example>
-SlashCommand("/checks")
-</example>
+If plan is missing, STOP and tell user to run `/2_plan`.
 
-If validation fails → offer: (1) Retry (2) Skip (3) Debug (4) Rollback
+---
 
-**Mark complete**:
-<example>
-TodoWrite("mark_completed", task_id)
-</example>
+## Phase 3: Execute Tasks
 
-### 4. Final Validation
+**Goal**: Implement each task from the plan
 
-Run full quality checks and validate against acceptance criteria from ticket:
+**For each task in order**:
 
-<example>
-SlashCommand("/checks")
-Read(".claude/tasks/{task-folder}/ticket.md")
-# Verify all acceptance criteria are met
-</example>
+1. **Mark in progress**:
+   ```
+   TodoWrite - mark task as in_progress
+   ```
 
-### 5. Report & Continue
+2. **Read relevant files**:
+   - Read files that will be modified
+   - Read similar implementations mentioned in ticket
+   - Understand existing patterns before writing
 
-Show summary:
+3. **Implement**:
+   - Follow the code example from plan
+   - Match existing codebase conventions
+   - Handle errors explicitly
 
-```
-Implementation complete: .claude/tasks/{task-folder}
+4. **Validate**:
+   ```
+   /checks
+   ```
+   Or run the specific validation command from the task.
 
-Tasks: {N} completed
-Files: {M} modified
+5. **Handle failures**:
+   If validation fails, offer options:
+   - (1) Fix and retry
+   - (2) Skip this task
+   - (3) Debug together
+   - (4) Rollback changes
 
-Modified:
-- {file}: {what_changed}
-```
+6. **Mark complete**:
+   ```
+   TodoWrite - mark task as completed
+   ```
 
-**Handle --continue argument** (check if `$ARGUMENTS` contains `--continue=<value>`):
+**Important**: Complete each task fully before moving to the next. Don't batch multiple tasks.
 
-<example>
-# Parse arguments to extract --continue value
-if "--continue=all" or "--continue=review" in arguments:
-  SlashCommand("/4_review .claude/tasks/{task-folder}")
-else:
-  # No --continue flag, ask user
-  Ask: "Code review? (I'll run /4_review)"
-  If confirmed → SlashCommand("/4_review .claude/tasks/{task-folder}")
-</example>
+---
+
+## Phase 4: Final Validation
+
+**Goal**: Ensure everything works together
+
+**Actions**:
+1. Run full quality checks:
+   ```
+   /checks
+   ```
+
+2. Verify acceptance criteria from ticket:
+   ```
+   Read(".claude/tasks/{task-folder}/ticket.md")
+   ```
+   Go through each acceptance criterion and verify it's met.
+
+3. If any criteria not met, identify which task needs adjustment.
+
+---
+
+## Phase 5: Summary
+
+**Goal**: Report results and optionally continue
+
+**Actions**:
+1. Mark all todos complete
+2. Show summary:
+   ```
+   Implementation complete: .claude/tasks/{task-folder}
+
+   Tasks: {N} completed
+   Files modified:
+   - {file}: {what changed}
+   - {file}: {what changed}
+
+   Acceptance criteria: {X}/{Y} met
+   ```
+
+3. Handle `--continue` flag in `$ARGUMENTS`:
+   - `--continue=review` or `--continue=all` → run `/4_review .claude/tasks/{task-folder}`
+   - No flag → ask user if ready for code review

@@ -1,112 +1,110 @@
 ---
-description: Code review and quality assessment
+description: Code review and quality assessment with confidence-based filtering
 argument-hint: <task_folder_path>
-model: inherit
-allowed-tools: Read, Write, Glob, Grep, Bash, Task, SlashCommand
 ---
 
 # Code Reviewer
 
-## Purpose
+You are reviewing the implementation against requirements and best practices. Focus on high-confidence issues that truly matter - quality over quantity.
 
-Review implementation against requirements and best practices.
+## Core Principles
 
-## Process
+- **Review only changed code**: Focus on git diff, not the entire codebase
+- **High confidence only**: Only report issues with confidence ≥ 80
+- **Actionable feedback**: Every issue must have a concrete fix suggestion
+- **Use TodoWrite**: Track review progress
 
-### 1. Load Context
+---
 
-<example>
-# Read task requirements and plan
-Read(".claude/tasks/{task-folder}/ticket.md")
-Read(".claude/tasks/{task-folder}/plan.md")
+## Phase 1: Load Context
 
-# Get ONLY changes for this task (not entire codebase)
-Bash("git diff main...HEAD")
+**Goal**: Understand what was built and what to review
 
-# Identify which files were changed in this task
-Bash("git diff --name-only main...HEAD")
+Input: $ARGUMENTS (task folder path)
 
-# Check for best practices
-if [ -d ".claude/best-practices" ]; then
-    echo "✅ Best practices found - will validate compliance"
-    Bash("bash skills/code-compliance/scripts/check_compliance.sh .claude/best-practices")
-else
-    echo "⚠️  No best practices found (run /best-practices to generate)"
-fi
-</example>
+**Actions**:
+1. Create todo list with review phases
+2. Read task artifacts:
+   ```
+   Read(".claude/tasks/{task-folder}/ticket.md")
+   Read(".claude/tasks/{task-folder}/plan.md")
+   ```
 
-**CRITICAL SCOPE CONSTRAINT**:
-- Review ONLY files and lines changed in this specific task
-- Do NOT review unchanged code or unrelated files
-- Focus on the git diff output from this task's branch
+3. Get changes to review:
+   ```
+   git diff --name-only main...HEAD
+   git diff main...HEAD
+   ```
 
-### 2. Run Automated Checks
+4. Load best practices if they exist:
+   ```
+   Glob(".claude/best-practices/*.md")
+   Read(".claude/best-practices/README.md")
+   ```
 
-<example>
-SlashCommand("/checks")
-</example>
+---
 
-### 3. Comprehensive Review
+## Phase 2: Automated Checks
 
-<example>
-Task(code-reviewer, "Review implementation for .claude/tasks/{task-folder}:
+**Goal**: Run automated quality tools
 
-**CRITICAL**: Review ONLY the changes introduced by this specific task.
-- Scope: ONLY files changed in git diff main...HEAD
-- Focus: ONLY lines modified in this task
-- Ignore: Unchanged code, unrelated files, existing issues in other parts of codebase
+**Actions**:
+1. Run project checks:
+   ```
+   /checks
+   ```
 
-Review Checklist:
+2. Document any failures with file:line references
 
-1. Requirements: Check all acceptance criteria from ticket
+---
 
-2. Code Quality: Find critical/high/medium/low severity issues IN CHANGED CODE ONLY
+## Phase 3: Code Review
 
-3. Best Practices Compliance:
-   - IF .claude/best-practices/ exists:
-     * Load all .md files from the directory
-     * Map ONLY changed files to relevant best practice categories
-     * Validate ONLY modified code against applicable guidelines
-     * Report violations with file:line, guideline reference, and fix examples
-     * Calculate compliance score for changed code only
-   - ELSE: Skip and note in report
+**Goal**: Comprehensive review of changed code
 
-4. Pattern Compliance (NEW):
-   - Read "Similar Implementations in Codebase" section from ticket
-   - IF similar implementations documented:
-     * Compare new implementation against documented patterns
-     * Check: naming conventions, structure, error handling, patterns
-     * Validate consistency with existing similar code
-     * Report deviations with specific pattern references
-     * Calculate pattern compliance score
-   - ELSE: Skip and note in report
+**Actions**:
+1. Launch code-reviewer agent:
+   ```
+   Task(code-reviewer, "Review implementation for .claude/tasks/{task-folder}
 
-5. Security: Check for vulnerabilities IN CHANGED CODE
+   Scope: ONLY changes from git diff main...HEAD
 
-6. Performance: Identify bottlenecks IN CHANGED CODE
+   Check:
+   1. Requirements from ticket - are acceptance criteria met?
+   2. Best practices from .claude/best-practices/ (if exists)
+   3. Bugs, security issues, performance problems
+   4. Pattern consistency with similar implementations from ticket
 
-Provide file:line references for all issues found in the git diff.
+   Use confidence scoring (0-100). Only report issues ≥ 80.
+   Provide file:line references and concrete fixes for each issue.")
+   ```
 
-See: skills/code-compliance/review-integration-guide.md for detailed best practices validation instructions.")
-</example>
+2. Review agent findings
+3. **Present findings to user and ask what they want to do**:
+   - Fix critical issues now
+   - Fix all issues now
+   - Proceed as-is
 
-### 4. Generate Report
+---
 
-Save to `.claude/tasks/{task-folder}/review.md`:
+## Phase 4: Generate Report
+
+**Goal**: Document review findings
+
+**Actions**:
+1. Save report to `.claude/tasks/{task-folder}/review.md`:
 
 ```markdown
 # Code Review
 
 **Date**: {date}
-**Quality**: {score}/10
-**Best Practices Compliance**: {percentage}% ({X}/{Y} guidelines)
-**Pattern Compliance**: {percentage}% ({X}/{Y} patterns matched)
-**Status**: {pass/warning/fail}
+**Status**: {pass|warning|fail}
 
 ## Summary
 
-Requirements: {X}/{Y} met
-Issues: {critical} critical, {high} high
+- Requirements: {X}/{Y} met
+- Best practices: {compliant|violations found}
+- High-confidence issues: {count}
 
 ## Automated Checks
 
@@ -114,88 +112,47 @@ Issues: {critical} critical, {high} high
 - Typecheck: {pass/fail}
 - Tests: {pass/fail}
 
-## Best Practices Compliance
-
-**Overall Compliance**: {percentage}% ({compliant}/{total} guidelines checked)
-
-### ✅ Compliant Guidelines
-
-- **{Category}** ({file}.md #{numbers})
-  - {brief_description}
-
-### ❌ Violations
-
-#### High Severity
-
-- **{Category} Violation** ({file}.md #{number})
-  - **File**: {file}:{line}
-  - **Issue**: {description}
-  - **Guideline**: "{quoted_guideline}"
-  - **Fix**: {concrete_fix_with_code_example}
-
-#### Medium Severity
-
-- {similar_format}
-
-## Pattern Compliance
-
-**Overall Pattern Match**: {percentage}% ({matched}/{total} patterns followed)
-
-### ✅ Patterns Followed
-
-- **{Pattern Name}** (from {similar_file}:{line})
-  - Naming convention matches
-  - Structure follows established pattern
-  - Error handling consistent
-
-### ❌ Pattern Deviations
-
-#### High Severity
-
-- **Pattern Deviation: {pattern_name}** (ref: {ticket_section})
-  - **File**: {file}:{line}
-  - **Issue**: {description of deviation}
-  - **Expected Pattern** (from {similar_file}:{line}):
-    ```typescript
-    // Existing pattern
-    {pattern_code}
-    ```
-  - **Actual Implementation**:
-    ```typescript
-    // New code (deviates)
-    {actual_code}
-    ```
-  - **Fix**: Align with existing pattern for consistency
-
-#### Medium Severity
-
-- {similar_format}
-
 ## Issues
 
-### Critical
+### Critical (confidence ≥ 90)
 
-- {file}:{line} - {issue}
+[{confidence}] {file}:{line} - {description}
+- {why it matters}
+- Fix: {concrete suggestion}
 
-### High
+### Important (confidence ≥ 80)
 
-- {file}:{line} - {issue}
+[{confidence}] {file}:{line} - {description}
+- {why it matters}
+- Fix: {concrete suggestion}
 
 ## Recommendations
 
-1. {fix_1}
-2. {fix_2}
+1. {action item}
+2. {action item}
 ```
 
-### 5. Report
+---
 
-```
-Review: .claude/tasks/{task-folder}/review.md
+## Phase 5: Summary
 
-Quality: {score}/10
-Issues: {count}
+**Goal**: Report and handle fixes
 
-Top Issues:
-- {issue_1}
-- {issue_2}
-```
+**Actions**:
+1. Mark all todos complete
+2. Show summary:
+   ```
+   Review: .claude/tasks/{task-folder}/review.md
+
+   Status: {pass|warning|fail}
+   Issues: {critical} critical, {important} important
+
+   Top issues:
+   - {issue 1}
+   - {issue 2}
+   ```
+
+3. If user chose to fix issues:
+   - Create TodoWrite with each fix
+   - Implement fixes one by one
+   - Re-run `/checks` after each fix

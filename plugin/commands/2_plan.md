@@ -1,112 +1,146 @@
 ---
-description: Create detailed implementation plan with code examples
+description: Create detailed implementation plan with architecture design and code examples
 argument-hint: <task_folder_path> [--continue=implement|review|all]
-model: inherit
-allowed-tools: Read, Write, Glob, Grep, Bash, Task, WebSearch, WebFetch, SlashCommand
 ---
 
 # Implementation Plan Generator
 
-## Purpose
+You are creating a detailed implementation plan that defines HOW to build the feature. The ticket already defines WHAT - focus on architecture design, research, and actionable implementation steps.
 
-Transform ticket requirements into actionable tasks with code examples. Architectural decisions are ALREADY made in ticket - focus on detailed HOW.
+## Core Principles
 
-## Process
+- **Research before designing**: Look up best practices and patterns for the technologies involved
+- **Design with confidence**: Use code-architect to make decisive architectural choices
+- **Read files identified by agents**: Build deep context before designing
+- **Provide code examples**: Every task should have concrete code showing what to write
+- **Use TodoWrite**: Track all progress throughout
 
-### 1. Load Ticket
+---
 
-<example>
-Read(".claude/tasks/{task-folder}/ticket.md")
-</example>
+## Phase 1: Load Context
 
-Extract:
+**Goal**: Understand the ticket requirements
 
-- Requirements
-- **Implementation Strategy** (decided approach)
-- Affected areas
-- Dependencies
+Input: $ARGUMENTS (task folder path)
 
-If ticket missing → STOP, tell user to run `/1_ticket`.
+**Actions**:
+1. Create todo list with all phases
+2. Read the ticket:
+   ```
+   Read(".claude/tasks/{task-folder}/ticket.md")
+   ```
+3. Extract:
+   - Requirements and acceptance criteria
+   - Implementation strategy (if decided)
+   - Affected areas and dependencies
+   - Similar implementations to follow
 
-### 2. Research (if needed)
+If ticket is missing, STOP and tell user to run `/1_ticket`.
 
-Launch only relevant research:
+---
 
-**For new technologies**:
-<example>
-WebSearch("OAuth2 best practices 2025")
-WebFetch("https://oauth.net/2/")
-</example>
+## Phase 2: Research
 
-**For codebase patterns**:
-<example>
-Task(feature-finder, "Find similar auth implementations")
-Task(codebase-analyst, "Extract error handling patterns")
-</example>
+**Goal**: Gather best practices and patterns for the implementation
 
-**For library usage**:
-<example>
-Context7_resolve-library-id("next-auth")
-Context7_get-library-docs("/nextauthjs/next-auth")
-</example>
+**Actions**:
+1. For new technologies or unfamiliar patterns:
+   ```
+   WebSearch("{technology} best practices 2025")
+   WebFetch("{documentation_url}")
+   ```
 
-### 3. Create Tasks
+2. For library-specific guidance:
+   ```
+   mcp__context7__resolve-library-id("{library_name}")
+   mcp__context7__query-docs("{library_id}", "{specific question}")
+   ```
 
-Break into phases with detailed tasks:
+3. For codebase patterns not covered in ticket:
+   - Launch code-explorer agent to find additional patterns
+   - Read the files it identifies
 
-**Phase 1: Foundation**
+4. Summarize research findings relevant to implementation
 
-- Setup, dependencies, config
+Skip this phase for simple tasks where patterns are already clear from ticket.
 
-**Phase 2: Core**
+---
 
-- Main features and logic
+## Phase 3: Architecture Design
 
-**Phase 3: Integration**
+**Goal**: Design the complete implementation architecture
 
-- Connect to existing systems
+**Actions**:
+1. Launch 1-2 code-architect agents in parallel with different focuses:
+   - "Design implementation for [task] following patterns from [similar implementations in ticket]"
+   - "Design component architecture for [feature] with focus on [testability/performance/simplicity]"
 
-**Phase 4: Validation**
+2. Each agent should provide:
+   - Component design with responsibilities
+   - File paths to create/modify
+   - Interfaces and data flow
+   - Integration points
 
-- Tests and quality checks
+3. Synthesize agent outputs into a unified design
+4. Present architecture summary to user for confirmation
 
-**Phase 5: Documentation**
+For simple tasks, design directly without agents.
 
-- Comments and guides
+---
 
-For each task include:
+## Phase 4: Create Implementation Tasks
 
-- Description
-- Files to create/modify
-- **Code example**
-- Dependencies
-- Validation command
-- Effort (S/M/L/XL)
+**Goal**: Break down into actionable tasks with code examples
 
-<example>
-**Task 2.1**: Create OAuth Config
+**Actions**:
+1. Organize into phases:
 
-Files:
+   **Phase 1: Foundation**
+   - Setup, dependencies, configuration
 
-- CREATE: `src/config/oauth.ts`
+   **Phase 2: Core**
+   - Main features and business logic
 
-Code:
+   **Phase 3: Integration**
+   - Connect to existing systems
 
-```typescript
-export const oauthConfig = {
-  clientId: process.env.OAUTH_CLIENT_ID,
-  secret: process.env.OAUTH_SECRET,
-};
-```
+   **Phase 4: Validation**
+   - Tests and quality checks
 
-Dependencies: Task 1.1 (env setup)
-Validation: `npm run typecheck`
-Effort: S (15min)
-</example>
+2. For each task, include:
+   - Clear description
+   - Files to create/modify
+   - **Concrete code example**
+   - Dependencies on other tasks
+   - Validation command
 
-### 4. Generate Plan
+   Example:
+   ```
+   **Task 2.1**: Create OAuth Config
 
-Save to `.claude/tasks/{task-folder}/plan.md`:
+   Files:
+   - CREATE: `src/config/oauth.ts`
+
+   Code:
+   ```typescript
+   export const oauthConfig = {
+     clientId: process.env.OAUTH_CLIENT_ID,
+     secret: process.env.OAUTH_SECRET,
+   };
+   ```
+
+   Dependencies: Task 1.1 (env setup)
+   Validation: `npm run typecheck`
+   ```
+
+---
+
+## Phase 5: Generate Plan
+
+**Goal**: Document the complete implementation plan
+
+**Actions**:
+1. Save plan to `.claude/tasks/{task-folder}/plan.md`:
 
 ```markdown
 # Implementation Plan
@@ -114,22 +148,40 @@ Save to `.claude/tasks/{task-folder}/plan.md`:
 **Task**: {name}
 **Date**: {date}
 
-## Strategy (from ticket)
+## Architecture Overview
 
-{implementation_strategy_from_ticket}
+{High-level design from code-architect, component diagram if complex}
 
 ## Research Summary
 
-- {finding_1}
-- {finding_2}
+- {key finding 1}
+- {key finding 2}
 
 ## Phase 1: Foundation
 
 ### Task 1.1: {title}
 
-{details with code example}
+**Files**:
+- CREATE/MODIFY: `{path}`
+
+**Code**:
+```{language}
+{example code}
+```
+
+**Validation**: `{command}`
+
+### Task 1.2: ...
 
 ## Phase 2: Core
+
+...
+
+## Phase 3: Integration
+
+...
+
+## Phase 4: Validation
 
 ...
 
@@ -146,27 +198,24 @@ Save to `.claude/tasks/{task-folder}/plan.md`:
 `/3_implement .claude/tasks/{task-folder}`
 ```
 
-### 5. Report & Continue
+---
 
-Show summary:
+## Phase 6: Summary
 
-```
-Plan: .claude/tasks/{task-folder}/plan.md
+**Goal**: Report and optionally continue
 
-Phases: {N}
-Tasks: {M}
-```
+**Actions**:
+1. Mark all todos complete
+2. Show summary:
+   ```
+   Plan: .claude/tasks/{task-folder}/plan.md
 
-**Handle --continue argument** (check if `$ARGUMENTS` contains `--continue=<value>`):
+   Architecture: {brief description}
+   Phases: {N}
+   Tasks: {M}
+   ```
 
-<example>
-# Parse arguments to extract --continue value
-if "--continue=all" or "--continue=review" in arguments:
-  SlashCommand("/3_implement .claude/tasks/{task-folder} --continue=review")
-elif "--continue=implement" in arguments:
-  SlashCommand("/3_implement .claude/tasks/{task-folder}")
-else:
-  # No --continue flag, ask user
-  Ask: "Ready to implement? (I'll run /3_implement)"
-  If confirmed → SlashCommand("/3_implement .claude/tasks/{task-folder}")
-</example>
+3. Handle `--continue` flag in `$ARGUMENTS`:
+   - `--continue=implement` → run `/3_implement .claude/tasks/{task-folder}`
+   - `--continue=review` or `--continue=all` → run `/3_implement .claude/tasks/{task-folder} --continue=review`
+   - No flag → ask user if ready to implement
