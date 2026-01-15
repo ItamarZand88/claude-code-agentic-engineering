@@ -1,4 +1,4 @@
-# Agentic Engineering Plugin for Claude Code
+# AGI - Agentic Engineering Plugin for Claude Code
 
 Advanced agentic engineering workflow with specialized agents for ticket creation, planning, implementation, and code review.
 
@@ -18,18 +18,18 @@ claude --plugin-dir /path/to/claude-code-agentic-engineering/plugin
 
 ## Commands
 
-After installation, use commands with the `agentic-engineering:` prefix:
+After installation, use commands with the `agi:` prefix:
 
 | Command | Description |
 |---------|-------------|
-| `/agentic-engineering:1_ticket <description>` | Create task ticket with codebase analysis |
-| `/agentic-engineering:2_plan <task-folder>` | Research-driven implementation planning |
-| `/agentic-engineering:3_implement <task-folder>` | Execute the implementation plan |
-| `/agentic-engineering:4_review <task-folder>` | Quality assurance and code review |
-| `/agentic-engineering:all <description>` | Run full workflow (ticket → plan → implement → review) |
-| `/agentic-engineering:best-practices` | Generate project best practices |
-| `/agentic-engineering:checks` | Run quality checks |
-| `/agentic-engineering:fix-pr-comments` | Fix PR review comments |
+| `/agi:1_ticket <description>` | Create task ticket with codebase analysis |
+| `/agi:2_plan <task-folder>` | Research-driven implementation planning |
+| `/agi:3_implement <task-folder>` | Execute the implementation plan |
+| `/agi:4_review <task-folder>` | Quality assurance and code review |
+| `/agi:all <description>` | Run full workflow (ticket → plan → implement → review) |
+| `/agi:best-practices` | Generate project best practices |
+| `/agi:checks` | Run quality checks |
+| `/agi:fix-pr-comments` | Fix PR review comments |
 
 ## Workflow
 
@@ -37,22 +37,22 @@ After installation, use commands with the `agentic-engineering:` prefix:
 
 ```bash
 # 1. Create ticket
-/agentic-engineering:1_ticket "Add OAuth authentication"
+/agi:1_ticket "Add OAuth authentication"
 
 # 2. Plan implementation
-/agentic-engineering:2_plan .claude/tasks/oauth-authentication
+/agi:2_plan .claude/tasks/oauth-authentication
 
 # 3. Implement
-/agentic-engineering:3_implement .claude/tasks/oauth-authentication
+/agi:3_implement .claude/tasks/oauth-authentication
 
 # 4. Review
-/agentic-engineering:4_review .claude/tasks/oauth-authentication
+/agi:4_review .claude/tasks/oauth-authentication
 ```
 
 ### Quick Start (Full Workflow)
 
 ```bash
-/agentic-engineering:all "Add OAuth authentication"
+/agi:all "Add OAuth authentication"
 ```
 
 ### Command Chaining
@@ -61,10 +61,10 @@ Use `--continue` flag to auto-continue through steps:
 
 ```bash
 # Create ticket and auto-continue to planning
-/agentic-engineering:1_ticket "Add feature" --continue=plan
+/agi:1_ticket "Add feature" --continue=plan
 
 # Create ticket and run full workflow
-/agentic-engineering:1_ticket "Add feature" --continue=all
+/agi:1_ticket "Add feature" --continue=all
 ```
 
 ## Agents

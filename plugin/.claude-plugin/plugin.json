@@ -1,5 +1,5 @@
 {
-  "name": "agentic-engineering",
+  "name": "agi",
   "description": "Advanced agentic engineering workflow with specialized agents for ticket creation, planning, implementation, and code review. Includes 4-step workflow commands and best practices extraction.",
   "version": "2.0.0",
   "author": {
