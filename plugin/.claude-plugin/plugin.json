@@ -6,10 +6,7 @@
     "name": "Itamar Zand",
     "url": "https://github.com/ItamarZand88"
   },
-  "repository": {
-    "type": "git",
-    "url": "https://github.com/ItamarZand88/claude-code-agentic-engineering"
-  },
+  "repository": "https://github.com/ItamarZand88/claude-code-agentic-engineering",
   "homepage": "https://github.com/ItamarZand88/claude-code-agentic-engineering",
   "license": "MIT",
   "keywords": [
