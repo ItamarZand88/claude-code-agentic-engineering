@@ -34,3 +34,4 @@ __pycache__/
 *.py[cod]
 *$py.class
 .early.coveragetmpclaude-*
+.best-practices/
