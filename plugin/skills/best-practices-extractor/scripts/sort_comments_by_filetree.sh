@@ -3,9 +3,10 @@
 # Usage: ./sort_comments_by_filetree.sh INPUT_FILE [REPO_PATH]
 # Example: ./sort_comments_by_filetree.sh backend_inline_comments.ndjson /path/to/backend
 
-INPUT="${1:?Usage: $0 INPUT_FILE [REPO_PATH]}"
-REPO_PATH="${2:-.}"
-OUTPUT_DIR="${REPO_PATH}/pr-review-comments"
+INPUT="${1:?Usage: $0 INPUT_FILE}"
+
+# Output to .claude/pr-review-comments/sorted/
+OUTPUT_DIR=".claude/pr-review-comments/sorted"
 
 # Find jq - use full path
 JQ_CMD="/c/Users/ItamarZand/bin/jq.exe"

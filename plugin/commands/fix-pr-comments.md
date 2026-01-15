@@ -1,61 +1,152 @@
 ---
-description: Fix PR review comments
+description: Fetch and fix PR review comments systematically
 argument-hint: <pr_number> [task_folder]
-model: inherit
-allowed-tools: Read, Write, Edit, Glob, Grep, Bash, Task, TodoWrite, SlashCommand
 ---
 
 # PR Comment Fixer
 
-## Purpose
+You are fixing review comments from a pull request. Fetch comments, prioritize them, and implement fixes systematically.
 
-Fetch PR comments and implement fixes.
+## Core Principles
 
-## Process
+- **Prioritize by severity**: Fix critical issues first
+- **Read before editing**: Always understand context before making changes
+- **Validate after each fix**: Run checks to catch regressions
+- **Use TodoWrite**: Track each comment being fixed
 
-### 1. Fetch PR
+---
 
-<example>
-Bash("gh pr view {pr_number} --json title,body,reviews,comments")
-</example>
+## Phase 1: Fetch PR Comments
 
-### 2. Organize Comments
+**Goal**: Get all review comments from the PR
 
-Group by file and priority (Critical/High/Medium/Low).
+Input: $ARGUMENTS (PR number, optional task folder)
 
-Create TodoWrite list.
+**Actions**:
+1. Create todo list with phases
+2. Checkout the PR branch:
+   ```
+   gh pr checkout {pr_number}
+   ```
 
-### 3. Fix Each Comment
+3. Fetch PR details and comments:
+   ```
+   gh pr view {pr_number} --json title,body,headRefName
+   gh pr view {pr_number} --comments
+   gh api repos/{owner}/{repo}/pulls/{pr_number}/comments
+   ```
 
-<example>
-Bash("git checkout {pr_branch}")
-TodoWrite("mark_in_progress", comment_id)
-Read("{file}")
-Edit("{file}", old_string, new_string)
-TodoWrite("mark_completed", comment_id)
-</example>
+4. If no comments found, report and STOP
 
-### 4. Validate
+---
 
-<example>
-SlashCommand("/checks")
-</example>
+## Phase 2: Organize Comments
 
-### 5. Update Task Review (if task_folder provided)
+**Goal**: Prioritize and plan fixes
 
-Append PR fixes to `{task_folder}/review.md`.
+**Actions**:
+1. Group comments by severity:
+   - **Critical**: Bugs, security issues, breaking changes
+   - **High**: Logic errors, major improvements
+   - **Medium**: Code quality, refactoring suggestions
+   - **Low**: Style, nitpicks, optional improvements
 
-## Report
+2. Group by file for efficient editing
 
-```
-✅ PR Comments Fixed
+3. Create TodoWrite list with all comments to fix
 
-PR: #{pr_number}
-Addressed: {count}/{total}
-Files: {N} modified
+4. **Present prioritized list to user**:
+   ```
+   PR #{pr_number} Comments:
 
-Manual Review Needed:
-- {comment} - {reason}
+   Critical ({count}):
+   - {file}:{line} - {comment summary}
 
-Next: Review changes and commit
-```
+   High ({count}):
+   - {file}:{line} - {comment summary}
+
+   Medium ({count}):
+   - {file}:{line} - {comment summary}
+
+   Which would you like to fix? (all / critical+high / select specific)
+   ```
+
+5. **Wait for user decision**
+
+---
+
+## Phase 3: Fix Comments
+
+**Goal**: Implement each fix
+
+**For each comment to fix**:
+
+1. **Mark in progress**:
+   ```
+   TodoWrite - mark comment as in_progress
+   ```
+
+2. **Read the file**:
+   ```
+   Read("{file}")
+   ```
+
+3. **Understand the context** and the reviewer's intent
+
+4. **Implement the fix**:
+   ```
+   Edit("{file}", old_code, new_code)
+   ```
+
+5. **Validate**:
+   ```
+   /checks
+   ```
+
+6. **Handle failures**: If checks fail, fix or ask user
+
+7. **Mark complete**:
+   ```
+   TodoWrite - mark comment as completed
+   ```
+
+---
+
+## Phase 4: Update Task (if task folder provided)
+
+**Goal**: Document fixes in task artifacts
+
+**Actions**:
+1. If task folder provided:
+   - Read existing review: `Read("{task_folder}/review.md")`
+   - Append PR fixes section with what was addressed
+
+---
+
+## Phase 5: Summary
+
+**Goal**: Report what was fixed
+
+**Actions**:
+1. Mark all todos complete
+2. Show summary:
+   ```
+   PR Comments Fixed: #{pr_number}
+
+   Addressed: {fixed}/{total}
+   Files modified: {count}
+
+   Fixed:
+   - {file}:{line} - {what was done}
+   - {file}:{line} - {what was done}
+
+   Skipped (manual review needed):
+   - {comment} - {reason}
+
+   Next: Commit changes and request re-review
+   ```
+
+3. Offer to commit changes:
+   ```
+   Ready to commit? (Will use: "fix: address PR review comments")
+   ```

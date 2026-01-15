@@ -7,7 +7,11 @@ set -e
 
 OWNER="earlyai"
 REPO="${1:?Usage: $0 REPO_NAME (e.g., backend, vscode-extension)}"
-OUTPUT="${REPO}_inline_comments.ndjson"
+
+# Output to .claude/pr-review-comments/
+OUTPUT_DIR=".claude/pr-review-comments"
+mkdir -p "$OUTPUT_DIR"
+OUTPUT="${OUTPUT_DIR}/${REPO}_inline_comments.ndjson"
 
 # Find jq
 JQ_CMD="jq"

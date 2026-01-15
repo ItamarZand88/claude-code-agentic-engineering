@@ -1,77 +1,84 @@
 ---
 description: Complete end-to-end workflow from task description to implementation and review
 argument-hint: <task_description>
-model: inherit
-allowed-tools: Read, Write, Edit, Glob, Grep, Bash, Task, TodoWrite, WebSearch, WebFetch, SlashCommand
 ---
 
 # Complete Workflow Executor
 
-## Purpose
+You are running the complete 4-step workflow automatically: ticket → plan → implement → review. This is the fully automated path with minimal user interaction.
 
-Execute the complete 4-step workflow automatically: ticket → plan → implement → review. No user interaction needed between steps.
+## Core Principles
 
-## Process
+- **Automatic progression**: Move through all steps without waiting for user approval
+- **Use --continue flags**: Chain commands automatically
+- **Report between steps**: Show brief progress updates
+- **Use TodoWrite**: Track overall workflow progress
 
-### 1. Create Ticket
+---
 
-<example>
-SlashCommand("/1_ticket {task_description}")
-</example>
+## Phase 1: Initialize
 
-Wait for completion, then automatically proceed to planning.
+**Goal**: Set up the complete workflow
 
-### 2. Create Plan
+Input: $ARGUMENTS (task description)
 
-<example>
-SlashCommand("/2_plan .claude/tasks/{task-folder}")
-</example>
+**Actions**:
+1. Create todo list with all 4 major steps
+2. Validate task description is provided
+3. If task description empty, ask user and STOP
 
-Wait for completion, then automatically proceed to implementation.
+---
 
-### 3. Implement
+## Phase 2: Execute Workflow
 
-<example>
-SlashCommand("/3_implement .claude/tasks/{task-folder}")
-</example>
+**Goal**: Run all 4 steps automatically
 
-Wait for completion, then automatically proceed to review.
+**Actions**:
+1. **Create Ticket** (auto-continue to review):
+   ```
+   /1_ticket {task_description} --continue=review
+   ```
 
-### 4. Review
+   This will automatically chain:
+   - `/1_ticket` → creates ticket
+   - `/2_plan` → creates implementation plan
+   - `/3_implement` → executes the plan
+   - `/4_review` → reviews the code
 
-<example>
-SlashCommand("/4_review .claude/tasks/{task-folder}")
-</example>
+2. Monitor progress and update TodoWrite as each step completes
 
-Wait for completion, then show final summary.
+---
 
-## Report
+## Phase 3: Summary
 
-```
-Complete Workflow Finished: .claude/tasks/{task-folder}
+**Goal**: Report complete workflow results
 
-All Steps Completed:
-- Ticket created
-- Plan generated
-- Implementation executed
-- Code reviewed
+**Actions**:
+1. Mark all todos complete
+2. Show comprehensive summary:
+   ```
+   Complete Workflow Finished: .claude/tasks/{task-folder}
 
-Task Summary: {brief_description}
+   Steps Completed:
+   ✓ Ticket created
+   ✓ Plan generated
+   ✓ Implementation executed
+   ✓ Code reviewed
 
-Files Created/Modified:
-- {file1} - {what_changed}
-- {file2} - {what_changed}
+   Task: {brief_description}
 
-Quality Score: {score}/10
-Issues Found: {count}
+   Files Modified:
+   - {file}: {change}
+   - {file}: {change}
 
-Ready for production!
-```
+   Review Status: {pass|warning|fail}
+   Quality Score: {score}/10
+   Issues: {count} (if any)
 
-## Guidelines
+   Artifacts:
+   - .claude/tasks/{task-folder}/ticket.md
+   - .claude/tasks/{task-folder}/plan.md
+   - .claude/tasks/{task-folder}/review.md
+   ```
 
-- **NO user interaction** - run all steps automatically
-- Use SlashCommand to execute each step
-- Wait for each step to complete before proceeding
-- Show progress between steps
-- Provide comprehensive final summary
+3. If review found critical issues, offer to fix them

@@ -9,6 +9,10 @@ SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 SKILL_DIR="$(dirname "$SCRIPT_DIR")"
 STATE_FILE="${SKILL_DIR}/.state.json"
 
+# Output to .claude/pr-review-comments/
+OUTPUT_DIR=".claude/pr-review-comments"
+mkdir -p "$OUTPUT_DIR"
+
 OWNER="${1:?Usage: $0 OWNER REPO_NAME}"
 REPO="${2:?Usage: $0 OWNER REPO_NAME}"
 REPO_KEY="${OWNER}/${REPO}"
@@ -110,7 +114,7 @@ if [ -z "$LAST_UPDATE" ]; then
     bash "${SCRIPT_DIR}/extract_pr_comments.sh" "$REPO"
 
     # Count results
-    OUTPUT="${REPO}_inline_comments.ndjson"
+    OUTPUT="${OUTPUT_DIR}/${REPO}_inline_comments.ndjson"
     if [ -f "$OUTPUT" ]; then
         TOTAL_COMMENTS=$("$JQ_CMD" -s 'length' "$OUTPUT")
         TOTAL_PRS=$(gh pr list --repo "$REPO_KEY" --state all --limit 1000 --json number | "$JQ_CMD" 'length')
@@ -153,7 +157,7 @@ echo ""
 "$JQ_CMD" -r '.[].number' "$TEMP_PRS" > pr_numbers.txt
 
 # Create output file
-OUTPUT="${REPO}_inline_comments_incremental.ndjson"
+OUTPUT="${OUTPUT_DIR}/${REPO}_inline_comments_incremental.ndjson"
 > "$OUTPUT"
 
 COMMENTS_FOUND=0

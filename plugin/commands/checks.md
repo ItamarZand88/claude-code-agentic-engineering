@@ -1,46 +1,81 @@
 ---
-description: Run all code quality checks (TypeScript, Prettier, Lint)
-argument-hint:
-model: inherit
-allowed-tools: Bash
+description: Run all code quality checks (TypeScript, Prettier, Lint, Tests, Build)
+argument-hint: [--fix]
 ---
 
 # Code Quality Checks
 
-Run TypeScript type checking, Prettier formatting check, ESLint, tests, and build validation.
+Run all available quality checks for the project. Detects available scripts and runs them with clear pass/fail reporting.
 
-## Instructions
+## Core Principles
 
-Run all available quality checks. Try standard npm scripts with fallbacks for different project setups:
+- **Try multiple variants**: Different projects use different script names
+- **Report clearly**: Show pass/fail for each check
+- **Continue on failure**: Run all checks even if some fail
 
-<example>
-# TypeScript type checking (try multiple variants)
-Bash("npm run typecheck || npm run check:ts || npm run type-check || echo 'No typecheck script found'")
+---
 
-# Prettier formatting check
-Bash("npm run format:check || npm run check:prettier || npm run prettier:check || echo 'No prettier check script found'")
+## Process
 
-# ESLint
-Bash("npm run lint || npm run check:lint || npm run eslint || echo 'No lint script found'")
+**Goal**: Run all quality checks and report results
 
-# Tests (if available)
-Bash("npm run test || npm t || echo 'No test script found'")
+Input: $ARGUMENTS (optional --fix flag)
 
-# Build validation
-Bash("npm run build || echo 'No build script found'")
-</example>
+**Actions**:
 
-Report results clearly with ✅ PASS or ❌ FAIL for each check.
+1. **TypeScript type checking**:
+   ```
+   npm run typecheck || npm run check:ts || npm run type-check || tsc --noEmit
+   ```
 
-Example report:
+2. **Prettier formatting**:
+   ```
+   # If --fix flag provided
+   npm run format || npm run prettier:fix || prettier --write .
+
+   # Otherwise just check
+   npm run format:check || npm run check:prettier || prettier --check .
+   ```
+
+3. **ESLint**:
+   ```
+   # If --fix flag provided
+   npm run lint:fix || npm run eslint:fix || eslint . --fix
+
+   # Otherwise just check
+   npm run lint || npm run check:lint || eslint .
+   ```
+
+4. **Tests** (if available):
+   ```
+   npm run test || npm t
+   ```
+
+5. **Build validation** (if available):
+   ```
+   npm run build
+   ```
+
+---
+
+## Output
+
+Report results with clear status:
+
 ```
-✅ Quality Checks Complete
+Quality Checks Complete
 
-TypeScript: ✅ PASS
-Prettier:   ✅ PASS
-ESLint:     ❌ FAIL (3 errors)
-Tests:      ✅ PASS (24/24)
-Build:      ✅ PASS
+TypeScript: ✓ PASS
+Prettier:   ✓ PASS
+ESLint:     ✗ FAIL (3 errors)
+  - src/index.ts:15 - no-unused-vars
+  - src/utils.ts:42 - prefer-const
+  - src/api.ts:8 - no-explicit-any
+Tests:      ✓ PASS (24/24)
+Build:      ✓ PASS
 
 Overall: 4/5 passed
+
+{If failures exist}
+Run `/checks --fix` to auto-fix formatting and lint issues.
 ```
