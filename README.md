@@ -8,17 +8,20 @@
 
 ## Quick Start
 
-Install directly from Claude Code:
+Install the AGI plugin in two simple steps:
 
 ```bash
-# Inside Claude Code, run:
-/plugin install https://github.com/ItamarZand88/claude-code-agentic-engineering
+# Step 1: Add the marketplace (inside Claude Code)
+/plugin marketplace add ItamarZand88/claude-code-agentic-engineering
+
+# Step 2: Install the plugin
+/plugin install agi@claude-code-agentic-engineering
 
 # Verify installation
 /help    # Should show /agi:* commands
 ```
 
-That's it! All commands are available with the `/agi:` prefix.
+That's it! All commands are now available with the `/agi:` prefix.
 
 ## Why Use This Plugin?
 
@@ -200,21 +203,39 @@ claude-code-agentic-engineering/
 
 ## Installation
 
-### Claude Marketplace Plugin (Recommended)
+### Method 1: Interactive Installation (Recommended)
 
-Install directly from within Claude Code:
+Inside Claude Code interactive session:
 
 ```bash
-# Inside Claude Code, run:
-/plugin install https://github.com/ItamarZand88/claude-code-agentic-engineering
+# Step 1: Add the marketplace
+/plugin marketplace add ItamarZand88/claude-code-agentic-engineering
+
+# Step 2: Install the plugin
+/plugin install agi@claude-code-agentic-engineering
 
 # Verify installation
 /help    # Look for /agi:* commands
 ```
 
-The plugin will automatically be available in all your Claude Code sessions. No configuration needed!
+### Method 2: CLI Installation
 
-### For Local Development
+From your terminal:
+
+```bash
+# Add marketplace
+claude plugin marketplace add ItamarZand88/claude-code-agentic-engineering
+
+# Install plugin
+claude plugin install agi@claude-code-agentic-engineering
+
+# Start Claude Code
+claude
+```
+
+The plugin will automatically be available in all your Claude Code sessions. No additional configuration needed!
+
+### Method 3: Local Development
 
 If you're contributing or testing local changes:
 
@@ -229,6 +250,7 @@ claude --plugin-dir /path/to/claude-code-agentic-engineering/plugin
 ### Requirements
 
 - **Claude Code** v1.0.33 or later
+- **Node.js** 18+ (for Claude Code runtime)
 - **GitHub CLI** (`gh`) - Required for `/agi:best-practices` and `/agi:fix-pr-comments` commands
 
 ## Usage Examples
@@ -368,7 +390,7 @@ We welcome contributions! Please see our [Contributing Guidelines](CONTRIBUTING.
 **Major Redesign:**
 - 🚀 Converted to **Claude Marketplace Plugin** for seamless installation
 - 📦 Plugin-based distribution with `/agi:` command prefix
-- ⚡ One-command installation: `/plugin install https://github.com/...`
+- ⚡ Two-step installation: Add marketplace, then install plugin
 - 🔧 No more manual CLI setup or complex installation scripts
 
 **Workflow Improvements:**
