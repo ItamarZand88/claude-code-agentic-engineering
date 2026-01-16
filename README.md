@@ -163,8 +163,6 @@ claude-code-agentic-engineering/
 │   └── skills/                         # Advanced skill modules
 │       ├── best-practices-extractor/
 │       └── code-compliance/
-└── src/                                # Legacy CLI (deprecated)
-    └── claude_agentic/
 
 # When installed in your project:
 .claude/tasks/                          # Task workspaces (auto-generated)
@@ -180,7 +178,6 @@ claude-code-agentic-engineering/
 - **3 specialized agents**: code-explorer (analysis), code-architect (design), code-reviewer (QA)
 - **Phase-specific specialization**: Each workflow phase uses the optimal agent
 - **Comprehensive analysis**: Deep codebase understanding before implementation
-- **Streamlined architecture**: Simplified from 9 agents to 3 for maximum efficiency
 
 ### Safety & Quality First
 - Git branching and status checks for all implementations
@@ -321,7 +318,8 @@ The AGI plugin is fully extensible and customizable:
 1. **Fork the repository** and modify the files in `plugin/`
 2. **Install your forked version**:
    ```bash
-   /plugin install https://github.com/YOUR_USERNAME/claude-code-agentic-engineering
+   /plugin marketplace add YOUR_USERNAME/claude-code-agentic-engineering
+   /plugin install agi@claude-code-agentic-engineering
    ```
 
 ### For Contributors
@@ -356,10 +354,10 @@ Expected output format
 ```
 
 ### Task-First Approach
-1. Start with clear requirements (`/1_ticket`)
-2. Research and plan thoroughly (`/2_plan`)
-3. Execute with validation (`/3_implement`)
-4. Review comprehensively (`/4_review`)
+1. Start with clear requirements (`/agi:1_ticket`)
+2. Research and plan thoroughly (`/agi:2_plan`)
+3. Execute with validation (`/agi:3_implement`)
+4. Review comprehensively (`/agi:4_review`)
 
 ### Knowledge Preservation
 - All decisions documented in task folders
@@ -369,13 +367,12 @@ Expected output format
 
 ## Contributing
 
-We welcome contributions! Please see our [Contributing Guidelines](CONTRIBUTING.md).
+We welcome contributions!
 
 ### Ways to Contribute:
-- Report bugs and issues
-- Suggest new commands or agents
-- Improve documentation
-- Submit pull requests
+- Report bugs and issues via [GitHub Issues](https://github.com/ItamarZand88/claude-code-agentic-engineering/issues)
+- Suggest new commands or agents via [GitHub Discussions](https://github.com/ItamarZand88/claude-code-agentic-engineering/discussions)
+- Improve documentation with pull requests
 - Star the repository if you find it useful!
 
 ## Documentation
@@ -385,30 +382,23 @@ We welcome contributions! Please see our [Contributing Guidelines](CONTRIBUTING.
 
 ## Changelog
 
-### v2.0.0 (Latest) - Claude Marketplace Plugin
+### v2.0.0 - Claude Marketplace Plugin
 
-**Major Redesign:**
-- 🚀 Converted to **Claude Marketplace Plugin** for seamless installation
+**Installation:**
+- 🚀 **Claude Marketplace Plugin** for seamless installation
 - 📦 Plugin-based distribution with `/agi:` command prefix
 - ⚡ Two-step installation: Add marketplace, then install plugin
-- 🔧 No more manual CLI setup or complex installation scripts
 
-**Workflow Improvements:**
-- Streamlined to 4-step core workflow (ticket → plan → implement → review)
-- Added `/agi:all` for complete workflow automation
+**Workflow:**
+- 4-step core workflow: ticket → plan → implement → review
+- `/agi:all` command for complete workflow automation
 - Command chaining with `--continue` flags
 - Organized task management in `.claude/tasks/` directory
 
-**Agent & Skills:**
-- 3 specialized agents with focused expertise (code-explorer, code-architect, code-reviewer)
+**Agents & Skills:**
+- 3 specialized agents: code-explorer, code-architect, code-reviewer
 - Skills system: `best-practices-extractor`, `code-compliance`
-- Streamlined agent architecture for maximum efficiency
 - Phase-optimized agent specialization
-
-### v1.0.0 (Deprecated)
-- Initial release with CLI-based installation
-- Basic 4-step workflow
-- Manual installation process
 
 ## License
 
