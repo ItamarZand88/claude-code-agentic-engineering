@@ -1,6 +1,6 @@
 # AGI - Agentic Engineering Plugin for Claude Code
 
-> A Claude marketplace plugin featuring specialized AI agents and structured workflows for comprehensive software engineering - from task analysis to implementation and code review.
+> A Claude marketplace plugin that combines advanced **agentic engineering** with sophisticated **context engineering** to deliver comprehensive software engineering workflows - from task analysis to implementation and code review. Built on best practices while keeping developers as active participants throughout the entire process.
 
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 [![Claude Code Plugin](https://img.shields.io/badge/Claude%20Code-Plugin-blue)](https://claude.ai/code)
@@ -25,6 +25,8 @@ That's it! All commands are now available with the `/agi:` prefix.
 
 ## Why Use This Plugin?
 
+✅ **Advanced Engineering** - Combines agentic engineering with context engineering for superior results
+✅ **Developer-Centric** - You remain in control, reviewing and approving each phase
 ✅ **Zero Configuration** - Install once, use everywhere
 ✅ **Proven Workflow** - Structured 4-step process from idea to implementation
 ✅ **AI Agent Team** - 3 specialized agents for exploration, architecture, and code review
@@ -57,6 +59,36 @@ Or run the full workflow in one command:
 ```bash
 /agi:all "Add OAuth integration with Google"
 ```
+
+### Recommended Workflow (Best Practice)
+
+For best results, **review and approve each phase** before proceeding to the next:
+
+```bash
+# 1. Create the ticket
+/agi:1_ticket "Add OAuth integration with Google"
+
+# 2. Review the generated ticket
+#    - Read `.claude/tasks/add-oauth-integration/ticket.md`
+#    - Verify requirements are accurate
+#    - Update or clarify as needed
+
+# 3. Plan implementation (only after ticket approval)
+/agi:2_plan .claude/tasks/add-oauth-integration
+
+# 4. Review the generated plan
+#    - Read `.claude/tasks/add-oauth-integration/plan.md`
+#    - Verify architectural decisions
+#    - Adjust approach if needed
+
+# 5. Execute implementation (only after plan approval)
+/agi:3_implement .claude/tasks/add-oauth-integration
+
+# 6. Review the results
+/agi:4_review .claude/tasks/add-oauth-integration
+```
+
+**Why this matters:** Each phase builds on the previous one. Reviewing and approving the ticket ensures the requirements are clear. Reviewing the plan ensures the architecture is sound before writing code. This **collaborative approach** keeps you in control while leveraging AI agents for deep analysis and implementation.
 
 All task artifacts are organized in the `.claude/` directory:
 ```
