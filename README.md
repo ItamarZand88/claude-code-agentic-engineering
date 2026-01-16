@@ -24,7 +24,7 @@ That's it! All commands are available with the `/agi:` prefix.
 
 ✅ **Zero Configuration** - Install once, use everywhere
 ✅ **Proven Workflow** - Structured 4-step process from idea to implementation
-✅ **AI Agent Team** - 9 specialized agents working together for comprehensive analysis
+✅ **AI Agent Team** - 3 specialized agents for exploration, architecture, and code review
 ✅ **Quality Built-In** - Automated code review, best practices compliance, security checks
 ✅ **Speed & Efficiency** - Parallel agent execution, command chaining, auto-continue workflow
 ✅ **Organized** - All task artifacts automatically organized in `.claude/tasks/`
@@ -32,7 +32,7 @@ That's it! All commands are available with the `/agi:` prefix.
 
 ## What This Gives You
 
-Transform your development workflow with a **4-step core workflow** plus **setup commands** and **9 specialized AI agents** that work together to create a comprehensive engineering system.
+Transform your development workflow with a **4-step core workflow** plus **setup commands** and **3 specialized AI agents** that work together to create a comprehensive engineering system.
 
 ### The Complete Workflow
 
@@ -94,32 +94,43 @@ All commands use the `/agi:` prefix:
 
 ## Specialized Agents
 
-The plugin includes **9 specialized AI agents** organized by workflow phase:
+The plugin includes **3 specialized AI agents** that handle the complete development lifecycle:
 
-### Exploration & Analysis (used in `/agi:1_ticket`)
-| Agent | Expertise |
-|-------|-----------|
-| **architecture-explorer** | Project structure, tech stack mapping, directory organization |
-| **feature-finder** | Similar implementation discovery, pattern extraction, integration points |
-| **dependency-mapper** | Internal/external dependency mapping, API integration analysis |
+### 1. Code Explorer
+**Used in:** `/agi:1_ticket` (analysis phase)
 
-### Planning & Design (used in `/agi:2_plan`)
-| Agent | Expertise |
-|-------|-----------|
-| **codebase-analyst** | Pattern discovery, conventions, architecture understanding |
-| **implementation-strategist** | Architectural decision-making, trade-off analysis, approach evaluation |
+Deeply analyzes existing codebase features by tracing execution paths, mapping architecture layers, understanding patterns and abstractions, and documenting dependencies to inform new development.
 
-### Review & Quality (used in `/agi:4_review`)
-| Agent | Expertise |
-|-------|-----------|
-| **code-reviewer** | Comprehensive code review with multi-phase analysis |
-| **quality-assurance-agent** | Automated QA checks, linting, type-checking, formatting validation |
-| **best-practices-compliance-agent** | Best practices compliance validation against project standards |
+**Key capabilities:**
+- Traces feature implementations from entry points to data storage
+- Maps architecture layers (presentation → business logic → data)
+- Identifies design patterns and architectural decisions
+- Documents dependencies and integration points
+- Provides file:line references for all findings
 
-### Best Practices Generation (used in `/agi:best-practices` skill)
-| Agent | Expertise |
-|-------|-----------|
-| **best-practices-generator** | Analyzes PR comments and codebase to generate project-specific coding standards |
+### 2. Code Architect
+**Used in:** `/agi:2_plan` (design phase)
+
+Designs feature architectures by analyzing existing codebase patterns and conventions, then providing comprehensive implementation blueprints with specific files to create/modify, component designs, data flows, and build sequences.
+
+**Key capabilities:**
+- Extracts and applies existing codebase patterns
+- Makes decisive architectural decisions with clear rationale
+- Designs complete component structures and data flows
+- Creates phased implementation plans with specific tasks
+- Ensures seamless integration with existing code
+
+### 3. Code Reviewer
+**Used in:** `/agi:4_review` (quality assurance phase)
+
+Reviews code for bugs, logic errors, security vulnerabilities, code quality issues, and adherence to project conventions and `.claude/best-practices/`, using confidence-based filtering to report only high-priority issues.
+
+**Key capabilities:**
+- Loads and enforces project-specific best practices
+- Identifies critical bugs, security vulnerabilities, and logic errors
+- Runs automated checks (linting, type-checking, formatting)
+- Confidence scoring (only reports issues ≥80% confidence)
+- Provides concrete fixes with code examples
 
 ## Repository Structure
 
@@ -143,15 +154,9 @@ claude-code-agentic-engineering/
 │   │   ├── checks.md
 │   │   └── fix-pr-comments.md
 │   ├── agents/                         # Specialized AI agents
-│   │   ├── architecture-explorer.md
-│   │   ├── feature-finder.md
-│   │   ├── dependency-mapper.md
-│   │   ├── codebase-analyst.md
-│   │   ├── implementation-strategist.md
-│   │   ├── code-reviewer.md
-│   │   ├── best-practices-generator.md
-│   │   ├── best-practices-compliance-agent.md
-│   │   └── quality-assurance-agent.md
+│   │   ├── code-explorer.md            # Codebase analysis & tracing
+│   │   ├── code-architect.md           # Architecture design & planning
+│   │   └── code-reviewer.md            # Code review & quality assurance
 │   └── skills/                         # Advanced skill modules
 │       ├── best-practices-extractor/
 │       └── code-compliance/
@@ -169,9 +174,10 @@ claude-code-agentic-engineering/
 ## Key Features
 
 ### Intelligent Agent Orchestration
-- **Parallel execution**: Multiple agents run concurrently for maximum speed
-- **Phase-specific specialization**: Each workflow phase uses optimized agents
+- **3 specialized agents**: code-explorer (analysis), code-architect (design), code-reviewer (QA)
+- **Phase-specific specialization**: Each workflow phase uses the optimal agent
 - **Comprehensive analysis**: Deep codebase understanding before implementation
+- **Streamlined architecture**: Simplified from 9 agents to 3 for maximum efficiency
 
 ### Safety & Quality First
 - Git branching and status checks for all implementations
@@ -372,9 +378,9 @@ We welcome contributions! Please see our [Contributing Guidelines](CONTRIBUTING.
 - Organized task management in `.claude/tasks/` directory
 
 **Agent & Skills:**
-- 9 specialized agents with focused expertise
+- 3 specialized agents with focused expertise (code-explorer, code-architect, code-reviewer)
 - Skills system: `best-practices-extractor`, `code-compliance`
-- Improved parallel agent coordination
+- Streamlined agent architecture for maximum efficiency
 - Phase-optimized agent specialization
 
 ### v1.0.0 (Deprecated)
