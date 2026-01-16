@@ -1,76 +1,61 @@
-# Claude Code Agentic Engineering
+# AGI - Agentic Engineering Plugin for Claude Code
 
-> A comprehensive agentic engineering framework for Claude Code featuring specialized agents and structured workflows for task-to-implementation automation with intelligent orchestration and quality assurance.
+> A Claude marketplace plugin featuring specialized AI agents and structured workflows for comprehensive software engineering - from task analysis to implementation and code review.
 
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
-[![Claude Code](https://img.shields.io/badge/Claude%20Code-Compatible-blue)](https://claude.ai/code)
+[![Claude Code Plugin](https://img.shields.io/badge/Claude%20Code-Plugin-blue)](https://claude.ai/code)
+[![Version](https://img.shields.io/badge/version-2.0.0-green.svg)](https://github.com/ItamarZand88/claude-code-agentic-engineering)
 
 ## Quick Start
 
-```bash
-# Install in existing project
-uvx --from git+https://github.com/ItamarZand88/claude-code-agentic-engineering.git agentic install
-
-# Start Claude Code and verify installation
-claude
-/help    # Should show your new commands
-```
-
-### Even Easier with Aliases!
-
-Tired of typing the long command? Set up a short alias:
-
-**PowerShell (Windows):**
-```powershell
-# Run once to set up
-.\setup-aliases.ps1
-
-# Now use the short command
-agi
-```
-
-**Bash/Zsh (Linux/Mac):**
-```bash
-# Run once to set up
-source setup-aliases.sh
-
-# Now use the short command
-agi
-```
-
-See [ALIASES.md](ALIASES.md) for permanent setup instructions.
-
-### All Installation Options
+Install the AGI plugin in two simple steps:
 
 ```bash
-# Initialize new project
-uvx --from git+https://github.com/ItamarZand88/claude-code-agentic-engineering.git agentic init my-project
+# Step 1: Add the marketplace (inside Claude Code)
+/plugin marketplace add ItamarZand88/claude-code-agentic-engineering
 
-# Install in existing project
-uvx --from git+https://github.com/ItamarZand88/claude-code-agentic-engineering.git agentic install
+# Step 2: Install the plugin
+/plugin install agi@claude-code-agentic-engineering
 
-# Check installation status
-uvx --from git+https://github.com/ItamarZand88/claude-code-agentic-engineering.git agentic status
+# Verify installation
+/help    # Should show /agi:* commands
 ```
+
+That's it! All commands are now available with the `/agi:` prefix.
+
+## Why Use This Plugin?
+
+✅ **Zero Configuration** - Install once, use everywhere
+✅ **Proven Workflow** - Structured 4-step process from idea to implementation
+✅ **AI Agent Team** - 3 specialized agents for exploration, architecture, and code review
+✅ **Quality Built-In** - Automated code review, best practices compliance, security checks
+✅ **Speed & Efficiency** - Parallel agent execution, command chaining, auto-continue workflow
+✅ **Organized** - All task artifacts automatically organized in `.claude/tasks/`
+✅ **Research-Driven** - Web research integration for best practices and patterns
 
 ## What This Gives You
 
-Transform your development workflow with a **4-step core workflow** plus **setup commands** and **7 specialized AI agents** that work together to create a comprehensive engineering system.
+Transform your development workflow with a **4-step core workflow** plus **setup commands** and **3 specialized AI agents** that work together to create a comprehensive engineering system.
 
 ### The Complete Workflow
 
 ```bash
 # 1. Comprehensive task ticket creation with deep analysis
-/1_ticket "Add OAuth integration with Google"
+/agi:1_ticket "Add OAuth integration with Google"
 
 # 2. Research-driven implementation planning
-/2_plan .claude/tasks/add-oauth-integration
+/agi:2_plan .claude/tasks/add-oauth-integration
 
 # 3. Execute implementation following the plan
-/3_implement .claude/tasks/add-oauth-integration
+/agi:3_implement .claude/tasks/add-oauth-integration
 
 # 4. Comprehensive quality review and validation
-/4_review .claude/tasks/add-oauth-integration
+/agi:4_review .claude/tasks/add-oauth-integration
+```
+
+Or run the full workflow in one command:
+```bash
+/agi:all "Add OAuth integration with Google"
 ```
 
 All task artifacts are organized in the `.claude/` directory:
@@ -88,51 +73,67 @@ All task artifacts are organized in the `.claude/` directory:
     └── code-compliance/           # Validate code against best practices
 ```
 
-## Slash Commands
+## Plugin Commands
+
+All commands use the `/agi:` prefix:
 
 ### Core Workflow Commands
 
 | Command | Purpose | Key Features |
 |---------|---------|-------------|
-| `/1_ticket <description>` | Task ticket creation | Deep codebase analysis, parallel agent coordination, clarification questions, comprehensive requirements |
-| `/2_plan <task_folder>` | Implementation planning | Web research, architecture decisions, phase-based breakdown, pattern discovery |
-| `/3_implement <task_folder>` | Execute implementation | Direct implementation, git management, testing validation, progress tracking |
-| `/4_review <task_folder>` | Quality assurance | Automated QA checks, best practices compliance, security & performance analysis |
+| `/agi:1_ticket <description>` | Task ticket creation | Deep codebase analysis, parallel agent coordination, clarification questions, comprehensive requirements |
+| `/agi:2_plan <task_folder>` | Implementation planning | Web research, architecture decisions, phase-based breakdown, pattern discovery |
+| `/agi:3_implement <task_folder>` | Execute implementation | Direct implementation, git management, testing validation, progress tracking |
+| `/agi:4_review <task_folder>` | Quality assurance | Automated QA checks, best practices compliance, security & performance analysis |
 
 ### Setup & Utility Commands
 
 | Command | Purpose | When to Use |
 |---------|---------|-------------|
-| `/checks` | Run quality checks | TypeScript, Prettier, Lint validation |
-| `/fix-pr-comments <pr_number>` | Fix PR review comments | Address code review feedback |
-| `/all` | Complete workflow | Run all 4 steps in sequence |
+| `/agi:all <description>` | Complete workflow | Run all 4 steps in sequence - fastest way to go from idea to implementation |
+| `/agi:best-practices` | Generate best practices | Extract project-specific coding standards from PRs |
+| `/agi:checks` | Run quality checks | TypeScript, Prettier, Lint validation |
+| `/agi:fix-pr-comments <pr_number>` | Fix PR review comments | Address code review feedback |
 
 ## Specialized Agents
 
-The framework includes 7 specialized agents organized by workflow phase:
+The plugin includes **3 specialized AI agents** that handle the complete development lifecycle:
 
-### Exploration & Analysis (used in `/1_ticket`)
-| Agent | Expertise |
-|-------|-----------|
-| **architecture-explorer** | Project structure, tech stack mapping, directory organization |
-| **feature-finder** | Similar implementation discovery, pattern extraction, integration points |
-| **dependency-mapper** | Internal/external dependency mapping, API integration analysis |
+### 1. Code Explorer
+**Used in:** `/agi:1_ticket` (analysis phase)
 
-### Planning & Design (used in `/2_plan`)
-| Agent | Expertise |
-|-------|-----------|
-| **codebase-analyst** | Pattern discovery, conventions, architecture understanding |
-| **implementation-strategist** | Architectural decision-making, trade-off analysis, approach evaluation |
+Deeply analyzes existing codebase features by tracing execution paths, mapping architecture layers, understanding patterns and abstractions, and documenting dependencies to inform new development.
 
-### Review & Quality (used in `/4_review`)
-| Agent | Expertise |
-|-------|-----------|
-| **code-reviewer** | Comprehensive code review, QA automation, best practices compliance, security & performance |
+**Key capabilities:**
+- Traces feature implementations from entry points to data storage
+- Maps architecture layers (presentation → business logic → data)
+- Identifies design patterns and architectural decisions
+- Documents dependencies and integration points
+- Provides file:line references for all findings
 
-### Best Practices Generation (used in `best-practices-extractor` skill)
-| Agent | Expertise |
-|-------|-----------|
-| **best-practices-generator** | Analyzes PR comments and codebase to generate project-specific coding best practices |
+### 2. Code Architect
+**Used in:** `/agi:2_plan` (design phase)
+
+Designs feature architectures by analyzing existing codebase patterns and conventions, then providing comprehensive implementation blueprints with specific files to create/modify, component designs, data flows, and build sequences.
+
+**Key capabilities:**
+- Extracts and applies existing codebase patterns
+- Makes decisive architectural decisions with clear rationale
+- Designs complete component structures and data flows
+- Creates phased implementation plans with specific tasks
+- Ensures seamless integration with existing code
+
+### 3. Code Reviewer
+**Used in:** `/agi:4_review` (quality assurance phase)
+
+Reviews code for bugs, logic errors, security vulnerabilities, code quality issues, and adherence to project conventions and `.claude/best-practices/`, using confidence-based filtering to report only high-priority issues.
+
+**Key capabilities:**
+- Loads and enforces project-specific best practices
+- Identifies critical bugs, security vulnerabilities, and logic errors
+- Runs automated checks (linting, type-checking, formatting)
+- Confidence scoring (only reports issues ≥80% confidence)
+- Provides concrete fixes with code examples
 
 ## Repository Structure
 
@@ -140,54 +141,46 @@ The framework includes 7 specialized agents organized by workflow phase:
 claude-code-agentic-engineering/
 ├── README.md                           # This file
 ├── CLAUDE.md                           # Project context for Claude
-├── setup-aliases.sh/ps1                # Alias setup scripts
 ├── LICENSE                             # MIT License
-├── commands/                           # Slash Commands
-│   ├── 1_ticket.md                     # Task ticket creation
-│   ├── 2_plan.md                       # Implementation planning
-│   ├── 3_implement.md                  # Execute implementation
-│   ├── 4_review.md                     # Quality review
-│   ├── checks.md                       # Run quality checks
-│   ├── fix-pr-comments.md              # Fix PR comments
-│   └── all.md                          # Complete workflow
-├── agents/                             # Specialized Agents
-│   ├── architecture-explorer.md
-│   ├── feature-finder.md
-│   ├── dependency-mapper.md
-│   ├── codebase-analyst.md
-│   ├── implementation-strategist.md
-│   ├── code-reviewer.md
-│   └── best-practices-generator.md
-├── skills/                             # Advanced Skill Modules
-│   ├── best-practices-extractor/       # Extract best practices from PRs
-│   │   ├── SKILL.md                    # Skill definition
-│   │   └── scripts/                    # Extraction scripts
-│   └── code-compliance/                # Validate against best practices
-│       ├── SKILL.md                    # Skill definition
-│       └── scripts/                    # Compliance scripts
-├── src/                                # CLI implementation
-│   └── claude_agentic/
-│       ├── cli.py                      # Main CLI tool
-│       └── commands/                   # CLI command handlers
-└── .claude/                            # Generated task workspaces (installed)
-    ├── commands/                       # Installed slash commands
-    ├── agents/                         # Installed agent templates
-    ├── skills/                         # Installed skill modules
-    ├── tasks/
-    │   └── {task-name}/                # Task-specific folder
-    │       ├── ticket.md
-    │       ├── plan.md
-    │       └── review.md
-    └── best-practices/                 # Project coding best practices
-        └── README.md
+├── .claude-plugin/                     # Marketplace configuration
+│   └── marketplace.json                # Plugin marketplace listing
+├── plugin/                             # Plugin package (distributed)
+│   ├── .claude-plugin/
+│   │   └── plugin.json                 # Plugin metadata
+│   ├── commands/                       # Slash commands (prefixed with /agi:)
+│   │   ├── 1_ticket.md
+│   │   ├── 2_plan.md
+│   │   ├── 3_implement.md
+│   │   ├── 4_review.md
+│   │   ├── all.md
+│   │   ├── best-practices.md
+│   │   ├── checks.md
+│   │   └── fix-pr-comments.md
+│   ├── agents/                         # Specialized AI agents
+│   │   ├── code-explorer.md            # Codebase analysis & tracing
+│   │   ├── code-architect.md           # Architecture design & planning
+│   │   └── code-reviewer.md            # Code review & quality assurance
+│   └── skills/                         # Advanced skill modules
+│       ├── best-practices-extractor/
+│       └── code-compliance/
+└── src/                                # Legacy CLI (deprecated)
+    └── claude_agentic/
+
+# When installed in your project:
+.claude/tasks/                          # Task workspaces (auto-generated)
+└── {task-name}/
+    ├── ticket.md                       # Requirements
+    ├── plan.md                         # Implementation plan
+    └── review.md                       # Code review
 ```
 
 ## Key Features
 
 ### Intelligent Agent Orchestration
-- **Parallel execution**: Multiple agents run concurrently for maximum speed
-- **Phase-specific specialization**: Each workflow phase uses optimized agents
+- **3 specialized agents**: code-explorer (analysis), code-architect (design), code-reviewer (QA)
+- **Phase-specific specialization**: Each workflow phase uses the optimal agent
 - **Comprehensive analysis**: Deep codebase understanding before implementation
+- **Streamlined architecture**: Simplified from 9 agents to 3 for maximum efficiency
 
 ### Safety & Quality First
 - Git branching and status checks for all implementations
@@ -210,99 +203,135 @@ claude-code-agentic-engineering/
 
 ## Installation
 
-### Option 1: CLI Tool (Recommended)
-Use the `agentic` CLI tool for the best experience:
+### Method 1: Interactive Installation (Recommended)
+
+Inside Claude Code interactive session:
 
 ```bash
-# Initialize new project
-uvx --from git+https://github.com/ItamarZand88/claude-code-agentic-engineering.git agentic init my-project
+# Step 1: Add the marketplace
+/plugin marketplace add ItamarZand88/claude-code-agentic-engineering
 
-# Install in existing project
-uvx --from git+https://github.com/ItamarZand88/claude-code-agentic-engineering.git agentic install
-
-# Check status
-uvx --from git+https://github.com/ItamarZand88/claude-code-agentic-engineering.git agentic status
-```
-
-### Option 2: Direct Install Scripts
-```bash
-# Linux/Mac
-curl -sSL https://raw.githubusercontent.com/ItamarZand88/claude-code-agentic-engineering/main/install.sh | bash
-
-# Windows PowerShell
-iwr -useb https://raw.githubusercontent.com/ItamarZand88/claude-code-agentic-engineering/main/install.ps1 | iex
-```
-
-### Option 3: Manual Installation
-```bash
-# Clone repository
-git clone https://github.com/ItamarZand88/claude-code-agentic-engineering.git
-cd claude-code-agentic-engineering
-
-# Create directories in your project
-mkdir -p .claude/commands .claude/agents .claude/skills
-
-# Copy files
-cp commands/*.md .claude/commands/
-cp agents/*.md .claude/agents/
-cp -r skills/* .claude/skills/
+# Step 2: Install the plugin
+/plugin install agi@claude-code-agentic-engineering
 
 # Verify installation
-claude
-/help
+/help    # Look for /agi:* commands
 ```
+
+### Method 2: CLI Installation
+
+From your terminal:
+
+```bash
+# Add marketplace
+claude plugin marketplace add ItamarZand88/claude-code-agentic-engineering
+
+# Install plugin
+claude plugin install agi@claude-code-agentic-engineering
+
+# Start Claude Code
+claude
+```
+
+The plugin will automatically be available in all your Claude Code sessions. No additional configuration needed!
+
+### Method 3: Local Development
+
+If you're contributing or testing local changes:
+
+```bash
+# Clone the repository
+git clone https://github.com/ItamarZand88/claude-code-agentic-engineering.git
+
+# Start Claude Code with the plugin directory
+claude --plugin-dir /path/to/claude-code-agentic-engineering/plugin
+```
+
+### Requirements
+
+- **Claude Code** v1.0.33 or later
+- **Node.js** 18+ (for Claude Code runtime)
+- **GitHub CLI** (`gh`) - Required for `/agi:best-practices` and `/agi:fix-pr-comments` commands
 
 ## Usage Examples
 
 ### Basic Feature Development
 ```bash
 # Follow the 4-step workflow
-/1_ticket "Add dark mode toggle to the header"
-/2_plan .claude/tasks/add-dark-mode-toggle
-/3_implement .claude/tasks/add-dark-mode-toggle
-/4_review .claude/tasks/add-dark-mode-toggle
+/agi:1_ticket "Add dark mode toggle to the header"
+/agi:2_plan .claude/tasks/add-dark-mode-toggle
+/agi:3_implement .claude/tasks/add-dark-mode-toggle
+/agi:4_review .claude/tasks/add-dark-mode-toggle
 ```
 
 ### Complex System Integration
 ```bash
 # Create comprehensive ticket with deep analysis
-/1_ticket "Integrate Stripe payments with subscription management"
+/agi:1_ticket "Integrate Stripe payments with subscription management"
 
 # Research-driven planning
-/2_plan .claude/tasks/integrate-stripe-payments
+/agi:2_plan .claude/tasks/integrate-stripe-payments
 
 # Execute implementation
-/3_implement .claude/tasks/integrate-stripe-payments
+/agi:3_implement .claude/tasks/integrate-stripe-payments
 
 # Comprehensive review
-/4_review .claude/tasks/integrate-stripe-payments
+/agi:4_review .claude/tasks/integrate-stripe-payments
 ```
 
 ### Complete Workflow (All in One)
 ```bash
-# Run all 4 steps sequentially
-/all "Add user authentication with email verification"
+# Run all 4 steps sequentially - fastest way to ship!
+/agi:all "Add user authentication with email verification"
+```
+
+### Command Chaining (Auto-Continue)
+
+Use the `--continue` flag to automatically chain commands:
+
+```bash
+# Create ticket and auto-continue to planning
+/agi:1_ticket "Add feature" --continue=plan
+
+# Create ticket and run full workflow through implementation
+/agi:1_ticket "Add feature" --continue=implement
+
+# Create ticket and run complete workflow including review
+/agi:1_ticket "Add feature" --continue=all
 ```
 
 ### Quality & Best Practices
 ```bash
-# Run quality checks
-/checks
+# Generate project-specific best practices from PRs
+/agi:best-practices
+
+# Run quality checks (TypeScript, Prettier, Lint)
+/agi:checks
 
 # Fix PR review comments
-/fix-pr-comments 123
+/agi:fix-pr-comments 123
 ```
 
 ## Customization
 
-All commands and agents are fully customizable:
+The AGI plugin is fully extensible and customizable:
 
-1. **Modify command behavior** by editing files in `commands/`
-2. **Customize agent expertise** by updating files in `agents/`
-3. **Add new commands** by creating new `.md` files in `.claude/commands/`
-4. **Create specialized agents** for your domain-specific needs
+### For Plugin Users
 
-Each command and agent uses XML-structured prompts for optimal Claude performance.
+1. **Fork the repository** and modify the files in `plugin/`
+2. **Install your forked version**:
+   ```bash
+   /plugin install https://github.com/YOUR_USERNAME/claude-code-agentic-engineering
+   ```
+
+### For Contributors
+
+1. **Modify command behavior**: Edit files in `plugin/commands/`
+2. **Customize agent expertise**: Update files in `plugin/agents/`
+3. **Add new commands**: Create new `.md` files in `plugin/commands/`
+4. **Create specialized agents**: Add domain-specific agents to `plugin/agents/`
+
+All commands and agents use XML-structured prompts for optimal Claude performance.
 
 ## Core Principles
 
@@ -351,23 +380,35 @@ We welcome contributions! Please see our [Contributing Guidelines](CONTRIBUTING.
 
 ## Documentation
 
-- [CLAUDE.md](CLAUDE.md) - Project context for Claude Code
-- [ALIASES.md](ALIASES.md) - CLI alias setup guide
+- [CLAUDE.md](CLAUDE.md) - Project context and development guidelines
+- [Plugin README](plugin/README.md) - Plugin-specific documentation
 
 ## Changelog
 
-### v2.0.0 (Latest)
-- Streamlined to 4-step core workflow
-- Organized task management in `.claude/` directory
-- 7 specialized agents with focused expertise
-- Skills system for advanced workflows (best-practices-extractor, code-compliance)
-- Improved parallel agent coordination
+### v2.0.0 (Latest) - Claude Marketplace Plugin
+
+**Major Redesign:**
+- 🚀 Converted to **Claude Marketplace Plugin** for seamless installation
+- 📦 Plugin-based distribution with `/agi:` command prefix
+- ⚡ Two-step installation: Add marketplace, then install plugin
+- 🔧 No more manual CLI setup or complex installation scripts
+
+**Workflow Improvements:**
+- Streamlined to 4-step core workflow (ticket → plan → implement → review)
+- Added `/agi:all` for complete workflow automation
+- Command chaining with `--continue` flags
+- Organized task management in `.claude/tasks/` directory
+
+**Agent & Skills:**
+- 3 specialized agents with focused expertise (code-explorer, code-architect, code-reviewer)
+- Skills system: `best-practices-extractor`, `code-compliance`
+- Streamlined agent architecture for maximum efficiency
 - Phase-optimized agent specialization
 
-### v1.0.0 (Initial)
-- Initial release with basic workflow
-- Git branching and safety features
-- Comprehensive documentation
+### v1.0.0 (Deprecated)
+- Initial release with CLI-based installation
+- Basic 4-step workflow
+- Manual installation process
 
 ## License
 
@@ -375,16 +416,24 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 
 ## Acknowledgments
 
-- Built for [Claude Code](https://claude.ai/code) by Anthropic
-- Inspired by agentic prompt engineering principles
-- Follows XML-structured prompt best practices
+- **Claude Code Marketplace Plugin** - Built for [Claude Code](https://claude.ai/code) by Anthropic
+- **Agentic Engineering** - Inspired by agentic prompt engineering principles
+- **XML Prompts** - Follows Claude's XML-structured prompt best practices
+- **Open Source** - MIT licensed for community collaboration
 
-## Star This Repository
+## Star This Repository ⭐
 
-If this project helps you build better software faster, please consider giving it a star! It helps others discover this work.
+If this plugin helps you build better software faster, please consider giving it a star! It helps others discover the AGI plugin.
 
 ---
 
-**Built with love for the Claude Code community**
+**Built for the Claude Code community**
 
 > "The future of software engineering is agentic, collaborative, and intelligent."
+
+## Support & Community
+
+- 🐛 **Report Issues**: [GitHub Issues](https://github.com/ItamarZand88/claude-code-agentic-engineering/issues)
+- 💡 **Feature Requests**: [GitHub Discussions](https://github.com/ItamarZand88/claude-code-agentic-engineering/discussions)
+- 📖 **Documentation**: [CLAUDE.md](CLAUDE.md)
+- 🔌 **Plugin Hub**: Claude Code Marketplace
