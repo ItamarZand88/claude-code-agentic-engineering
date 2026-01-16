@@ -329,29 +329,7 @@ The AGI plugin is fully extensible and customizable:
 3. **Add new commands**: Create new `.md` files in `plugin/commands/`
 4. **Create specialized agents**: Add domain-specific agents to `plugin/agents/`
 
-All commands and agents use XML-structured prompts for optimal Claude performance.
-
 ## Core Principles
-
-### XML-Structured Prompts
-All prompts use XML tags for clear organization:
-```xml
-<instruction>
-Clear task description
-</instruction>
-
-<context>
-Relevant background information
-</context>
-
-<thinking>
-Step-by-step reasoning process
-</thinking>
-
-<output>
-Expected output format
-</output>
-```
 
 ### Task-First Approach
 1. Start with clear requirements (`/agi:1_ticket`)
@@ -398,7 +376,6 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 
 - **Claude Code Marketplace Plugin** - Built for [Claude Code](https://claude.ai/code) by Anthropic
 - **Agentic Engineering** - Inspired by agentic prompt engineering principles
-- **XML Prompts** - Follows Claude's XML-structured prompt best practices
 - **Open Source** - MIT licensed for community collaboration
 
 ---
