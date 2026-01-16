@@ -365,16 +365,6 @@ Expected output format
 - Patterns discovered and reused
 - Context maintained across tasks
 
-## Contributing
-
-We welcome contributions!
-
-### Ways to Contribute:
-- Report bugs and issues via [GitHub Issues](https://github.com/ItamarZand88/claude-code-agentic-engineering/issues)
-- Suggest new commands or agents via [GitHub Discussions](https://github.com/ItamarZand88/claude-code-agentic-engineering/discussions)
-- Improve documentation with pull requests
-- Star the repository if you find it useful!
-
 ## Documentation
 
 - [CLAUDE.md](CLAUDE.md) - Project context and development guidelines
@@ -410,10 +400,6 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 - **Agentic Engineering** - Inspired by agentic prompt engineering principles
 - **XML Prompts** - Follows Claude's XML-structured prompt best practices
 - **Open Source** - MIT licensed for community collaboration
-
-## Star This Repository ⭐
-
-If this plugin helps you build better software faster, please consider giving it a star! It helps others discover the AGI plugin.
 
 ---
 
