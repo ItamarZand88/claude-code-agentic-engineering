@@ -10,11 +10,24 @@ You are fixing review comments from a pull request. First understand the PR's sc
 ## Core Principles
 
 - **Understand the PR scope first**: Before fixing comments, understand the PR's purpose, changed files, and implementation approach
+- **Document the process**: Create comprehensive tracking document in `.claude/pr-fixes/pr-{number}.md`
 - **Prioritize by severity**: Fix critical issues first
 - **Read before editing**: Always understand context before making changes
 - **Validate after each fix**: Run checks to catch regressions
+- **Track progress**: Update status for each comment as you work
 - **Extract learnings**: Update best practices with patterns from review comments
 - **Use TodoWrite**: Track each comment being fixed
+
+## Output Files
+
+This command creates the following files:
+- `.claude/pr-fixes/pr-{pr_number}.md` - Comprehensive PR fix tracking document with:
+  - PR overview and context
+  - Analysis of each review comment
+  - Fix plan for each comment
+  - Status tracking (Pending → In Progress → Fixed/Skipped)
+  - Best practices learnings extracted
+  - Complete audit trail
 
 ---
 
@@ -27,11 +40,12 @@ Input: $ARGUMENTS (PR number, optional task folder)
 **Actions**:
 1. Create todo list with phases:
    - Phase 1: Fetch PR Context & Comments
-   - Phase 2: Organize Comments
-   - Phase 3: Fix Comments
-   - Phase 4: Update Task (if applicable)
-   - Phase 5: Update Best Practices
-   - Phase 6: Summary
+   - Phase 2: Create PR Fix Plan Document
+   - Phase 3: Organize & Prioritize Comments
+   - Phase 4: Fix Comments
+   - Phase 5: Update Task (if applicable)
+   - Phase 6: Update Best Practices
+   - Phase 7: Summary
 
 2. Checkout the PR branch:
    ```
@@ -75,7 +89,113 @@ Review Comments: {count} total
 
 ---
 
-## Phase 2: Organize Comments
+## Phase 2: Create PR Fix Plan Document
+
+**Goal**: Create a comprehensive tracking document for the PR fix process
+
+**Actions**:
+
+1. **Create directory structure**:
+   ```
+   mkdir -p .claude/pr-fixes
+   ```
+
+2. **Create PR fix plan file**: `.claude/pr-fixes/pr-{pr_number}.md`
+
+3. **Document Structure**:
+   ```markdown
+   # PR #{pr_number} - {title}
+
+   > Created: {timestamp}
+   > Branch: {headRefName}
+   > Status: 🔄 In Progress
+
+   ## PR Overview
+
+   **Purpose:** {summary from PR body}
+
+   **Scope:**
+   - Files Changed: {count} files
+   - Lines: +{additions} -{deletions}
+   - Commits: {count}
+
+   **Key Changes:**
+   - `{file1}`: {brief description of what changed and why}
+   - `{file2}`: {brief description of what changed and why}
+
+   ## Review Comments Summary
+
+   - **Total Comments:** {count}
+   - **Critical:** {count} 🔴
+   - **High:** {count} 🟠
+   - **Medium:** {count} 🟡
+   - **Low:** {count} 🟢
+
+   ---
+
+   ## Comments & Fix Plan
+
+   ### 1. [🔴 Critical] {file}:{line} - {brief title}
+
+   **Reviewer Comment:**
+   ```
+   {original comment text from reviewer}
+   ```
+
+   **Analysis:**
+   - **Issue Type:** {Bug / Security / Breaking Change / etc.}
+   - **Impact:** {description of why this matters}
+   - **Root Cause:** {what's the underlying problem}
+
+   **Fix Plan:**
+   - **Approach:** {how we'll fix it}
+   - **Changes Needed:** {specific files/functions to modify}
+   - **Validation:** {how to verify the fix works}
+
+   **Status:** ⏳ Pending
+
+   ---
+
+   ### 2. [🟠 High] {file}:{line} - {brief title}
+
+   {repeat structure for each comment}
+
+   ---
+
+   ## Fix Progress
+
+   - [ ] Comment 1: {brief description}
+   - [ ] Comment 2: {brief description}
+   - [ ] Comment 3: {brief description}
+
+   ---
+
+   ## Best Practices Learnings
+
+   {Will be populated after fixes are complete}
+   ```
+
+4. **Write the file**:
+   ```
+   Write(".claude/pr-fixes/pr-{pr_number}.md", content)
+   ```
+
+5. **Report to user**:
+   ```
+   📝 Created PR Fix Plan: .claude/pr-fixes/pr-{pr_number}.md
+
+   This document tracks:
+   - PR context and scope
+   - All {count} review comments with analysis
+   - Fix plan for each comment
+   - Progress status (will update as we fix each comment)
+
+   You can review this file to understand the full scope before we start fixing.
+   ```
+
+---
+
+## Phase 3: Organize & Prioritize Comments
 
 **Goal**: Prioritize and plan fixes
 
@@ -110,15 +230,20 @@ Review Comments: {count} total
 
 ---
 
-## Phase 3: Fix Comments
+## Phase 4: Fix Comments
 
-**Goal**: Implement each fix with full context understanding
+**Goal**: Implement each fix with full context understanding and track progress
 
 **For each comment to fix**:
 
-1. **Mark in progress**:
+1. **Mark in progress in both places**:
    ```
+   # Update TodoWrite
    TodoWrite - mark comment as in_progress
+
+   # Update PR fix plan document
+   Read(".claude/pr-fixes/pr-{pr_number}.md")
+   Edit - Update status for this comment from "⏳ Pending" to "🔄 In Progress"
    ```
 
 2. **Read the file and understand context**:
@@ -148,14 +273,28 @@ Review Comments: {count} total
 
 6. **Handle failures**: If checks fail, fix or ask user
 
-7. **Mark complete**:
+7. **Mark complete and update document**:
    ```
+   # Update TodoWrite
    TodoWrite - mark comment as completed
+
+   # Update PR fix plan document
+   Read(".claude/pr-fixes/pr-{pr_number}.md")
+   Edit - Update status for this comment from "🔄 In Progress" to "✅ Fixed"
+   Edit - Check the checkbox in "Fix Progress" section
+   Edit - Add brief note about what was done if helpful
+   ```
+
+8. **If skipped** (manual review needed):
+   ```
+   # Update PR fix plan document
+   Read(".claude/pr-fixes/pr-{pr_number}.md")
+   Edit - Update status from "⏳ Pending" to "⚠️ Skipped: {reason}"
    ```
 
 ---
 
-## Phase 4: Update Task (if task folder provided)
+## Phase 5: Update Task (if task folder provided)
 
 **Goal**: Document fixes in task artifacts
 
@@ -166,7 +305,7 @@ Review Comments: {count} total
 
 ---
 
-## Phase 5: Update Best Practices
+## Phase 6: Update Best Practices
 
 **Goal**: Extract and integrate learnings from review comments into project best practices
 
@@ -227,6 +366,15 @@ Review Comments: {count} total
    (Run /agi:4_review on future PRs to enforce these automatically)
    ```
 
+8. **Update PR fix plan document**:
+   ```
+   Read(".claude/pr-fixes/pr-{pr_number}.md")
+   Edit - Update "Best Practices Learnings" section with:
+     - List of new rules extracted
+     - List of updated rules
+     - Reference to best practices files that were modified
+   ```
+
 **When to skip**:
 - No best practices directory exists (suggest running `/agi:best-practices` first)
 - Comments are all one-off issues, not patterns
@@ -234,18 +382,26 @@ Review Comments: {count} total
 
 ---
 
-## Phase 6: Summary
+## Phase 7: Summary
 
 **Goal**: Report what was fixed and learned
 
 **Actions**:
 1. Mark all todos complete
 
-2. Show comprehensive summary:
+2. **Update PR fix plan document status**:
+   ```
+   Read(".claude/pr-fixes/pr-{pr_number}.md")
+   Edit - Update top status from "🔄 In Progress" to "✅ Complete"
+   ```
+
+3. Show comprehensive summary:
    ```
    ═══════════════════════════════════════════════════
    PR #{pr_number} - Review Comments Resolution
    ═══════════════════════════════════════════════════
+
+   📋 Full Details: .claude/pr-fixes/pr-{pr_number}.md
 
    📊 Overview:
    - Comments Addressed: {fixed}/{total}
@@ -275,15 +431,27 @@ Review Comments: {count} total
    ═══════════════════════════════════════════════════
    ```
 
-3. Offer to commit changes:
+4. Offer to commit changes:
    ```
    Ready to commit?
+
+   Files to commit:
+   - {modified code files}
+   - .claude/pr-fixes/pr-{pr_number}.md (tracking document)
+   - .claude/best-practices/*.md (if updated)
 
    Suggested commit message:
    "fix: address PR #{pr_number} review comments
 
    - Fixed {count} review comments
-   - Updated best practices with learnings"
+   - Updated best practices with learnings
+   - Added PR fix tracking document"
 
    Proceed? (yes/no)
    ```
+
+**Note**: The `.claude/pr-fixes/pr-{pr_number}.md` file serves as:
+- Historical record of the PR fix process
+- Reference for similar issues in the future
+- Documentation of decisions made during fixes
+- Audit trail for what was changed and why
