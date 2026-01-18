@@ -122,14 +122,6 @@ if [ -z "$LAST_UPDATE" ]; then
 
         echo ""
         echo "✅ State saved. Next run will be incremental."
-
-        # Auto-run sort
-        if [ "$TOTAL_COMMENTS" -gt 0 ]; then
-            echo ""
-            echo "🗂️  Auto-sorting comments by file tree..."
-            echo ""
-            bash "${SCRIPT_DIR}/sort_comments_by_filetree.sh" "$OUTPUT"
-        fi
     fi
 
     exit 0
@@ -227,15 +219,17 @@ echo "   Comments extracted: $COMMENTS_FOUND"
 echo "   Output file: $OUTPUT"
 echo ""
 
+if [ "$COMMENTS_FOUND" -gt 0 ]; then
+    echo "📝 Next steps:"
+    echo "   1. Sort comments by file tree:"
+    echo "      bash scripts/sort_comments_by_filetree.sh $OUTPUT"
+    echo ""
+    echo "   2. Merge with existing best practices:"
+    echo "      (Analyze new comments and update best-practices/ folder)"
+    echo ""
+fi
+
 # Save state
 save_update_timestamp "$CURRENT_TIME" "$NEW_PR_COUNT" "$COMMENTS_FOUND"
 
 echo "💾 State updated. Next run will start from: $CURRENT_TIME"
-
-# Auto-run sort if comments were found
-if [ "$COMMENTS_FOUND" -gt 0 ]; then
-    echo ""
-    echo "🗂️  Auto-sorting comments by file tree..."
-    echo ""
-    bash "${SCRIPT_DIR}/sort_comments_by_filetree.sh" "$OUTPUT"
-fi
