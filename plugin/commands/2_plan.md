@@ -115,7 +115,7 @@ For simple tasks, design directly without agents.
    - Validation command
 
    Example:
-   ```
+   ~~~
    **Task 2.1**: Create OAuth Config
 
    Files:
@@ -131,7 +131,7 @@ For simple tasks, design directly without agents.
 
    Dependencies: Task 1.1 (env setup)
    Validation: `npm run typecheck`
-   ```
+   ~~~
 
 ---
 
@@ -142,7 +142,7 @@ For simple tasks, design directly without agents.
 **Actions**:
 1. Save plan to `.claude/tasks/{task-folder}/plan.md`:
 
-```markdown
+~~~markdown
 # Implementation Plan
 
 **Task**: {name}
@@ -196,7 +196,7 @@ For simple tasks, design directly without agents.
 ## Next
 
 `/3_implement .claude/tasks/{task-folder}`
-```
+~~~
 
 ---
 
