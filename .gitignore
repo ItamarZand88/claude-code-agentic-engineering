@@ -33,5 +33,13 @@ node_modules/
 __pycache__/
 *.py[cod]
 *$py.class
-.early.coveragetmpclaude-*
+.pytest_cache/
+.early.coverage/
+
+# Test directories
+test_dynamic/
+verification_test/
+
+# Temp files
+tmpclaude-*
 .best-practices/
