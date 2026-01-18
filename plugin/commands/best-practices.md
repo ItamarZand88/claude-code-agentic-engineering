@@ -1,50 +1,53 @@
 ---
-description: Generate project coding best practices from PR comments or codebase analysis
-argument-hint: [repo-name] [--from-prs | --from-code | --combined]
+description: Generate project coding best practices from PR comments and codebase analysis
+argument-hint: [owner/repo]
 ---
 
 # Best Practices Generator
 
-You are generating coding best practices documentation for the project. Extract patterns from PR review comments and/or codebase analysis to create actionable guidelines.
+Generate coding best practices by combining **PR review comments** with **codebase pattern analysis**.
 
-## Core Principles
+## Input
 
-- **Learn from real feedback**: PR review comments reflect actual team standards
-- **Document with examples**: Every guideline should have code examples
-- **Categorize clearly**: Group practices by type (naming, error handling, etc.)
-- **Use TodoWrite**: Track progress through analysis
+Arguments: $ARGUMENTS
 
----
-
-## Phase 1: Determine Source
-
-**Goal**: Decide where to extract best practices from
-
-Input: $ARGUMENTS
-
-**Actions**:
-1. Create todo list with phases
-2. Determine mode from arguments:
-   - `--from-prs` → Extract from PR review comments only
-   - `--from-code` → Extract from codebase patterns only
-   - `--combined` or no flag → Use both sources (recommended)
-
-3. If repo name provided, use it. Otherwise use current repo.
+If no repo provided, detect from current git remote.
 
 ---
 
-## Phase 2: Extract from PR Comments (if applicable)
-
-**Goal**: Gather patterns from actual team feedback
+## Phase 1: Setup
 
 **Actions**:
-1. Fetch recent PRs with review comments:
+1. Create todo list tracking all phases
+2. Detect repository owner/name:
+   ```bash
+   gh repo view --json owner,name
    ```
-   gh pr list --state merged --limit 50 --json number,title
-   gh api repos/{owner}/{repo}/pulls/{pr_number}/comments
+3. Create output directory: `.claude/best-practices/`
+
+---
+
+## Phase 2: Extract PR Comments
+
+**Goal**: Gather real team feedback from code reviews
+
+**Actions**:
+1. Run the extraction script (auto-sorts results):
+   ```bash
+   bash plugin/skills/best-practices-extractor/scripts/incremental_update.sh {OWNER} {REPO}
    ```
 
-2. Categorize feedback patterns:
+2. Read the summary:
+   ```
+   Read(".claude/pr-review-comments/sorted/summary.json")
+   ```
+
+3. Identify top directories with most comments and read their feedback:
+   ```
+   Read(".claude/pr-review-comments/sorted/{top-dir}/comments.json")
+   ```
+
+4. Categorize patterns found:
    - Naming conventions
    - Error handling
    - Type safety
@@ -53,32 +56,33 @@ Input: $ARGUMENTS
    - Performance concerns
    - Security issues
 
-3. Note frequency of each pattern (how often mentioned)
-
 ---
 
-## Phase 3: Extract from Codebase (if applicable)
+## Phase 3: Analyze Codebase Patterns
 
-**Goal**: Identify established patterns in existing code
+**Goal**: Discover established conventions from existing code
 
 **Actions**:
-1. Sample 20-30 files across the project:
+1. **Spawn codebase-analyst sub-agent** to discover patterns:
+
    ```
-   Glob("src/**/*.ts")
-   Glob("src/**/*.tsx")
+   Use the Task tool with:
+   - subagent_type: "agi:codebase-analyst"
+   - prompt: "Analyze this codebase to discover coding patterns and conventions. Focus on:
+     1. Naming conventions (variables, functions, classes, files, directories)
+     2. File organization (imports order, exports, module structure)
+     3. Error handling approaches (try/catch patterns, error types, logging)
+     4. Type patterns (interfaces vs types, generics usage, utility types)
+     5. Testing patterns (test file naming, assertion styles, mocking approaches)
+     6. Common abstractions (utilities, hooks, helpers, base classes)
+
+     Sample 20-30 files across different directories. Return findings as structured patterns with examples."
    ```
 
-2. Analyze patterns:
-   - Naming conventions (variables, functions, files)
-   - File organization and structure
-   - Import patterns
-   - Error handling approaches
-   - Testing patterns
-
-3. Check existing configs:
+2. Also check existing configs:
    ```
-   Read(".eslintrc.js") or Read("eslint.config.js")
-   Read(".prettierrc")
+   Read("eslint.config.js") or Read(".eslintrc.js")
+   Read(".prettierrc") or Read("prettier.config.js")
    Read("tsconfig.json")
    ```
 
@@ -86,37 +90,46 @@ Input: $ARGUMENTS
 
 ## Phase 4: Generate Documentation
 
-**Goal**: Create structured best practices files
+**Goal**: Create best practices files combining both sources
 
 **Actions**:
-1. Create directory: `.claude/best-practices/`
+1. Merge findings from:
+   - PR comment patterns (Phase 2)
+   - Codebase patterns (Phase 3)
+   - Config files
 
-2. Generate files by category:
+2. Generate category files in `.claude/best-practices/`:
 
-```
-.claude/best-practices/
-├── README.md              # Index with all categories
-├── naming-conventions.md  # Variable, function, file naming
-├── error-handling.md      # Try/catch, error types, logging
-├── type-safety.md         # TypeScript patterns, avoid any
-├── code-organization.md   # File structure, imports, exports
-├── testing.md             # Test patterns, coverage
-└── {other-categories}.md  # Based on findings
-```
-
-3. Each file should follow this format:
+**README.md** (index):
 ```markdown
-# {Category Name}
+# Coding Best Practices
 
-## Guidelines
+Auto-generated from PR review comments and codebase analysis.
 
-### 1. {Guideline Title}
+## Categories
+- [Naming Conventions](naming-conventions.md)
+- [Error Handling](error-handling.md)
+- [Type Safety](type-safety.md)
+- [Code Organization](code-organization.md)
+- [Testing](testing.md)
 
-**Rule**: {Clear statement}
+## Sources
+- PR Comments: {N} analyzed
+- Codebase: {M} files sampled
+- Generated: {date}
+```
 
-**Why**: {Reasoning}
+**Category files** (e.g., `naming-conventions.md`):
+```markdown
+# Naming Conventions
 
-**Example**:
+## 1. {Guideline Title}
+
+**Guideline:** {Clear statement}
+
+**Why:** {Reasoning}
+
+**Example:**
 ```typescript
 // Good
 {good_example}
@@ -125,32 +138,31 @@ Input: $ARGUMENTS
 {bad_example}
 ```
 
-**Source**: {PR #123 or "codebase pattern"}
+**Source:** PR #{number} / Codebase pattern
 ```
 
 ---
 
 ## Phase 5: Summary
 
-**Goal**: Report what was generated
-
 **Actions**:
 1. Mark all todos complete
-2. Show summary:
-   ```
-   Best Practices Generated: .claude/best-practices/
+2. Report results:
 
-   Sources:
-   - PR Comments: {N} PRs, {M} comments analyzed
-   - Codebase: {X} files sampled
+```
+Best Practices Generated: .claude/best-practices/
 
-   Categories: {count}
-   Guidelines: {total} documented
+Sources:
+- PR Comments: {N} PRs, {M} comments analyzed
+- Codebase: {X} files sampled by codebase-analyst
 
-   Files created:
-   - README.md
-   - {category}.md
-   - ...
+Files created:
+- README.md
+- naming-conventions.md
+- error-handling.md
+- type-safety.md
+- code-organization.md
+- testing.md
 
-   Next: Review with team and commit
-   ```
+Next: Review with team and commit to repository
+```
