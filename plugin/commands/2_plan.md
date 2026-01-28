@@ -14,6 +14,7 @@ You are creating a detailed implementation plan that defines HOW to build the fe
 - **Read files identified by agents**: Build deep context before designing
 - **Provide code examples**: Every task should have concrete code showing what to write
 - **Use TodoWrite**: Track all progress throughout
+- **Ask when uncertain**: Use AskUserQuestion to clarify requirements, validate assumptions, or get decisions on implementation choices before finalizing the plan
 
 ---
 
@@ -83,6 +84,27 @@ Skip this phase for simple tasks where patterns are already clear from ticket.
 
 3. Synthesize agent outputs into a unified design
 4. Present architecture summary to user for confirmation
+
+5. **If uncertain about any architectural decisions**, use AskUserQuestion:
+   ```
+   AskUserQuestion({
+     questions: [{
+       question: "Which approach should we use for {component}?",
+       header: "Architecture",
+       options: [
+         {label: "Option A", description: "Description of approach A"},
+         {label: "Option B", description: "Description of approach B"}
+       ],
+       multiSelect: false
+     }]
+   })
+   ```
+
+   Use this when:
+   - Multiple valid approaches exist with significant trade-offs
+   - Requirements are ambiguous or incomplete
+   - The choice significantly impacts the implementation complexity
+   - User preferences matter for the design decision
 
 For simple tasks, design directly without agents.
 

@@ -72,7 +72,7 @@ Initial request: $ARGUMENTS
    - Integration points and scope boundaries
    - Design preferences and constraints
    - Performance and security needs
-3. **Present all questions to user in a clear, organized list**
+3. **Use AskUserQuestion tool** to present questions in a structured format
 4. **Wait for answers before proceeding**
 
 If user says "whatever you think is best", provide your recommendation and get explicit confirmation.
