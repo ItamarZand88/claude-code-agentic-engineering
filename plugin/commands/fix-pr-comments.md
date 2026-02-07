@@ -11,6 +11,7 @@ You are fixing review comments from a pull request. First understand the PR's sc
 
 - **Understand the PR scope first**: Before fixing comments, understand the PR's purpose, changed files, and implementation approach
 - **Document the process**: Create comprehensive tracking document in `.claude/pr-fixes/pr-{number}.md`
+- **Use AskUserQuestion for decisions**: When presenting options or asking for user input, use the AskUserQuestion tool with clear options (2-4 choices). Format: `{"questions": [{"question": "...", "header": "...", "multiSelect": false, "options": [...]}]}`
 - **Prioritize by severity**: Fix critical issues first
 - **Read before editing**: Always understand context before making changes
 - **Validate after each fix**: Run checks to catch regressions
@@ -211,6 +212,7 @@ Review Comments: {count} total
 3. Create TodoWrite list with all comments to fix
 
 4. **Present prioritized list to user**:
+   First show the summary:
    ```
    PR #{pr_number} Comments:
 
@@ -223,10 +225,47 @@ Review Comments: {count} total
    Medium ({count}):
    - {file}:{line} - {comment summary}
 
-   Which would you like to fix? (all / critical+high / select specific)
+   Low ({count}):
+   - {file}:{line} - {comment summary}
    ```
 
-5. **Wait for user decision**
+5. **Ask which comments to fix using AskUserQuestion**:
+   ```json
+   {
+     "questions": [
+       {
+         "question": "Which comments would you like to fix?",
+         "header": "Fix scope",
+         "multiSelect": false,
+         "options": [
+           {
+             "label": "Critical only ({critical_count})",
+             "description": "Fix only critical bugs, security issues, and breaking changes"
+           },
+           {
+             "label": "Critical + High ({critical+high_count}) (Recommended)",
+             "description": "Fix critical and high-priority issues (bugs, logic errors, major improvements)"
+           },
+           {
+             "label": "All comments ({total_count})",
+             "description": "Fix all review comments including style and minor improvements"
+           },
+           {
+             "label": "Let me select",
+             "description": "I'll specify which specific comments to address"
+           }
+         ]
+       }
+     ]
+   }
+   ```
+
+6. **Wait for user decision and handle answer**:
+   - "Critical only" → Fix only critical comments
+   - "Critical + High" → Fix critical and high priority
+   - "All comments" → Fix everything
+   - "Let me select" → Ask follow-up: "Which comment numbers? (e.g., 1,3,5)"
+   - "Other" (custom) → Parse the custom input
 
 ---
 

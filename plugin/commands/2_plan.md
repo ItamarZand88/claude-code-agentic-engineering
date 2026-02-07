@@ -11,6 +11,7 @@ You are creating a detailed implementation plan that defines HOW to build the fe
 
 - **Research before designing**: Look up best practices and patterns for the technologies involved
 - **Design with confidence**: Use code-architect to make decisive architectural choices
+- **Use AskUserQuestion for decisions**: When presenting options or asking for user input, use the AskUserQuestion tool with clear options (2-4 choices). Format: `{"questions": [{"question": "...", "header": "...", "multiSelect": false, "options": [...]}]}`
 - **Read files identified by agents**: Build deep context before designing
 - **Provide code examples**: Every task should have concrete code showing what to write
 - **Use TodoWrite**: Track all progress throughout
@@ -216,6 +217,37 @@ For simple tasks, design directly without agents.
    ```
 
 3. Handle `--continue` flag in `$ARGUMENTS`:
-   - `--continue=implement` → run `/3_implement .claude/tasks/{task-folder}`
-   - `--continue=review` or `--continue=all` → run `/3_implement .claude/tasks/{task-folder} --continue=review`
-   - No flag → ask user if ready to implement
+   - `--continue=implement` → run `/agi:3_implement .claude/tasks/{task-folder}`
+   - `--continue=review` or `--continue=all` → run `/agi:3_implement .claude/tasks/{task-folder} --continue=review`
+   - **No flag** → Use AskUserQuestion to ask about next steps:
+
+   ```json
+   {
+     "questions": [
+       {
+         "question": "What would you like to do next?",
+         "header": "Next step",
+         "multiSelect": false,
+         "options": [
+           {
+             "label": "Review plan first",
+             "description": "Let me review and approve the plan before implementing (Recommended)"
+           },
+           {
+             "label": "Implement now",
+             "description": "Start implementation immediately"
+           },
+           {
+             "label": "Implement and review",
+             "description": "Implement and then run code review"
+           }
+         ]
+       }
+     ]
+   }
+   ```
+
+   Based on answer:
+   - "Review plan first" → Stop here
+   - "Implement now" → run `/agi:3_implement .claude/tasks/{task-folder}`
+   - "Implement and review" → run `/agi:3_implement .claude/tasks/{task-folder} --continue=review`

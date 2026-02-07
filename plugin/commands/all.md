@@ -36,14 +36,14 @@ Input: $ARGUMENTS (task description)
 **Actions**:
 1. **Create Ticket** (auto-continue to review):
    ```
-   /1_ticket {task_description} --continue=review
+   /agi:1_ticket {task_description} --continue=review
    ```
 
    This will automatically chain:
-   - `/1_ticket` → creates ticket
-   - `/2_plan` → creates implementation plan
-   - `/3_implement` → executes the plan
-   - `/4_review` → reviews the code
+   - `/agi:1_ticket` → creates ticket
+   - `/agi:2_plan` → creates implementation plan
+   - `/agi:3_implement` → executes the plan
+   - `/agi:4_review` → reviews the code
 
 2. Monitor progress and update TodoWrite as each step completes
 
@@ -81,4 +81,29 @@ Input: $ARGUMENTS (task description)
    - .claude/tasks/{task-folder}/review.md
    ```
 
-3. If review found critical issues, offer to fix them
+3. **If review found critical issues**, use AskUserQuestion to offer fixes:
+   ```json
+   {
+     "questions": [
+       {
+         "question": "Code review found {count} critical issues. Fix them now?",
+         "header": "Fix issues",
+         "multiSelect": false,
+         "options": [
+           {
+             "label": "Yes, fix automatically",
+             "description": "Attempt to fix all critical issues now"
+           },
+           {
+             "label": "Show me first",
+             "description": "Let me review the issues before deciding"
+           },
+           {
+             "label": "Fix later",
+             "description": "Skip fixes for now, I'll handle them manually"
+           }
+         ]
+       }
+     ]
+   }
+   ```

@@ -11,6 +11,7 @@ You are implementing the feature by executing the plan step-by-step. Follow the 
 
 - **Follow the plan**: The plan has been approved - execute it faithfully
 - **Validate continuously**: Run checks after each task to catch issues early
+- **Use AskUserQuestion for decisions**: When presenting options or asking for user input, use the AskUserQuestion tool with clear options (2-4 choices). Format: `{"questions": [{"question": "...", "header": "...", "multiSelect": false, "options": [...]}]}`
 - **Read before writing**: Always read existing files before modifying them
 - **Use TodoWrite**: Track every task's progress in real-time
 - **Ask when blocked**: If something doesn't work as planned, ask user before improvising
@@ -30,9 +31,57 @@ Input: $ARGUMENTS (task folder path)
    git branch --show-current
    ```
 
-2. Handle issues:
-   - If working directory not clean → ask user: "Commit, Stash, or Continue anyway?"
-   - If on main branch → suggest creating feature branch
+2. **Handle issues using AskUserQuestion**:
+
+   If working directory not clean, ask:
+   ```json
+   {
+     "questions": [
+       {
+         "question": "Working directory has uncommitted changes. What would you like to do?",
+         "header": "Git status",
+         "multiSelect": false,
+         "options": [
+           {
+             "label": "Commit changes",
+             "description": "Create a commit with current changes before proceeding"
+           },
+           {
+             "label": "Stash changes",
+             "description": "Temporarily stash changes and restore later"
+           },
+           {
+             "label": "Continue anyway",
+             "description": "Proceed with implementation despite uncommitted changes"
+           }
+         ]
+       }
+     ]
+   }
+   ```
+
+   If on main branch, ask:
+   ```json
+   {
+     "questions": [
+       {
+         "question": "You're on the main branch. Create a feature branch?",
+         "header": "Branch",
+         "multiSelect": false,
+         "options": [
+           {
+             "label": "Create feature branch (Recommended)",
+             "description": "Create and switch to a new feature branch"
+           },
+           {
+             "label": "Stay on main",
+             "description": "Continue implementing on main branch"
+           }
+         ]
+       }
+     ]
+   }
+   ```
 
 3. Run quality checks to establish baseline:
    ```
@@ -87,12 +136,37 @@ If plan is missing, STOP and tell user to run `/2_plan`.
    ```
    Or run the specific validation command from the task.
 
-5. **Handle failures**:
-   If validation fails, offer options:
-   - (1) Fix and retry
-   - (2) Skip this task
-   - (3) Debug together
-   - (4) Rollback changes
+5. **Handle failures using AskUserQuestion**:
+   If validation fails, use:
+   ```json
+   {
+     "questions": [
+       {
+         "question": "Validation failed. How should we proceed?",
+         "header": "Fix issue",
+         "multiSelect": false,
+         "options": [
+           {
+             "label": "Fix and retry (Recommended)",
+             "description": "Attempt to fix the validation error and try again"
+           },
+           {
+             "label": "Debug together",
+             "description": "Let's investigate the error together before fixing"
+           },
+           {
+             "label": "Skip this task",
+             "description": "Skip this task and continue with remaining tasks"
+           },
+           {
+             "label": "Rollback changes",
+             "description": "Undo changes from this task and stop"
+           }
+         ]
+       }
+     ]
+   }
+   ```
 
 6. **Mark complete**:
    ```
@@ -142,5 +216,31 @@ If plan is missing, STOP and tell user to run `/2_plan`.
    ```
 
 3. Handle `--continue` flag in `$ARGUMENTS`:
-   - `--continue=review` or `--continue=all` → run `/4_review .claude/tasks/{task-folder}`
-   - No flag → ask user if ready for code review
+   - `--continue=review` or `--continue=all` → run `/agi:4_review .claude/tasks/{task-folder}`
+   - **No flag** → Use AskUserQuestion to ask about code review:
+
+   ```json
+   {
+     "questions": [
+       {
+         "question": "Implementation complete! Run code review?",
+         "header": "Review",
+         "multiSelect": false,
+         "options": [
+           {
+             "label": "Yes, review now (Recommended)",
+             "description": "Run comprehensive code review to check quality and compliance"
+           },
+           {
+             "label": "Skip review",
+             "description": "Skip code review for now"
+           }
+         ]
+       }
+     ]
+   }
+   ```
+
+   Based on answer:
+   - "Yes, review now" → run `/agi:4_review .claude/tasks/{task-folder}`
+   - "Skip review" → Stop here

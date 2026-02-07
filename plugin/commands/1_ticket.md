@@ -10,6 +10,7 @@ You are helping create a comprehensive task ticket that defines WHAT needs to be
 ## Core Principles
 
 - **Ask clarifying questions**: Identify ambiguities and underspecified details. Ask specific questions rather than making assumptions. Wait for answers before finalizing the ticket.
+- **Use AskUserQuestion for decisions**: When presenting options or asking for user input, use the AskUserQuestion tool with clear options (2-4 choices). Format: `{"questions": [{"question": "...", "header": "...", "multiSelect": false, "options": [...]}]}`
 - **Understand before documenting**: Read and comprehend existing code patterns first
 - **Read files identified by agents**: When launching agents, ask them to return lists of key files. After agents complete, read those files to build context.
 - **Use TodoWrite**: Track all progress throughout
@@ -88,24 +89,57 @@ If user says "whatever you think is best", provide your recommendation and get e
    - "Evaluate implementation approaches for [task]: list 2-3 options with trade-offs"
    - Focus on: minimal changes vs clean architecture vs pragmatic balance
 
-2. Present options to user:
+2. **Present options using AskUserQuestion**:
+   ```json
+   {
+     "questions": [
+       {
+         "question": "Which implementation approach do you prefer?",
+         "header": "Approach",
+         "multiSelect": false,
+         "options": [
+           {
+             "label": "{Option1Name} (Recommended)",
+             "description": "Pros: {benefits}. Cons: {drawbacks}"
+           },
+           {
+             "label": "{Option2Name}",
+             "description": "Pros: {benefits}. Cons: {drawbacks}"
+           },
+           {
+             "label": "{Option3Name}",
+             "description": "Pros: {benefits}. Cons: {drawbacks}"
+           }
+         ]
+       }
+     ]
+   }
    ```
-   I've analyzed approaches for {task}:
 
-   Option 1: {name}
-   - Pros: {benefits}
-   - Cons: {drawbacks}
-
-   Option 2: {name}
-   - Pros: {benefits}
-   - Cons: {drawbacks}
-
-   Recommendation: {choice} because {reason}
-
-   Which approach would you like?
+   **Example**:
+   ```json
+   {
+     "questions": [
+       {
+         "question": "Which implementation approach do you prefer?",
+         "header": "Approach",
+         "multiSelect": false,
+         "options": [
+           {
+             "label": "Extend Existing (Recommended)",
+             "description": "Add to current auth module. Minimal changes, consistent with codebase."
+           },
+           {
+             "label": "New Module",
+             "description": "Create separate module. Clean separation but more boilerplate."
+           }
+         ]
+       }
+     ]
+   }
    ```
 
-3. **Wait for user decision before proceeding**
+3. **Wait for user decision** (the "Other" option is auto-added for custom input)
 
 For simple tasks, skip this phase.
 
@@ -199,7 +233,43 @@ For simple tasks, skip this phase.
    ```
 
 3. Handle `--continue` flag in `$ARGUMENTS`:
-   - `--continue=plan` → run `/2_plan .claude/tasks/{task-name}`
-   - `--continue=implement` → run `/2_plan .claude/tasks/{task-name} --continue=implement`
-   - `--continue=review` or `--continue=all` → run `/2_plan .claude/tasks/{task-name} --continue=review`
-   - No flag → ask user if ready for planning
+   - `--continue=plan` → run `/agi:2_plan .claude/tasks/{task-name}`
+   - `--continue=implement` → run `/agi:2_plan .claude/tasks/{task-name} --continue=implement`
+   - `--continue=review` or `--continue=all` → run `/agi:2_plan .claude/tasks/{task-name} --continue=review`
+   - **No flag** → Use AskUserQuestion to ask about next steps:
+
+   ```json
+   {
+     "questions": [
+       {
+         "question": "What would you like to do next?",
+         "header": "Next step",
+         "multiSelect": false,
+         "options": [
+           {
+             "label": "Review ticket first",
+             "description": "Let me review and approve the ticket before planning (Recommended)"
+           },
+           {
+             "label": "Plan immediately",
+             "description": "Continue to planning phase now"
+           },
+           {
+             "label": "Plan and implement",
+             "description": "Go all the way to implementation"
+           },
+           {
+             "label": "Full workflow",
+             "description": "Run ticket → plan → implement → review"
+           }
+         ]
+       }
+     ]
+   }
+   ```
+
+   Based on answer:
+   - "Review ticket first" → Stop here
+   - "Plan immediately" → run `/agi:2_plan .claude/tasks/{task-name}`
+   - "Plan and implement" → run `/agi:2_plan .claude/tasks/{task-name} --continue=implement`
+   - "Full workflow" → run `/agi:2_plan .claude/tasks/{task-name} --continue=review`
