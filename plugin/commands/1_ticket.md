@@ -14,6 +14,37 @@ You are helping create a comprehensive task ticket that defines WHAT needs to be
 - **Understand before documenting**: Read and comprehend existing code patterns first
 - **Read files identified by agents**: When launching agents, ask them to return lists of key files. After agents complete, read those files to build context.
 - **Use TodoWrite**: Track all progress throughout
+- **Smart execution patterns**: Choose between single explorer, parallel subagents, or agent teams based on feature complexity
+
+---
+
+## Phase 0: Analyze Feature Complexity
+
+**Goal**: Determine optimal exploration pattern based on feature scope
+
+**Actions**:
+1. Analyze initial request to identify architectural layers:
+   - **Backend/API**: Server-side logic, endpoints, controllers, services
+   - **Database**: Schema changes, migrations, queries, models
+   - **Frontend/UI**: Components, state management, routing, forms
+   - **Integration**: External APIs, auth, security, third-party services
+
+2. **Decision Logic**:
+   ```
+   layers_count = count_architectural_layers(request)
+
+   IF layers_count >= 3 OR complex_integration:
+     recommend = "parallel_subagents"
+     trigger_question = true
+   ELSE IF layers_count >= 2:
+     recommend = "single_explorer"
+     trigger_question = true  # Give option for parallel
+   ELSE:
+     recommend = "single_explorer"
+     trigger_question = false  # Just proceed
+   ```
+
+3. **If question triggered**, use AskUserQuestion (see Phase 2 for options)
 
 ---
 
@@ -41,22 +72,168 @@ Initial request: $ARGUMENTS
 
 ## Phase 2: Codebase Exploration
 
-**Goal**: Understand relevant existing code and patterns
+**Goal**: Understand relevant existing code and patterns using optimal execution pattern
+
+### Option A: Single Explorer (DEFAULT for 1-2 layers)
+
+**When**: Simple single-layer features, quick analysis, budget-sensitive
 
 **Actions**:
-1. Launch 2-3 code-explorer agents in parallel. Each agent should:
-   - Trace through code comprehensively
-   - Focus on architecture, abstractions, and control flow
-   - Target different aspects (similar features, architecture, integrations)
-   - Include a list of 5-10 key files to read
+1. Launch single code-explorer agent:
+   ```
+   Task(code-explorer, "Analyze codebase for {feature_description}
 
-   **Example agent prompts**:
-   - "Find features similar to [feature] and trace their implementation comprehensively"
-   - "Map the architecture and abstractions for [feature area]"
-   - "Analyze integration points and dependencies for [feature]"
+   Research:
+   1. Find similar features and trace their implementation comprehensively
+   2. Map relevant architecture and abstractions
+   3. Identify integration points and dependencies
+   4. Document patterns, conventions, and design decisions
 
-2. Once agents return, read all files they identified
-3. Summarize findings: patterns discovered, conventions, relevant code locations
+   Provide:
+   - List of 5-10 key files to read (with file paths)
+   - Summary of patterns discovered
+   - Recommendations for implementation approach")
+   ```
+
+2. Once agent returns, read all files it identified
+3. Summarize findings
+
+---
+
+### Option B: Parallel Subagents (RECOMMENDED for 3+ layers) ⭐
+
+**When**: Multi-layer features (backend + database + frontend), complex integrations
+
+**Recommendation to User** (use AskUserQuestion):
+```json
+{
+  "questions": [{
+    "question": "This feature spans backend, database, and frontend layers. How should we analyze it?",
+    "header": "Analysis",
+    "multiSelect": false,
+    "options": [
+      {
+        "label": "Parallel explorers (Recommended)",
+        "description": "3-4 specialized subagents explore each layer in parallel (backend, database, frontend). Much faster comprehensive analysis. ~50K tokens."
+      },
+      {
+        "label": "Single explorer",
+        "description": "One code-explorer analyzes all layers sequentially. Slower but lower cost (~10K tokens) and simpler."
+      },
+      {
+        "label": "Agent team analysis",
+        "description": "Teammates with inter-agent communication. RARELY needed for ticket phase - use only if explorers should debate findings. ~70K tokens."
+      },
+      {
+        "label": "Quick analysis",
+        "description": "Basic codebase search without deep tracing. Fast but may miss important context."
+      }
+    ]
+  }]
+}
+```
+
+**If Parallel Subagents chosen**:
+
+1. Launch 3-4 specialized explorers in parallel (in SINGLE message with multiple Task calls):
+
+   **Backend/API Explorer**:
+   ```
+   Task(code-explorer, "Explore BACKEND/API layer for {feature_description}
+
+   Focus on:
+   - API endpoints, routes, controllers
+   - Services and business logic
+   - Middleware and authentication
+   - Similar feature implementations
+
+   Trace execution paths comprehensively.
+
+   Provide:
+   - List of 5-10 key backend files (with file paths)
+   - API patterns and conventions discovered
+   - Recommendations for backend implementation")
+   ```
+
+   **Database Explorer**:
+   ```
+   Task(code-explorer, "Explore DATABASE layer for {feature_description}
+
+   Focus on:
+   - Schema design and migrations
+   - ORM models and relationships
+   - Query patterns and data access
+   - Similar data structures
+
+   Trace data flow comprehensively.
+
+   Provide:
+   - List of 5-10 key database files (with file paths)
+   - Database patterns and conventions discovered
+   - Recommendations for database implementation")
+   ```
+
+   **Frontend/UI Explorer**:
+   ```
+   Task(code-explorer, "Explore FRONTEND/UI layer for {feature_description}
+
+   Focus on:
+   - UI components and layouts
+   - State management patterns
+   - Routing and navigation
+   - Similar UI features
+
+   Trace component composition comprehensively.
+
+   Provide:
+   - List of 5-10 key frontend files (with file paths)
+   - UI patterns and conventions discovered
+   - Recommendations for frontend implementation")
+   ```
+
+   **Integration Explorer** (if needed):
+   ```
+   Task(code-explorer, "Explore INTEGRATION layer for {feature_description}
+
+   Focus on:
+   - External APIs and services
+   - Authentication and authorization flows
+   - Security patterns
+   - Third-party library usage
+
+   Trace integration points comprehensively.
+
+   Provide:
+   - List of 5-10 key integration files (with file paths)
+   - Integration patterns discovered
+   - Recommendations for secure integration")
+   ```
+
+2. **Wait for all explorers to complete** (parallel execution)
+
+3. **Read all files identified by all explorers**
+
+4. **Synthesize findings**:
+   - Combine insights from all layers
+   - Identify cross-layer patterns and dependencies
+   - Create comprehensive understanding of feature requirements
+
+---
+
+### Option C: Agent Teams (RARELY NEEDED)
+
+**When**: Extremely complex features with unclear architectural boundaries
+
+**Note**: Agent teams rarely add value for ticket phase. Exploration is inherently independent (each layer separate). Only use if explorers need to debate where feature belongs or challenge assumptions.
+
+---
+
+### After Exploration (All Options)
+
+5. Summarize findings:
+   - Patterns discovered from each layer (if parallel)
+   - Conventions and design decisions
+   - Relevant code locations with file:line references
 
 ---
 

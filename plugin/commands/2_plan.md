@@ -15,6 +15,40 @@ You are creating a detailed implementation plan that defines HOW to build the fe
 - **Read files identified by agents**: Build deep context before designing
 - **Provide code examples**: Every task should have concrete code showing what to write
 - **Use TodoWrite**: Track all progress throughout
+- **Smart execution patterns**: For architectural decisions with multiple viable approaches, research all options in parallel
+
+---
+
+## Phase 0: Analyze Decision Complexity
+
+**Goal**: Identify if multiple architectural approaches need evaluation
+
+**Actions**:
+1. Analyze ticket requirements to detect decision points:
+   - Are there multiple technologies that could work? (WebSockets vs SSE vs Polling)
+   - Are there competing architectural patterns? (Microservices vs Monolith, REST vs GraphQL)
+   - Is this a high-stakes decision with long-term implications?
+   - Is the decision controversial or does it have significant trade-offs?
+
+2. **Decision Logic**:
+   ```
+   approaches = detect_viable_approaches(ticket)
+
+   IF approaches.length >= 3 OR high_stakes_decision:
+     IF controversial OR requires_debate:
+       recommend = "agent_teams"
+     ELSE:
+       recommend = "parallel_subagents"
+     trigger_question = true
+   ELSE IF approaches.length == 2:
+     recommend = "single_architect"
+     trigger_question = true  # Give option for parallel
+   ELSE:
+     recommend = "single_architect"
+     trigger_question = false  # Approach is clear
+   ```
+
+3. **If question triggered**, use AskUserQuestion (see Phase 2 for options)
 
 ---
 
@@ -40,14 +74,18 @@ If ticket is missing, STOP and tell user to run `/1_ticket`.
 
 ---
 
-## Phase 2: Research
+## Phase 2: Research & Approach Evaluation
 
-**Goal**: Gather best practices and patterns for the implementation
+**Goal**: Gather best practices and evaluate architectural approaches
+
+### Option A: Single Approach Research (DEFAULT)
+
+**When**: Clear implementation approach, no competing alternatives
 
 **Actions**:
 1. For new technologies or unfamiliar patterns:
    ```
-   WebSearch("{technology} best practices 2025")
+   WebSearch("{technology} best practices 2026")
    WebFetch("{documentation_url}")
    ```
 
@@ -61,9 +99,178 @@ If ticket is missing, STOP and tell user to run `/1_ticket`.
    - Launch code-explorer agent to find additional patterns
    - Read the files it identifies
 
-4. Summarize research findings relevant to implementation
+4. Summarize research findings
 
-Skip this phase for simple tasks where patterns are already clear from ticket.
+Skip for simple tasks where patterns are clear from ticket.
+
+---
+
+### Option B: Parallel Approach Research (RECOMMENDED for 3+ approaches) ⭐
+
+**When**: Multiple viable architectural approaches, significant trade-offs to evaluate
+
+**Recommendation to User** (use AskUserQuestion):
+```json
+{
+  "questions": [{
+    "question": "Multiple approaches exist for real-time notifications: WebSockets, SSE, Polling. How should we evaluate them?",
+    "header": "Planning",
+    "multiSelect": false,
+    "options": [
+      {
+        "label": "Parallel research (Recommended)",
+        "description": "3 architect subagents research each approach in parallel with pros/cons. Fast comprehensive evaluation. ~45K tokens."
+      },
+      {
+        "label": "Single architect",
+        "description": "One architect researches sequentially and recommends best approach. Simpler and lower cost (~12K tokens)."
+      },
+      {
+        "label": "Agent team debate",
+        "description": "3 teammates research AND debate approaches. Best when decision is controversial. Highest thoroughness and cost (~65K tokens)."
+      },
+      {
+        "label": "Use {ApproachX}",
+        "description": "Skip research and implement with {ApproachX} (or specify different approach in Other)."
+      }
+    ]
+  }]
+}
+```
+
+**If Parallel Research chosen**:
+
+1. Launch 3 architect subagents in parallel (in SINGLE message with 3 Task calls):
+
+   **Approach A Researcher**:
+   ```
+   Task(code-architect, "Research {Approach A} (e.g., WebSockets) for {feature}
+
+   Research:
+   1. WebSearch for best practices, pros/cons, use cases
+   2. Implementation complexity assessment
+   3. Performance and scalability considerations
+   4. Ecosystem support and maturity
+   5. Integration with existing codebase
+   6. Costs and maintenance overhead
+
+   Provide:
+   - Summary of approach with clear pros/cons
+   - Implementation complexity rating (Low/Medium/High)
+   - Performance profile
+   - Recommendation: When to use this approach")
+   ```
+
+   **Approach B Researcher**:
+   ```
+   Task(code-architect, "Research {Approach B} (e.g., Server-Sent Events) for {feature}
+
+   Research:
+   1. WebSearch for best practices, pros/cons, use cases
+   2. Implementation complexity assessment
+   3. Performance and scalability considerations
+   4. Ecosystem support and maturity
+   5. Integration with existing codebase
+   6. Costs and maintenance overhead
+
+   Provide:
+   - Summary of approach with clear pros/cons
+   - Implementation complexity rating (Low/Medium/High)
+   - Performance profile
+   - Recommendation: When to use this approach")
+   ```
+
+   **Approach C Researcher**:
+   ```
+   Task(code-architect, "Research {Approach C} (e.g., Polling) for {feature}
+
+   Research:
+   1. WebSearch for best practices, pros/cons, use cases
+   2. Implementation complexity assessment
+   3. Performance and scalability considerations
+   4. Ecosystem support and maturity
+   5. Integration with existing codebase
+   6. Costs and maintenance overhead
+
+   Provide:
+   - Summary of approach with clear pros/cons
+   - Implementation complexity rating (Low/Medium/High)
+   - Performance profile
+   - Recommendation: When to use this approach")
+   ```
+
+2. **Wait for all researchers to complete** (parallel execution)
+
+3. **Synthesize comparison**:
+   - Create comparison matrix of all approaches
+   - Identify clear winner or trade-offs
+   - Make recommendation with rationale
+   - Present to user for final decision
+
+---
+
+### Option C: Agent Team Debate (For High-Stakes Decisions)
+
+**When**: Controversial decisions, high-stakes architecture, competing advocates
+
+**Note**: Use when architects should challenge each other's assumptions and debate merits.
+
+**Recommendation to User** (use AskUserQuestion):
+```json
+{
+  "questions": [{
+    "question": "This is a high-stakes architectural decision: Microservices vs Monolith. This affects the system for years. How should we decide?",
+    "header": "Planning",
+    "multiSelect": false,
+    "options": [
+      {
+        "label": "Agent team debate (Recommended)",
+        "description": "3 teammates research and debate approaches. Advocates challenge each other's assumptions. Best for high-stakes decisions. ~65K tokens."
+      },
+      {
+        "label": "Parallel research",
+        "description": "3 architect subagents research approaches in parallel. No debate/challenge. Fast evaluation but less scrutiny. ~45K tokens."
+      },
+      {
+        "label": "Single architect",
+        "description": "One architect researches and recommends. Fastest decision but no peer challenge. ~12K tokens."
+      }
+    ]
+  }]
+}
+```
+
+**If Agent Team chosen**:
+
+1. Create agent team:
+   ```
+   Create an agent team to evaluate architectural approaches for {feature}
+
+   Team structure:
+   - Lead: Synthesize debate and make final recommendation
+   - Teammate 1: Advocate for Approach A with pros/cons/implementation
+   - Teammate 2: Advocate for Approach B with pros/cons/implementation
+   - Teammate 3: Devil's advocate - challenges both approaches, identifies risks
+
+   Each teammate should:
+   1. Research their approach thoroughly (WebSearch, documentation)
+   2. Build strong case with evidence
+   3. Challenge other approaches constructively
+   4. Consider feedback and refine recommendations
+   5. Collaborate to find best solution
+
+   Lead synthesizes debate into clear recommendation with rationale.
+
+   Use Sonnet model for all teammates.
+   ```
+
+2. **Lead synthesizes** recommendation based on collaborative debate
+
+---
+
+### After Research (All Options)
+
+4. Summarize research findings and chosen approach (if decided)
 
 ---
 
