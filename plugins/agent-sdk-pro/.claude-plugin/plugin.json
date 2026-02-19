@@ -1,0 +1,10 @@
+{
+  "name": "agent-sdk-pro",
+  "version": "1.0.0",
+  "description": "Professional TypeScript Claude Agent SDK development toolkit — patterns, hooks, control, and architecture",
+  "author": {
+    "name": "Itamar Zand",
+    "email": "itamar@earlyai.com"
+  },
+  "keywords": ["agent-sdk", "typescript", "hooks", "claude", "ai-platform"]
+}

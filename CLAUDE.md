@@ -11,26 +11,36 @@ This is an **agentic engineering framework** that combines **advanced agentic en
 
 ## Project Structure
 ```
-# Plugin Repository
-./plugin/              - Claude Code plugin package
-  ├── .claude-plugin/
-  │   └── plugin.json  - Plugin metadata
-  ├── commands/        - Slash commands (prefixed with /agi:)
-  │   ├── 1_ticket.md
-  │   ├── 2_plan.md
-  │   ├── 3_implement.md
-  │   ├── 4_review.md
-  │   ├── all.md
-  │   ├── best-practices.md
-  │   ├── checks.md
-  │   └── fix-pr-comments.md
-  ├── agents/          - Specialized AI agents (3 agents)
-  │   ├── code-explorer.md       # Codebase analysis & tracing
-  │   ├── code-architect.md      # Architecture design & planning
-  │   └── code-reviewer.md       # Code review & quality assurance
-  └── skills/          - Advanced skill modules
-      ├── best-practices-extractor/
-      └── code-compliance/
+# Plugin Repository (Marketplace)
+.claude-plugin/
+  └── marketplace.json   - Marketplace definition (lists all plugins)
+plugins/
+  ├── agi/               - Agentic engineering workflow plugin
+  │   ├── .claude-plugin/
+  │   │   └── plugin.json
+  │   ├── commands/      - Slash commands (prefixed with /agi:)
+  │   │   ├── 1_ticket.md
+  │   │   ├── 2_plan.md
+  │   │   ├── 3_implement.md
+  │   │   ├── 4_review.md
+  │   │   ├── all.md
+  │   │   ├── best-practices.md
+  │   │   ├── checks.md
+  │   │   └── fix-pr-comments.md
+  │   ├── agents/        - Specialized AI agents (3 agents)
+  │   │   ├── code-explorer.md
+  │   │   ├── code-architect.md
+  │   │   └── code-reviewer.md
+  │   └── skills/        - Advanced skill modules
+  │       ├── best-practices-extractor/
+  │       └── code-compliance/
+  └── agent-sdk-pro/     - TypeScript Agent SDK toolkit plugin
+      ├── .claude-plugin/
+      │   └── plugin.json
+      ├── commands/      - Slash commands (prefixed with /agent-sdk-pro:)
+      ├── agents/        - SDK-focused agents
+      ├── skills/        - SDK patterns, hooks, control
+      └── hooks/         - Plugin hooks
 
 # When installed in user projects
 .claude/tasks/         - Organized task workspaces (auto-generated)

@@ -1,5 +1,7 @@
 {
+  "$schema": "https://anthropic.com/claude-code/marketplace.schema.json",
   "name": "claude-code-agentic-engineering",
+  "description": "Professional Claude Code plugins for agentic engineering workflows and TypeScript Agent SDK development",
   "owner": {
     "name": "Itamar Zand",
     "url": "https://github.com/ItamarZand88"
@@ -7,8 +9,15 @@
   "plugins": [
     {
       "name": "agi",
-      "source": "./plugin",
-      "description": "Advanced agentic engineering workflow with specialized agents for ticket creation, planning, implementation, and code review."
+      "source": "./plugins/agi",
+      "description": "Advanced agentic engineering workflow with specialized agents for ticket creation, planning, implementation, and code review.",
+      "category": "development"
+    },
+    {
+      "name": "agent-sdk-pro",
+      "source": "./plugins/agent-sdk-pro",
+      "description": "Professional TypeScript Claude Agent SDK development toolkit — patterns, hooks, control, and architecture.",
+      "category": "development"
     }
   ]
 }
